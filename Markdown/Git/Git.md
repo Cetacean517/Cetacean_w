@@ -201,9 +201,121 @@ README.md
 
 Git支持多种协议，包括https，但ssh协议速度最快。
 
+## 创建和合并分支
+### 小结
+Git鼓励大量使用分支：
 
+查看分支：`git branch`
 
+创建分支：`git branch <name>`
 
+切换分支：`git checkout <name>`或者`git switch <name>`
+
+创建+切换分支：`git checkout -b <name>`或者`git switch -c <name>`
+
+合并某分支到当前分支：`git merge <name>`
+
+删除分支：`git branch -d <name>`
+
+## 解决冲突
+### 小结
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+
+解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
+
+用`git log --graph`命令可以看到分支合并图。
+
+## 分支管理策略
+准备合并dev分支，请注意`--no-ff`参数，表示禁用`Fast forward`：
+```cmd
+$ git merge --no-ff -m "merge with no-ff" dev
+Merge made by the 'recursive' strategy.
+ readme.txt | 1 +
+ 1 file changed, 1 insertion(+)
+```
+因为本次合并要创建一个新的commit，所以加上-m参数，把commit描述写进去。
+
+合并后，我们用`git log`看看分支历史：
+```cmd
+$ git log --graph --pretty=oneline --abbrev-commit
+*   e1e9c68 (HEAD -> master) merge with no-ff
+|\  
+| * f52c633 (dev) add merge
+|/  
+*   cf810e4 conflict fixed
+```
+
+### 小结
+Git分支十分强大，在团队开发中应该充分应用。
+
+合并分支时，加上`--no-ff`参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并。
+## Bug分支
+Git提供了一个`stash`功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作：
+
+```cmd
+$ git stash
+Saved working directory and index state WIP on dev: f52c633 add merge
+```
+现在，用`git status`查看工作区，就是干净的（除非有没有被Git管理的文件），因此可以放心地创建分支来修复bug。
+
+首先确定要在哪个分支上修复bug，假定需要在master分支上修复，就从master创建临时分支：
+```cmd
+$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 6 commits.
+  (use "git push" to publish your local commits)
+
+$ git checkout -b issue-101
+Switched to a new branch 'issue-101'
+```
+
+现在修复bug，需要把“Git is free software ...”改为“Git is a free software ...”，然后提交：
+```cmd
+$ git add readme.txt 
+$ git commit -m "fix bug 101"
+[issue-101 4c805e2] fix bug 101
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ ```
+修复完成后，切换到master分支，并完成合并，最后删除issue-101分支：
+``` cmd
+$ git switch master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 6 commits.
+  (use "git push" to publish your local commits)
+
+$ git merge --no-ff -m "merged bug fix 101" issue-101
+Merge made by the 'recursive' strategy.
+ readme.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ ```
+太棒了，原计划两个小时的bug修复只花了5分钟！现在，是时候接着回到dev分支干活了！
+
+```cmd
+$ git switch dev
+Switched to branch 'dev'
+
+$ git status
+On branch dev
+nothing to commit, working tree clean
+```
+工作区是干净的，刚才的工作现场存到哪去了？用git stash list命令看看：
+
+```cmd
+$ git stash list
+stash@{0}: WIP on dev: f52c633 add merge
+```
+工作现场还在，Git把stash内容存在某个地方了，但是需要恢复一下，有两个办法：
+
+**一是用`git stash apply`恢复，但是恢复后，stash内容并不删除，你需要用`git stash drop`来删除；**
+
+**另一种方式是用`git stash pop`，恢复的同时把stash内容也删了**
+
+### 小结
+修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+
+当手头工作没有完成时，先把工作现场`git stash`一下，然后去修复bug，修复后，再`git stash pop`，回到工作现场；
+
+在master分支上修复的bug，想要合并到当前dev分支，可以用`git cherry-pick <commit>`命令，把bug提交的修改“复制”到当前分支，避免重复劳动。
 
 
 
@@ -247,4 +359,28 @@ $ git push origin master
 
 //克隆远程库
 $ git clone git@server-name:path/repo-name.git
+
+//创建与合并分支
+$ git checkout -b <branchname>
+$ git branch
+$ git merge
+$ git checkout <branchname>
+$ git branch -d <branchname>
+$ git switch -c <branchname>
+$ git switch <branchname>
+
+//解决冲突
+$ git log --graph --pretty=oneline --abbrev-commit
+
+//分支管理策略
+$ git merge --no-ff -m <message> <branchname>
+
+//Bug分支
+$ git stash
+$ git stash list
+$ git stash pop
+$ git stash apply
+$ git stash drop
+$ git cherrypic <commit>
+
 ```
