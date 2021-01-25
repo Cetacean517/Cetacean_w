@@ -317,6 +317,208 @@ stash@{0}: WIP on dev: f52c633 add merge
 
 在master分支上修复的bug，想要合并到当前dev分支，可以用`git cherry-pick <commit>`命令，把bug提交的修改“复制”到当前分支，避免重复劳动。
 
+## Feature 分支
+### 小结
+开发一个新feature，最好新建一个分支；
+
+如果要丢弃一个没有被合并过的分支，可以通过`git branch -D <name>`强行删除。
+
+## 多人协作
+当你从远程仓库克隆时，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且，远程仓库的默认名称是origin。
+
+要查看远程库的信息，用`git remote`：
+```cmd
+$ git remote
+origin
+```
+或者，用`git remote -v`显示更详细的信息：
+```cmd
+$ git remote -v
+origin  git@github.com:michaelliao/learngit.git (fetch)
+origin  git@github.com:michaelliao/learngit.git (push)
+```
+**上面显示了可以抓取和推送的origin的地址**。如果没有推送权限，就看不到push的地址。
+
+### 推送分支
+推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：
+```cmd
+$ git push origin master
+```
+如果要推送其他分支，比如dev，就改成：
+```cmd
+$ git push origin dev
+```
+但是，并不是一定要把本地分支往远程推送，那么，哪些分支需要推送，哪些不需要呢？
+
+`master`分支是主分支，因此要时刻与远程同步；
+
+`dev`分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+
+`bug`分支只用于在本地修复`bug`，就没必要推到远程了，除非老板要看看你每周到底修复了几个`bug`；
+
+`feature`分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+
+### 拉取分支
+因此，多人协作的工作模式通常是这样：
+
+首先，可以试图用git push origin <branch-name>推送自己的修改；
+
+如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+
+如果合并有冲突，则解决冲突，并在本地提交；
+
+没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+
+如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。
+
+这就是多人协作的工作模式，一旦熟悉了，就非常简单。
+
+### 小结
+查看远程库信息，使用`git remote -v`；
+
+本地新建的分支如果不推送到远程，对其他人就是不可见的；
+
+从本地推送分支，使用`git push origin branch-name`，如果推送失败，先用`git pull`抓取远程的新提交；
+
+在本地创建和远程分支对应的分支，使用`git checkout -b branch-name origin/branch-name`，本地和远程分支的名称最好一致；
+
+建立本地分支和远程分支的关联，使用`git branch --set-upstream branch-name origin/branch-name`；
+
+从远程抓取分支，使用`git pull`，如果有冲突，要先处理冲突。
+
+## Rebase
+### 小结
+`rebase`操作可以把本地未`push`的分叉提交历史整理成直线；
+
+`rebase`的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
+
+## 标签管理
+## 创建标签
+在Git中打标签非常简单，首先，切换到需要打标签的分支上：
+```cmd
+$ git branch
+* dev
+  master
+$ git checkout master
+Switched to branch 'master'
+```
+然后，敲命令git tag <name>就可以打一个新标签：
+
+```cmd 
+$ git tag v1.0
+```
+可以用命令git tag查看所有标签：
+
+```cmd
+$ git tag
+v1.0
+```
+默认标签是打在最新提交的commit上的。有时候，如果忘了打标签，比如，现在已经是周五了，但应该在周一打的标签没有打，怎么办？
+
+方法是找到历史提交的commit id，然后打上就可以了：
+
+```cmd
+$ git log --pretty=oneline --abbrev-commit
+12a631b (HEAD -> master, tag: v1.0, origin/master) merged bug fix 101
+4c805e2 fix bug 101
+e1e9c68 merge with no-ff
+f52c633 add merge
+cf810e4 conflict fixed
+5dc6824 & simple
+14096d0 AND simple
+b17d20e branch test
+d46f35e remove test.txt
+b84166e add test.txt
+519219b git tracks changes
+e43a48b understand how stage works
+1094adb append GPL
+e475afc add distributed
+eaadf4e wrote a readme file
+```
+比方说要对`add merge`这次提交打标签，它对应的`commit id`是f52c633，敲入命令：
+
+```cmd
+$ git tag v0.9 f52c633
+```
+再用命令git tag查看标签：
+
+```cmd
+$ git tag
+v0.9
+v1.0
+```
+注意，标签不是按时间顺序列出，而是按字母排序的。可以用`git show <tagname>`查看标签信息：
+
+```cmd
+$ git show v0.9
+commit f52c63349bc3c1593499807e5c8e972b82c8f286 (tag: v0.9)
+Author: Michael Liao <askxuefeng@gmail.com>
+Date:   Fri May 18 21:56:54 2018 +0800
+
+    add merge
+
+diff --git a/readme.txt b/readme.txt
+...
+```
+可以看到，`v0.9`确实打在`add merge`这次提交上。
+
+还可以创建带有说明的标签，用`-a`指定标签名，`-m`指定说明文字：
+
+```cmd
+$ git tag -a v0.1 -m "version 0.1 released" 1094adb
+```
+用命令`git show <tagname>`可以看到说明文字：
+
+```cmd
+$ git show v0.1
+tag v0.1
+Tagger: Michael Liao <askxuefeng@gmail.com>
+Date:   Fri May 18 22:48:43 2018 +0800
+
+version 0.1 released
+
+commit 1094adb7b9b3807259d8cb349e7df1d4d6477073 (tag: v0.1)
+Author: Michael Liao <askxuefeng@gmail.com>
+Date:   Fri May 18 21:06:15 2018 +0800
+
+    append GPL
+
+diff --git a/readme.txt b/readme.txt
+...
+```
+
+### 小结
+命令`git tag <tagname>`用于新建一个标签，默认为HEAD，也可以指定一个`commit id`；
+
+命令`git tag -a <tagname> -m "blablabla..."`可以指定标签信息；
+
+命令`git tag`可以查看所有标签。
+
+### 操作标签
+### 小结
+命令`git push origin <tagname>`可以推送一个本地标签；
+
+命令`git push origin --tags`可以推送全部未推送过的本地标签；
+
+命令`git tag -d <tagname>`可以删除一个本地标签；
+
+命令`git push origin :refs/tags/<tagname>`可以删除一个远程标签。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 指令小结
@@ -383,4 +585,26 @@ $ git stash apply
 $ git stash drop
 $ git cherrypic <commit>
 
+//Feature 分支
+$ git branch -D <branchname>
+
+// 多人协作
+$ git remote
+$ git remote -v
+$ git push origin <branchname>
+$ git checkout -b branch-name origin/branch-name
+$ git pull
+$ git branch --set-upstream branch-name origin/branch-name
+
+// 创建标签
+$ git show <tagname>
+$ git tag <name> <commid-id>
+$ git tag
+$ git tag -a <tagname> -m "blablabla..."
+
+//操作标签
+$ git push origin <tagname>
+$ git push origin --tags
+$ git tag -d <tagname>
+$ git push origin :refs/tags/<tagname>
 ```
