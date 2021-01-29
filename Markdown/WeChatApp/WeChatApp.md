@@ -1,22 +1,24 @@
 # WeChatApp
 ## 目录
->### 列表循环
->### 对象循环
->### Block 标签
->### 条件渲染
->### 事件绑定
->### 样式rpx
->### 样式导入
->### image图片标签
->### swiper轮播图标签
->### navigator导航标签
->### rich-text 富文本标签
->### button标签
->### radio 单选框标签
->### checkbox 复选框标签
+>### 列表循环 19
+>### 对象循环 63
+>### Block 标签 69
+>### 条件渲染 72
+>### 事件绑定 97
+>### 样式rpx 133
+>### 样式导入 148
+>### image图片标签 151
+>### swiper轮播图标签 153
+>### navigator导航标签 158
+>### rich-text 富文本标签 204
+>### button标签 246
+>### radio 单选框标签 274
+>### checkbox 复选框标签 308
+>### 自定义组件 313
+>### 小程序生命周期 564
 
 
-### 列表循环
+## 列表循环
 1. `wx:for="{{数组或对象}}" wx:for-item="循环项的名字" wx:for-index="循环项的索引"`
 2. `wx:key="唯一的值"` 
    1. 所绑定一个普通字符串的时候，那么这个字符串名称 肯定是 循环数组 中的 对象的唯一值。
@@ -60,16 +62,16 @@ Page({
 引索：2 --值：C
 ```
 
-### 对象循环
+## 对象循环
 1. `wx:for="{{对象}}" wx:for-item="对象的值" wx:for-index="对象的属性"`
 2. 循环对象 
    
     ` wx:for-item="value" wx:for-index="key"`
 
-### Block 标签
+## Block 标签
 仅仅起到占位的作用
 
-### 条件渲染
+## 条件渲染
 1. ` wx:if="{{true/false}}"`
 2. if， else, if else
 3. hidden
@@ -94,7 +96,7 @@ Page({
 <view hidden="{{condition}}">根据条件判断是否隐藏</view>
 ```
 
-### 事件绑定
+## 事件绑定
 1. 关键字 `bindinput` 绑定input事件,其中"handleInput"是js中的处理事件操作的函数名。
    
 ```html
@@ -149,6 +151,7 @@ view{
 `@import "url"` 其中url为相对路径
 
 ## image图片标签
+
 ## swiper轮播图标签
 >1. swiper 有制定宽高：宽度100% 高度150px;
 >2. swiper 高度计算公式：height = 原图高度/原图宽度*swiper宽度
@@ -303,6 +306,7 @@ Page({
     }
 })
 ```
+
 ## checkbox 复选框标签
 - 复选框的功能类似单选框的功能，只是复选框可以同时选中两个选项。
 
