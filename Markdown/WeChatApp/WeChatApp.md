@@ -556,3 +556,61 @@ Page({
 ```
 ### slot 插槽标签
 放在子组件标签中，起到占位符的作用。
+
+## 小程序生命周期
+生命周期就是一系列由小程序自己定义触发时间的事件。
+### 应用的生命周期 app.js
+>1. `onLaunch`应用第一次启动时，触发事件。
+> -  获取用户的个人信息。在其他页面中使用这个信息。
+```javascript
+   onLaunch(){}   
+```
+>2. `onShow`应用被用户看到时，触发事件。
+> -  对应用的页面效果 重置
+```javascript
+   onShow(){}   //每次切换后台，再切回来会触发。
+```
+>3. `onHide`应用隐藏时，触发事件。
+> -  暂停或清除计时器
+```javascript
+   onHide(){}   
+```
+>4. `onError`应用的代码发生了报错的时候，触发事件。
+> - 在应用发生代码报错的时候，收集用户的错误信息，通过异步请求，将错误信息发送到后台。
+> - err 形成存的是报错的内容。
+```javascript
+   onError(err){}   
+```
+>5. `onPageNotFound`应用第一次启动时，如果找不到第一个入口页面时，触发事件。
+
+>>如:下方的代码中，url:'11/22/33'并不存在。但是第一次启动的时候已经进入了app.js,在发生跳转的时候报错。这种情况并不会触发onPageNotFound.
+```javascript
+//appjs
+App({
+  onLaunch({
+    wx.navigateTo({
+      url:'11/22/33'
+    });
+  })
+})
+```
+> -  如果页面不存在了，通过js方式重新跳转页面，跳转到第二个首页。用`wx.navigateTo()`
+```javascript
+   onPageNotFound(){}   
+```
+
+### 页面的生命周期
+- `data`
+- `onLoad`  发送异步请求，初始化一些功能
+- `onShow`  页面显示
+- `onReady` 页面首次渲染完毕
+- `onHide`  页面隐藏（1. 应用隐藏；2. 页面切换）
+- `onUnload` 页面卸载 （页面跳转中，涉及到关闭页面功能时会触发。e.g: navigate open-type="redirect"）
+- `onPullDownRefresh` 监听用户下拉动作，做一些页面数据/效果初始化
+- `onReachBottom` 页面上拉到底事件的处理函数；上拉加载下一页数据
+- `onShareAppMessage` 转发操作
+- `onPageScroll` 页面一滚动  就触发
+- `onResize` 页面尺寸发生改变时触发：小程序发生横屏/竖屏切换时，触发。
+  
+  要允许页面可以实现横竖屏切换，需要在json中加`"pageOrientation":""auto`
+- `onTabItemTap` 仅针对tabBar页面，点击自己的tabItem时触发事件
