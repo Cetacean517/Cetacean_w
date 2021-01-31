@@ -2107,4 +2107,56 @@ Hello, OUTER
 - `Inner Class`和`Anonymous Class`本质上是相同的，都必须依附于`Outer Class`的实例，即隐含地持有`Outer.this`实例，并拥有`Outer Class`的`private`访问权限；
 
 - `Static Nested Class`是独立类，但拥有`Outer Class`的`private`访问权限。
-  
+
+## classpath 和 jar
+**`classpath`是`JVM`用到的一个环境变量，它用来指示JVM如何搜索class。**
+
+所以，`classpath`就是一组目录的集合，它设置的搜索路径与操作系统相关。例如，在`Windows`系统上，用;分隔，带空格的目录用""括起来，可能长这样：
+```cmd
+C:\work\project1\bin;C:\shared;"D:\My Documents\project1\bin"
+```
+
+## jar包
+如果有很多`.class`文件，散落在各层目录中，肯定不便于管理。如果能把目录打一个包，变成一个文件，就方便多了。
+
+`jar`包就是用来干这个事的，**它可以把`package`组织的目录层级，以及各个目录下的所有文件（包括.`class`文件和其他文件）都打成一个`jar`文件**，这样一来，无论是备份，还是发给客户，就简单多了。
+
+**`jar`包实际上就是一个`zip`格式的压缩文件，而jar包相当于目录**。如果我们要执行一个`jar`包的`class`，就可以把`jar`包放到`classpath`中：
+```java
+java -cp ./hello.jar abc.xyz.Hello
+```
+这样`JVM`会自动在`hello.jar`文件里去搜索某个类。
+
+### 创建jar包
+因为`jar`包就是`zip`包，
+
+**所以，**
+- 直接在资源管理器中，找到正确的目录，
+- 点击右键，
+- 在弹出的快捷菜单中选择“发送到”，
+- “压缩(zipped)文件夹”，就制作了一个`zip`文件。
+- 然后，把后缀从`.zip`改为`.jar`，
+- 一个`jar`包就创建成功。
+
+>假设编译输出的目录结构是这样：
+```cmd
+package_sample
+└─ bin
+   ├─ hong
+   │  └─ Person.class
+   │  ming
+   │  └─ Person.class
+   └─ mr
+      └─ jun
+         └─ Arrays.class
+```
+
+这里需要特别注意的是，**`jar`包里的第一层目录，不能是`bin`，而应该是`hong`、`ming`、`mr`**。
+
+## 模块
+### 小结
+- Java 9引入的模块目的是为了管理依赖；
+
+- 使用模块可以按需打包JRE；
+
+- 使用模块对类的访问权限有了进一步限制。
