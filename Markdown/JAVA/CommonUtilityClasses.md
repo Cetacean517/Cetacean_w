@@ -455,3 +455,128 @@ public final class Point extends Record {
 - 可以编写Compact Constructor对参数进行验证；
 
 - 可以定义静态方法。
+
+## BigInteger
+#### 1. 功能： 
+表示任意大小的整数。`BigInteger`内部用一个`int[]`数组来模拟一个非常大的整数。
+#### 2. 对`BigInteger`做运算时，只能使用实例方法：
+```java
+// 加法运算
+BigInteger i1 = new BigInteger("1234567890");
+BigInteger i2 = new BigInteger("12345678901234567890");
+BigInteger sum = i1.add(i2);    //12345678902469135780
+```
+#### 3. 可以把`BigInteger`转换成`long`型：
+```java
+BigInteger i = new BigInteger("123456789000");
+System.out.println(i.longValue()); // 123456789000
+System.out.println(i.multiply(i).longValueExact()); // java.lang.ArithmeticException: BigInteger out of long range
+```
+使用`longValueExact()`方法时，如果超过`long`型的范围，会抛出`ArithmeticException`。
+
+#### 4. `BigInteger`是不变类，也继承自`Number`类。
+可以通过`Number`定义的转换为基本类型的方法把`BigInteger`转换成基本类型。如果`BigInteger`超出基本类型的表示范围，转换时会将丢失高位信息。如果需要准确转换成基本类型可以使用`intValueExact()`等方法，溢出时会抛出异常。
+
+- 转换为`byte`：`byteValue()`
+- 转换为`short`：`shortValue()`
+- 转换为`int`：`intValue()`
+- 转换为`long`：`longValue()`
+- 转换为`float`：`floatValue()`
+- 转换为`double`：`doubleValue()`
+
+### 小结
+- BigInteger用于表示任意大小的整数；
+
+- BigInteger是不变类，并且继承自Number；
+
+- 将BigInteger转换成基本类型时可使用longValueExact()等方法保证结果准确。
+
+### BigDecimal
+#### 1. `BigDecimal`可以表示一个任意大小且精度完全准确的浮点数。
+
+```java
+BigDecimal bd = new BigDecimal("123.4567");
+System.out.println(bd.multiply(bd)); // 15241.55677489
+```
+#### 2. `BigDecimal`用`scale`方法表示小数位数。
+
+```java
+BigDecimal d1 = new BigDecimal("123.45");
+BigDecimal d2 = new BigDecimal("123.4500");
+BigDecimal d3 = new BigDecimal("1234500");
+System.out.println(d1.scale()); // 2,两位小数
+System.out.println(d2.scale()); // 4
+System.out.println(d3.scale()); // 0
+```
+#### 3. `BigDecimal`通过`stripTrailingZeros()`方法，可以将一个`BigDecimal`格式化为一个相等的，但去掉了末尾0的`BigDecimal`。
+
+```java
+BigDecimal d1 = new BigDecimal("123.4500");
+BigDecimal d2 = d1.stripTrailingZeros();
+System.out.println(d1.scale()); // 4
+System.out.println(d2.scale()); // 2,因为去掉了00
+
+BigDecimal d3 = new BigDecimal("1234500");
+BigDecimal d4 = d3.stripTrailingZeros();
+System.out.println(d3.scale()); // 0
+System.out.println(d4.scale()); // -2
+```
+#### 4.可以设置 `BigDecimal`的`scale`，如果精度比原始值低，那么按照指定的方法进行四舍五入或者直接截断。
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class Main {
+    public static void main(String[] args) {
+        BigDecimal d1 = new BigDecimal("123.456789");
+        BigDecimal d2 = d1.setScale(4, RoundingMode.HALF_UP); // 四舍五入，123.4568
+        BigDecimal d3 = d1.setScale(4, RoundingMode.DOWN); // 直接截断，123.4567
+        System.out.println(d2);
+        System.out.println(d3);
+    }
+}
+```
+#### 5.`BigDecimal`做加、减、乘时，精度不会丢失，但是做除法时，遇到无法除尽的情况需要设置精度以及截断方法。
+
+```java
+BigDecimal d1 = new BigDecimal("123.456");
+BigDecimal d2 = new BigDecimal("23.456789");
+BigDecimal d3 = d1.divide(d2, 10, RoundingMode.HALF_UP); // 保留10位小数并四舍五入
+BigDecimal d4 = d1.divide(d2); // 报错：ArithmeticException，因为除不尽
+```
+#### 也可以对`BigDecimal`做除法的同时求余数。可以用于判断两个`BigDecimal`是否是整数倍数。
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        BigDecimal n = new BigDecimal("12.345");
+        BigDecimal m = new BigDecimal("0.12");
+        BigDecimal[] dr = n.divideAndRemainder(m);
+        System.out.println(dr[0]); // 102
+        System.out.println(dr[1]); // 0.105
+    }
+}
+
+```
+#### 比较两个`BigDecimal`值是否相等时： 
+- `equals()`要求两个`BigDecimal`的值相等，同时精度`scale()`也相等。
+- `compareTo()`仅比较`BigDecimal`的值相等。
+```java
+BigDecimal d1 = new BigDecimal("123.456");
+BigDecimal d2 = new BigDecimal("123.45600");
+System.out.println(d1.equals(d2)); // false,因为scale不同
+System.out.println(d1.equals(d2.stripTrailingZeros())); // true,因为d2去除尾部0后scale变为2
+System.out.println(d1.compareTo(d2)); // 0
+```
+#### 6.`BigDecimal`也是不变类，继承自`Number`
+
+## 常用工具类
+### 小结
+Java提供的常用工具类有：
+
+- Math：数学计算
+
+- Random：生成伪随机数
+
+- SecureRandom：生成安全的随机数
