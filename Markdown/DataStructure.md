@@ -214,7 +214,14 @@ ThreadBinNode<ElemType> *InThreadBinTree<ElemType>::GetNext(ThreadBinNode<ElemTy
     }
 }
 // 4. 中序线索二叉树中的中序遍历
-
+template<class ElemType>
+void InThreadBinTree<ElemType>::InOrder(void(*Visit)(const ElemType &))const
+{
+    ThreadBinTreeNode<ElemType> *p;
+    for(p = GetFirst();p!=NULL;p = GetNext(p)){
+        (*Visit)(p -> data);
+    }
+}
 // 5.在中序线索二叉树上，插入右孩子
 template<class ElemType>
 void InThreadBinTree<ElemType>::InsertRightChild(ThreadBinTreeNode<ElemType>*p,const ElemType &e)
@@ -243,7 +250,49 @@ void InThreadBinTree<ElemType>::InsertRightChild(ThreadBinTreeNode<ElemType>*p,c
 ```
 
 ```C++
-//堆的向上/下调整
+// 1.堆的向上/下调整
+template<class ElemType>
+void MinHeap<ElemType>::FilterDown(const int Start)
+{
+    int i = Start, j; //Start是开始调整的根的下标
+    ElemType temp = heapArr[i];
+    j = 2 * i + 1;
+    while(j <= CurrentSize -1)
+    {
+        if (j < CurrentSize - 1 && heapArr[j] > heapArr[j+1])   //i 有右孩子，且右孩子的关键字小于左孩子
+            j++;
+        if (temp <= heapArr[j])
+        {
+            heapArr[i] = heapArr[j];
+            i = j;
+            j = 2*j +1;
+        }
+    }
+    heapArr[i] = temp;
+}
+
+// 2. 堆的向上调整算法
+template<class ElemType>
+void MinHeap<ElemType>::FilterUp(int End)
+{
+    int j = End, i;
+    ElemType temp = heapArr[j];
+    i = (j - 1) /2;
+    while(j > 0)
+    {
+        if (heapArr[i] <= temp)
+        {
+            break;
+        }
+        else
+        {
+            heapArr[i] = heapArr[j];
+            j = i;
+            i = (j - 1) / 2;
+        }
+        heapArr[j] = temp;
+    }
+}
 ```
 
 ```C++
