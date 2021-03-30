@@ -297,6 +297,7 @@ void MinHeap<ElemType>::FilterUp(int End)
 
 ```C++
 //模式匹配KMP算法
+
 //模式匹配优化后的KMP算法
 ```
 
