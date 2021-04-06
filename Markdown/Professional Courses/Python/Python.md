@@ -468,7 +468,6 @@ a. dict:Python内置字典。全称dictionary，在其他语言中也称map,使�
 ```python
 >>> d = {'Michael':95,'Bob':75,'Tracy':85}
 >>> d['Michael']
-95
 ```
 
 b. dict查找速度快的原因
