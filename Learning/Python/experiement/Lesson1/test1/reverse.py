@@ -1,3 +1,5 @@
+# 1.	反序对：如果一个单词是另一个单词的反向序列，则称这两个单词为“ 反向对”。编写代码输出 word.txt 中词汇表包含的反向对。
+
 with open("D:/Fish 鱼/SHU/Study/Semesters/07 SHU 2nd spring/Python/上机/Python计算实验一/words.txt", 'r') as f:
     lines = f.readlines()  # 读取全部内容
     content = [x.strip() for x in lines]
