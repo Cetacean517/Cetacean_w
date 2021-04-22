@@ -280,4 +280,293 @@ if __name__ == '__main__':
     petal(bob, 100, 80)
 
     wait_for_user()
+```
+
+### 5.random库
+
+### 6.numpy库
+
+### 7.二维数组的创建
+- 直接创建法
+- 列表生成
+- numpy创建
+
+```python
+    # 直接
+    test = [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    # 列表
+    test = [[0] * n for _ in range(m)]
+    # numpy
+    import numpy as np
+    test = np.zeros((m, n), dtype=np.int)
+```
+
+### 8. turtle 库
+Turtle库是Python语言中一个很流行的绘制图像的函数库，想象一个小乌龟，在一个横轴为x、纵轴为y的坐标系原点，(0,0)位置开始，它根据一组函数指令的控制，在这个平面坐标系中移动，从而在它爬行的路径上绘制了图形。
+
+#### turtle绘图的基础知识：
+#### 2.1 画布(canvas)
+ 画布就是turtle为我们展开用于绘图区域，我们可以设置它的大小和初始位置。
+
+- 设置画布大小
+
+`turtle.screensize(canvwidth=None, canvheight=None, bg=None)`
+- 参数
+  - 画布的宽(单位像素)
+  - 高
+  - 背景颜色。
+
+##### 案例
+```python
+turtle.screensize(800,600, "green")
+
+turtle.screensize() #返回默认大小(400, 300)
+```
+
+`turtle.setup(width=0.5, height=0.75, startx=None, starty=None)`
+- 参数：
+  - width, height: 输入宽和高
+    - 为整数时, 表示像素; 
+    - 为小数时, 表示占据电脑屏幕的比例
+  - (startx, starty): 这一坐标表示矩形窗口左上角顶点的位置, 如果为空,则窗口位于屏幕中心。
+
+##### 案例
+  +
+    ```python
+    turtle.setup(width=0.6,height=0.6)
+
+    turtle.setup(width=800,height=800, startx=100, starty=100)
     ```
+#### 2.2 画笔的属性
+
+        画笔(画笔的属性，颜色、画线的宽度等)
+
+        1) turtle.pensize()：设置画笔的宽度；
+
+        2) turtle.pencolor()：没有参数传入，返回当前画笔颜色，传入参数设置画笔颜色，可以是字符串如"green", "red",也可以是RGB 3元组。
+
+        3) turtle.speed(speed)：设置画笔移动速度，画笔绘制的速度范围[0,10]整数，数字越大越快。
+
+#### 2.3 绘图命令
+
+操纵海龟绘图有着许多的命令，这些命令可以划分为3种：
+ - 运动命令
+ - 画笔控制命令
+ - 全局控制命令。
+
+**(1)    画笔运动命令**
+
+|命令|说明|
+|--|--|
+|turtle.forward(distance)|向当前画笔方向移动distance像素长度
+|turtle.backward(distance) |向当前画笔相反方向移动distance像素长度
+|turtle.right(degree) |顺时针移动degree°
+|turtle.left(degree) |逆时针移动degree°
+|turtle.pendown() |移动时绘制图形，缺省时也为绘制
+|turtle.goto(x,y) |将画笔移动到坐标为x,y的位置
+|turtle.penup() |提起笔移动，不绘制图形，用于另起一个地方绘制
+|turtle.circle()| 画圆，半径为正(负)，表示圆心在画笔的左边(右边)画圆
+|setx( )| 将当前x轴移动到指定位置
+|sety( )| 将当前y轴移动到指定位置
+|setheading(angle)| 设置当前朝向为angle角度
+|home()| 设置当前画笔位置为原点，朝向东。
+|dot(r)| 绘制一个指定直径和颜色的圆点
+
+ 
+
+**(2)     画笔控制命令**
+
+|命令|说明
+|--|--
+|turtle.fillcolor(colorstring) |绘制图形的填充颜色
+|turtle.color(color1, color2) |同时设置pencolor=color1, fillcolor=color2
+|turtle.filling() |返回当前是否在填充状态
+|turtle.begin_fill() |准备开始填充图形
+|turtle.end_fill() |填充完成
+|turtle.hideturtle() |隐藏画笔的turtle形状
+|turtle.showturtle() |显示画笔的turtle形状
+
+ 
+
+**(3)    全局控制命令**
+|命令|说明
+|--|--
+|turtle.clear()|清空turtle窗口，但是turtle的位置和状态不会改变
+|turtle.reset()|清空窗口，重置turtle状态为起始状态
+|turtle.undo()|撤销上一个turtle动作
+|turtle.isvisible()|返回当前turtle是否可见
+|stamp()|复制当前图形
+|turtle.write(s [,font=("font-name",font_size,"font_type")])|写文本，s为文本内容，font是字体的参数，分别为字体名称，大小和类型；font为可选项，font参数也是可选项
+
+ 
+
+**(4)    其他命令**
+
+|命令|说明
+|--|--
+|turtle.mainloop()或turtle.done()|启动事件循环 -调用Tkinter的mainloop函数。必须是乌龟图形程序中的最后一个语句。
+|turtle.mode(mode=None)|设置乌龟模式（“standard”，“logo”或“world”）并执行重置。如果没有给出模式，则返回当前模式。模式初始龟标题正角度
+|standard|向右（东）逆时针
+|logo|向上（北）顺时针
+|turtle.delay(delay=None)|设置或返回以毫秒为单位的绘图延迟。
+|turtle.begin_poly()|开始记录多边形的顶点。当前的乌龟位置是多边形的第一个顶点。
+|turtle.end_poly()|停止记录多边形的顶点。当前的乌龟位置是多边形的最后一个顶点。将与第一个顶点相连。
+|turtle.get_poly()|返回最后记录的多边形。
+
+ 
+
+#### 3. 命令详解
+
+##### 3.1 turtle.circle(radius, extent=None, steps=None)
+
+- 描述：以给定半径画圆
+
+- 参数：
+  - radius(半径)：半径为正(负)，表示圆心在画笔的左边(右边)画圆；
+  - extent(弧度) (optional)；
+  - steps (optional) (做半径为radius的圆的内切正多边形，多边形边数为steps)。
+
+举例:
++ ```python
+    circle(50) # 整圆;
+
+    circle(50,steps=3) # 三角形;
+
+    circle(120, 180) # 半圆
+    ```
+
+### 9.Koch_snowflake 科赫雪花
+
+#### 定义
+设想一个边长为1的等边三角形，取每边中间的三分之一，接上去一个形状完全相似的但边长为其三分之一的三角形，结果是一个六角形。现在取六角形的每个边做同样的变换，即在中间三分之一接上更小的三角形，以此重复，直至无穷。外界的变得原来越细微曲折，形状接近理想化的雪花。它的名字叫科克曲线
+
+#### 实现原理
+先定义单边的科赫曲线，在0阶的时候科赫曲线时一条直线；当阶数大于0的时候，每条边增加一个折，即一条边变为3条边。可以利用递归算法实现。
+![20180823182059779.png](https://i.loli.net/2021/04/22/IZN6epPwm7FLHX3.png)
+#### 成果
+可以实现自定义阶数的科赫雪花。以下仅展示0~4阶的科赫雪花图样。(N表示阶数)
+#### 代码样例
++ 
+  ```python
+    # 科赫雪花
+    import turtle
+
+
+    def kehe(len, n):
+        if n == 0:
+            turtle.fd(len)  # 0阶时，走直线，长度为len
+        else:
+            for i in [0, 60, -120, 60]:  # 依次向左转指定角度调用n-1阶的kehe函数
+                turtle.left(i)
+                kehe(len / 3, n - 1)
+
+
+    def Koch(level):
+        turtle.speed(0)  # 设置乌龟的速度
+        turtle.penup()  # 拿起画笔
+        turtle.goto(-200, 100)  # 设置初始点（-100，100）
+        turtle.pensize(2)  # 设置笔的粗细
+        turtle.color('blue')  # 设置笔的颜色为蓝色
+        turtle.pendown()  # 放下画笔
+
+        for i in range(3):
+            kehe(lenth, level)  # 转向画3次
+            turtle.right(du)
+
+        turtle.hideturtle()  # 隐藏乌龟（即箭头）
+        turtle.done()
+
+
+    if __name__ == '__main__':
+        lenth = 500
+        du = 120
+        level = (input('please enter a number:'))
+        level = int(level)
+        Koch(level)
+    ```
+
+### 10. 可缩减单词
+参照验证实验1中，反序词实现的例示代码，设计Python 程序找出words.txt 中最长的“可缩减单词”（所谓“可缩减单词”是指：每次删除单词的一个字母，剩下的字母依序排列仍然是一个单词，直至单字母单词’a’或者‘i'）。
+**提示：**
+> 可缩减单词例示：sprite —〉spite —〉spit—〉pit—〉it—〉i
+> 如果递归求解，可以引入单词空字符串’’作为基准。
+> 一个单词的子单词不是可缩减的单词，则该单词也不是可缩减单词。因此，记录已经查找到的可缩减单词可以提速整个问题的求解。
+
+#### 技术重点
+-	数据结构的选择
+    +  优先考虑字典/集合的存储方式，由于集合不能涵盖两个相同的元素。故选择字典。
+    + 利用列表传入从文件中读取的每个单词
+-	算法的构思：
+    + 参考了同学基于树的深度搜索的思想，探索实践完成了本题的代码。
+-	对于n位的单词，如何存储随机减少一位后产生的n-1位的单词
+    + 想法1 利用string.replace()对长度内的每个位置的字母进行遍历，并替换成“”。
+	在调试中，发现问题。由于python基于内存的管理方式，replace会将字符串中出现的所有相同的字母都替换成“”，导致结果异常。
+	例：apple 删除第2位的’p’会得到’ale’
+    + 想法2 利用切片分割字符串，再拼接。每次取[:i]+[i+1:]的字符，i在字符串长度内遍历。注意，切片的范围是开闭区间。经过测试，该方法可以避免上述问题的产生，故使用切片方法。
+
+#### 实现原理
+1）初始化
+	从word.txt中读取文件生成一个t 列表，在使用t列表生成一个对应的字典t1。t1中农的每个value值初始化为0。
+
+2）getwords(w)函数
+	参数：w是传入的单词。
+	返回值：t1.get(w,-1) 在字典中查找单词w，找到返回对应的value值，否则返回-1。
+
+i. 判断传入的单词的长度是否为1，为1则在字典中将它的value设置为1，返回t1.get(w,-1)；
+
+ii. 对于单词长度大于2的情况,先判断是否能在字典中找到它，若找得到，则生成它对应的切片。
+
+iii. 对于切片中的每个元素，重复i,ii两步
+。
+iv. 判断元素在字典中的值是否大于0，即是否存在从原始n位单词到最后一个字母均为单词的情况。若如此，则把它的value值置为：它的字符串长度，把它上一级的值也置为对应的字符串长度。
+
+v. 排序输出结果
+    利用max函数和lambda()函数输出最大值的结果。
+
+#### 代码
+```python
+"""可缩减单词："""
+
+import time
+
+
+def getwords(w):
+    """
+    :param w: 单词（字符串）
+    :return: t1.get(w,-1) 在字典中查找单词w，找到返回对应的value值，否则返回-1.
+    """
+    if len(w) == 1:  # 只有单词只有一个字母时
+        t1[w] = 1
+    elif t1.get(w, -1) == 0 and len(w) > 0:  # 单词大于一个字母时
+        # minus = [w.replace(w[i], "") for i in range(len(w))]  # 把每一个减少一位的单词存入数组再查找 # 对于apple中，删除p会把两个p同时删除。
+        minus = [w[:i] + w[i + 1:] for i in range(len(w))]  # 把每一个减少一位的单词存入数组再查找
+        # print(w, '的子单词：', minus)
+
+        # 对于每一个子单词，判断子单词在字典中，继续查找
+        for k in minus:
+            getwords(k)
+            if t1.get(k, -1) > 0:
+                t1[k] = len(k)
+                t1[w] = len(w)
+    return t1.get(w, -1)
+
+
+with open('words.txt') as f:
+    # dict1 = {x.strip() for x in f}
+    # t = ['apple', 'split', 'spit', 'pit', 'it','abc','ab','ap','sit']
+    # t1 = {x: 0 for x in t}
+
+    start = time.time()
+    t = [x.strip() for x in f]
+    t1 = {x.strip(): 0 for x in t}
+    for i in t:
+        getwords(i)
+    # print('change dict:', t1)
+    for key in max(t1.items(), key=lambda x: x[1]):
+        print(key)
+    print('Time:', time.time() - start)
+
+'''complecting
+11
+Time: 1.9192843437194824'''
+```
