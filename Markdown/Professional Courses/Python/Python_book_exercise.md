@@ -1,3 +1,4 @@
+# Python 1~6章 课后习题
 ### 第一章 习题
 #### 1.简单说明如何选择正确的Python版本？
 应根据自己所学习的需求和目的选择最合适的版本。并不一定版本号越大，版本就越新。例如，Python2.7.9比Python3.2.6晚几个月发布。同时，也不一定使用最新的版本就是最合适的，因为有些机器并不一定兼容Python3.x的版本。
@@ -91,6 +92,7 @@ Python具有自动内存管理功能，会跟踪所有的值。（有看到资�
 
 #### 5._______是目前比较常用的Python扩展库管理工具。
 pip
+
 #### 6.解释Python脚本程序的__name__变量及其作用。
 __name__是每个Python脚本程序自带的一个属性。如果脚本作为模块被导入，则其__name__属性的值自动设置为模块名。如果脚本独立运行，则其__name__属性值被自动设置为"__main__"
 
@@ -132,6 +134,7 @@ I'am the first
 >>> 4.2 % 1.5
 1.2000000000000002
 ```
+
 #### 8.一个数字5______(是、不是)合法的Python表达式。（p13）
 是
 
@@ -294,15 +297,362 @@ def deleteOdd():
 
 deleteOdd()
 ```
-#### 5. 编写程序，生成一个包含20个随机整数的列表，然后对其中偶数下标的元素进行降序排列，奇数下标的元素不变。（提示：使用切片）
 
-#### 6. 编写程序，用户从键盘输入小于1000的整数，对其进行因式分解。例如，10 = 2 * 5, 60 = 2*2*3*5。
+#### 5. 编写程序，生成一个包含20个随机整数的列表，然后对其中偶数下标的元素进行降序排列，奇数下标的元素不变。（提示：使用切片）
+```python
+"""5. 编写程序，生成一个包含20个随机整数的列表，然后对其中偶数下标的元素进行降序排列，奇数下标的元素不变。（提示：使用切片）"""
+import random
+
+
+def sort_odd():
+    a = [random.randint(0, 10) for i in range(20)]  # 构造随机列表
+    print('origin:', a)
+    b = a[1::2]  # 取a中偶数位的数字，生成列表
+    b = sorted(b, reverse=True)  # 降序排序
+    i = 1   # 循环标记
+    j = 0   # 循环标记
+    while i < len(a):   # 进行列表成员替换
+        a[i] = b[j]
+        i += 2
+        j += 1
+    print('sorted:', a)
+    print('even list:', b)
+```
+
+#### 6. 编写程序，用户从键盘输入小于1000的整数，对其进行因式分解。例如，10 = 2*5, 60 = 2*2*3*5。
+```python
+"""6. 编写程序，用户从键盘输入小于1000的整数，对其进行因式分解。例如，10 = 2*5, 60 = 2*2*3*5。"""
+
+
+def getPrime():
+    """利用filter()过滤和生成器，输出素数列表"""
+
+    def _odd_iter():
+        n = 1
+        while True:
+            n = n + 2
+            yield n
+
+    def _not_divisible(n):
+        return lambda x: x % n > 0
+
+    def primes():
+        yield 2
+        it = _odd_iter()  # 初始化序列
+        while True:
+            n = next(it)
+            yield n
+            it = filter(_not_divisible(n), it)  # 构造新序列
+
+    a = []
+    for n in primes():
+        if n < 1000:
+            a.append(n)
+        else:
+            break
+    return a
+
+
+def factorization(x):
+    print(x, ' =', end=' ')
+    p = getPrime()
+
+    if x in p:      # 如果x时素数，则直接输出x
+        print(x)
+        return
+
+    for i in p:     # 如果x可以被因式分解，则进入循环
+        if x == 1:  # 因式分解完成，跳出循环
+            break
+        while x % i == 0:   # 寻找x的因子
+            if x in p:      # 找到x的最后一个因子，输出该因子，并给x赋值为1
+                print(x)
+                x = 1
+            else:
+                print(i, ' * ', end=' ')
+                x = x // i
+
+
+x = input('请输入一个小于1000的正整数: ')
+factorization(int(x))
+```
+
 #### 7. 编写程序，至少使用两种不同的方法计算100以内所以奇数的和。
+```python
+from functools import reduce
+from random import random
+
+"""利用sum函数"""
+
+
+def method1():
+    return sum([i for i in range(1, 100, 2)])
+
+
+"""利用reduce函数"""
+
+
+def method2():
+    return reduce(lambda x, y: x + y, [i for i in range(1, 100, 2)])
+
+
+"""利用if条件表达式"""
+
+
+def method3():
+    sum = 0
+    i = 1
+    while i < 100:
+        sum += i
+        i += 2
+    return sum
+
+
+print(method1())
+print(method2())
+print(method3())
+# 
+# 结果都是 2500
+```
+
 #### 8. 编写程序，输出所有由1、2、3、4这四个数字组成的素数，并且在每个素数中每个数字只使用一次。
+```python
+"""8. 编写程序，输出所有由1、2、3、4这四个数字组成的素数，并且在每个素数中每个数字只使用一次。"""
+
+
+def isPrime(n):
+    """ 判断一个数是否为素数
+        本例主要演示循环结构中else子句的用法"""
+    import math
+
+    m = math.ceil(math.sqrt(n) + 1)  # 取n开根号的值，+1是因为range是闭开区间
+    for i in range(2, m):
+        if n % i == 0 and i < n:
+            return False
+    else:
+        return True
+
+
+def findPrime():
+    """ 利用循环求和，得到1,2,3,4的全排列序列"""
+    digits = (1, 2, 3, 4)
+    all = []
+    for i in digits:
+        for j in digits:
+            if i == j:
+                continue
+            for k in digits:
+                if i == k or j == k:
+                    continue
+                for m in digits:
+                    if i == m or j == m or k == m:
+                        continue
+                    all.append(i * 1000 + j * 100 + k * 10 + m)
+    prime = [i for i in all if isPrime(i)]
+    print(prime)
+    return
+
+
+def findPrime2():
+    """利用字符串拼接 和列表生成式，得到1,2,3,4的全排序序列"""
+    digits = ['1', '2', '3', '4']
+    all = [x + y + z + m for x in digits for y in digits for z in digits for m in digits \
+           if x != y and x != z and x != m and y != z and y != m and z != m]
+    prime = [int(i) for i in all if isPrime(int(i))]
+    print(prime)
+    return
+# [1423, 2143, 2341, 4231]
+```
+
 #### 9. 编写程序，实现分段函数计算，如表3-1所示。
 ![1WU7)L%`]M}BTN2O79DN{`0.png](https://i.loli.net/2021/04/29/8KSNvDWu6ARZ4kq.png)
+```python
+"""9. 编写程序，实现分段函数计算，如表3-1所示。"""
+
+
+def piecewiseFuction(x):
+    if x < 0:
+        print(0)
+        return 0
+    elif 0 <= x < 5:
+        print(x)
+        return x
+    elif 5 <= x < 10:
+        print(3 * x - 5)
+        return 3 * x - 5
+    elif 10 <= x < 20:
+        print(0.5 * x - 2)
+        return 0.5 * x - 2
+    elif 20 <= x:
+        print(0)
+        return 0
+
+x = input('x:')
+piecewiseFuction(int(x))
+```
+
+### 第四章 习题
+#### 1. 假设有一段英文，其中有单独的字母I误写为i，请编写程序进行纠正。
+```python
+"""1. 假设有一段英文，其中有单独的字母I误写为i，请编写程序进行纠正。"""
+import re
+
+
+def correct1(s):
+    print(re.sub(r'\bi\b', 'I', s))  # 利用正则替换
+
+
+s = input("s: ")
+correct1(s)
+# s: i am a girl. i. i,
+# I am a girl. I. I,
+```
+
+#### 2. 假设有一段英文，其中有单词中间的字母i误写为I，请编写程序进行纠正。
+```python
+"""1. 假设有一段英文，其中有单独的字母i误写为I，请编写程序进行纠正。"""
+import re
+
+
+def correct1(s):
+    print(re.sub(r'\bI\b', 'i', s))  # 利用正则替换
+
+
+s = input("s: ")
+correct1(s)
+# s: I am a girl. I. I,
+# i am a girl. i. i,
+```
+
+#### 3. 有一段英文文本，其中有单词连续重复了2次，编写程序检查重复的单词并只保留一个。
+例如，文本内容为“This is is a desk.”， 程序输出为“This is a desk.”
+```python
+"""3. 有一段英文文本，其中有单词连续重复了2次，编写程序检查重复的单词并只保留一个。"""
+import re
+
+
+def moveRepeat(s):
+    for v in {x: s.count(x) for x in re.findall(r'\b\w+\b', s)}.keys():
+        print(v, end=' ')
+
+
+s = input('s:')
+moveRepeat(s)
+```
+
+#### 4. 简单解释Python的字符串驻留机制。
+
+#### 5. 编写程序，用户输入一段英文，然后输出这段英文中所有长度为3个字母的单词。
+```python
+"""5. 编写程序，用户输入一段英文，然后输出这段英文中所有长度为3个字母的单词。"""
+import re
+
+
+def moveRepeat(s):
+    """利用正则和字典生成式，生成一个字典。key是单词，value是单词的长度。"""
+    for k, v in {x: len(x) for x in re.findall(r'\b\w+\b', s)}.items():
+        print(k, end=' ') if v == 3 else print('', end='')
+
+
+s = input('s:')
+moveRepeat(s)
+```
 
 ### 第五章 习题
+#### 1. 运行5.3.1节最后的示例代码，查看结果并分析原因。
+- Python函数在定义的时候，默认参数old_list的值就被计算出来了，即`[]`，因为默认参数L也是一个变量，它指向对象`[]`，每次调用该函数，如果改变了L的内容，则下次调用时，默认参数的内容就变了，不再是函数定义时的`[]`了。
+- 而当设置成None的时候，None是一个不变对象。不变对象一旦创建，对象内部的数据就不能修改，这样就减少了由于修改数据导致的错误。
+
+```python
+'''多次调用函数并且不为默认参数传递值时，默认参数只在第一次调用时进行解释。'''
+
+
+def demo(newitem, old_list=[]):  # old_list指向的是一个空列表，在第一次初始化的时候，就已经指定了一个地址单元。之后不再被修改。
+    old_list.append(newitem)
+    return old_list
+
+
+def demo1(newitem, old_list=None):  # old_list置空，在函数体内再分配内存单元
+    if old_list is None:
+        old_list = []
+    old_list.append(newitem)
+    return old_list
+
+
+if __name__ == '__main__':
+    # test demo
+    print(demo('5', [1, 2, 3, 4]))
+    print(demo('aaa', ['a', 'b']))
+    print(demo('a'))
+    print(demo('b'))    # 故在第一次调用demo('a')之后，再次调用demo('b')会将原来的['a']作为默认的list.
+
+    '''
+    [1, 2, 3, 4, '5']
+    ['a', 'b', 'aaa']
+    ['a']
+    ['a', 'b']
+    '''
+
+    # test demo1
+    print(demo1('5', [1, 2, 3, 4]))
+    print(demo1('aaa', ['a', 'b']))
+    print(demo1('a'))
+    print(demo1('b'))
+
+    '''
+    [1, 2, 3, 4, '5']
+    ['a', 'b', 'aaa']
+    ['a']
+    ['b']
+    '''
+```
+
+#### 2. 编写函数，判断一个整数是否为素数。并编写主程序调用该函数。
+```python
+def isPrime():
+    """ 判断一个数是否为素数
+        本例主要演示循环结构中else子句的用法"""
+    import math
+
+    n = input('Input an integer:')
+    n = int(n)
+    m = math.ceil(math.sqrt(n) + 1)  # 取n开根号的值，+1是因为range是闭开区间
+    for i in range(2, m):
+        if n % i == 0 and i < n:
+            print('No')
+            break
+    else:
+        print('Yes')
+
+
+if __name__ == '__main__':
+    isPrime()
+```
+
+#### 3. 编写函数，接受一个字符串，分别统计大写字母、小写字母、数字、其他字符的个数，并以元组的形式返回结果。
+```python
+def countWord(s):
+    c = [0 for i in range(4)]   # 初始化存储四个需要统计字符类型的数组
+    for w in s:                 # 通过 if 语句判断，在范围内 +1
+        if 'A' <= w <= 'Z':
+            c[0] += 1
+        elif 'a' <= w <= 'z':
+            c[1] += 1
+        elif '0' <= w <= '9':
+            c[2] += 1
+        else:
+            c[3] += 1
+    return tuple(c)             # 返回元组类型
+
+
+if __name__ == '__main__':
+    s = '12345ab67abcdefgAHIJKLM,.,.,.'
+    print('大写字母个数：', countWord(s)[0])
+    print('小写字母个数：', countWord(s)[1])
+    print('数字：', countWord(s)[2])
+    print('其他字符个数：', countWord(s)[3])
+```
+
 #### 4. 在函数内部可以通过关键字_______来定义全局变量
 global
 
