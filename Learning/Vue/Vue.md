@@ -200,3 +200,335 @@ vue.js:634 [Vue warn]: Do not mount Vue to <html> or <body> - mount to normal el
 </script>
 ```
 #### v-on 基础
+- 作用：为元素绑定事件。
+- 语法：
+  - 事件名不需要写on
+  - 指令可以简写为@
+  - 绑定的方法定义在methods属性中（在Vue实例中，method与data...地位一致。）
+```html
+<div id = "app">
+    <input type="button" value = "事件绑定" v-on:事件名 = "方法">
+    <input type="button" value = "事件绑定" @事件名 = "方法">
+    <!-- 单击事件 -->
+    <input type="button" value = "事件绑定" v-on:click = "doIt">
+    <!-- 双击事件 -->
+    <input type="button" value = "事件绑定" v-on:dblclick = "方法">
+    <!-- 鼠标移入 -->
+    <input type="button" value = "事件绑定" v-on:monseenter = "方法">
+
+</div>
+```
+```js
+var app = new Vue({
+    el:"#app",
+    <!-- methods中写入绑定的方法 -->
+    methods:{
+        doIt:function(){
+            <!-- //逻辑 -->
+        }
+    }
+})
+```
+- 方法内部通过this关键字可以访问定义在data中的数据
+  - 可以通过Vue来实现页面上数据的修改
+  - **案例在h2 和 事件绑定：changeFood部分**
+
+```html
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value="v-on指令" v-on:click="doIt">
+        <input type="button" value="点击有惊喜" @click="beautylady">
+        <input type="button" value="双击事件" @dblclick="beautylady">
+        <h2 @click='changeFood'>{{food}}</h2>
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+```
+```js
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            food:"西瓜汁"
+        },
+        methods:{
+            doIt:function(){
+                alert("做IT.")
+            },
+            beautylady:function(){
+                alert("你今天真好看")
+            },
+            changeFood:function(){
+                // console.log(this.food);
+                this.food+='好好吃！'
+            }
+        }
+    })
+</script>
+```
+#### 计数器
+- 代码逻辑
+  - data中定义数据：比如num
+  - methods中添加两个方法：比如add（递增）,sub（递减）
+  - 使用v-text将num设置给span标签
+  - 使用v-on将add,sub分别绑定给+,-按钮
+  - 累加的逻辑：小于10累加，否则提示
+  - 递减的逻辑，大于0递减，否则提示
+```html
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <div class="input-num">
+            <button @click="sub">-</button>
+            <span>{{num}}</span>
+            <button @click="add">+</button>
+        </div>
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+```
+```js
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            num: 1
+        },
+        methods:{
+            add:function(){
+                console.log('add');
+                if(this.num < 10){
+                    this.num++;
+                }
+                else{
+                    alert("别点啦，最大啦！")
+                }
+            },
+            sub:function(){
+                console.log('sub');
+                if(this.num > 0){
+                    this.num--;
+                }
+                else{
+                    alert('别点啦，小于0啦！')
+                }
+            }
+        }
+    })
+</script>
+```
+#### 小结
+- 创建Vue实例时，el(挂载点), data(数据), methods(方法)
+- v-on指令的作用时绑定事件，简写为@
+- 方法中通过this关键字获取data中的数据
+- v-text指令的作用是：设置元素的文本值，简写为{{}}
+- v-html指令的作用是：设置元素的innerHTML
+
+### 2.2 显示切换，属性绑定
+#### v-show
+- 作用：根据表达式的真假，切换元素的显示和隐藏。
+- 语法
+  - v-show : true 显示； false 隐藏
+  - v-show的值可以使用data中的数据
+  - v-show的值可以是对于data中数据进行判断的表达式。
+- 原理是修改元素的display,实现显示隐藏。
+- 指令后面的内容，最终都会解析为布尔值。
+- 值为true元素显示，值为false元素隐藏。
+- 数据改变之后，页面上的状态会同步更新/
+
+```html
+    <div id="app">
+        <img src="地址" v-show="true">
+        <img src="地址" v-show="isShow">
+        <img src="地址" v-show="age>=18">
+    </div>
+```
+```js
+    var app = new Vue({
+        el:"#app",
+        data:{
+            isShow:false,
+            age:16
+        }
+    })
+```
+
+
+#### v-if
+- 作用：根据表达值的真假，切换元素的显示和隐藏（操纵dom元素）
+- 语法
+
+```html
+    <!-- 2. html结构 -->
+    <div id="app">
+        <p v-if="true">我是一个p标签</p>
+        <p v-if="isShow">我是一个p标签</p>
+        <p v-if="表达式">我是一个p标签</p>
+    </div>
+```
+```js
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            isShow:false
+        }
+    })
+```
+- 本质是通过操纵dom元素来切换显示状态。
+- 表达式的值为true，元素存在于dom树中，为false，从dom树中移除。
+
+#### v-show vs v-if
+- 频繁操作的使用v-show。
+- 不频繁操作的使用v-if, 因为操作dom树对性能消耗大。
+
+#### v-bind
+- 作用：设置元素的属性。（比如：src,title,class)
+  - 属性都写着元素的内部。
+- 语法：
+  - 完整写法：`v-bind:属性名=表达式`
+  - 简写：只保留`:属性名`
+  - 以图像属性为例
+
+```html
+    <!-- 2. html结构 -->
+    <div id="app">
+        <img v-bind:src="imgSrc" alt="">
+        <img v-bind:title = "imgTitle+'!!!!!'">
+        <!-- 两者皆可，后者代码较少，是通过对象的方式表示（推荐使用） -->
+        <img v-bind:class="isActive?'active':''">
+        <img v-bind:class="{active:isActive}">
+        <!-- 省略版 -->
+        <img :src="imgSrc" alt="">
+        <img :title = "imgTitle+'!!!!!'">
+        <img :class="isActive?'active':''">
+        <img :class="{active:isActive}">
+    </div>
+```
+```js
+    var app = new Vue({
+        el:"#app",
+        data:{
+            imgSrc:"图片地址",
+            imgTitle:"我是Cetacean",
+            isActive:false
+        }
+    })
+```
+- class动态删减更建议使用用对象的方式控制属性显示。
+- 案例
+  - 控制图像显示。
+  - 给选中图像增加样式。
+```html
+    <!-- 2. html结构 -->
+<body>
+    <style type="text/css">
+    /* 设置图片大小 */
+    div img{width: 200px;height: 200px;}
+    /* 给active类的图片增加样式 */
+    .active{
+        border:1px solid blue;
+    }
+    </style>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <!-- src: 图片url title：悬停文字(接受字符串拼接) -->
+        <img v-bind:src="imgSrc" alt="">
+        <br>
+        <img :src="imgSrc" alt="" :title="imgTitle+'!!!!!'" :class="isActive?'active':''" @click="toggleActive">
+        <br>
+        <img :src="imgSrc" alt="" :title="imgTitle+'!!!!!'" :class="{active:isActive}" @click="toggleActive">
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+```
+```js
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            imgSrc:"https://pic2.zhimg.com/v2-3f5ddc2367c78d252d1a963843100c1e_r.jpg?source=1940ef5c",
+            imgTitle:"我是doramon",
+            isActive:false
+        },
+        methods:{
+            toggleActive:function(){
+                this.isActive = !this.isActive;
+            }
+        }
+    })
+</script>
+```
+
+#### 图片切换
+- 实现逻辑
+  - 用数组存储图片url的值，通过索引访问。
+  - v-bind更该属性。
+  - v-on绑定事件。
+  - v-show修改隐藏a标签。
+
+- 要点
+  - 列表数据使用数组保存。
+  - v-bind指令可以设置元素属性，比如src
+  - v-show和v-if都可以切换元素的显示状态，v-show适用于不那么频繁切换的情况。
+
+```html
+<body>
+    <style type="text/css">
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        div img{
+            width: 600px; 
+            height: 450px;
+            }
+    </style>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <a href="javascript:void(0)" @click="prev" v-show="index">上一张</a>
+        <img :src="imgArr[index]" alt="">
+        <a href="#" @click="next" v-show="index<imgArr.length-1">下一张</a>
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+```
+```js
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            imgArr:[
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/c3c68328856d4f388674f21da1a5da4a.gif",
+                "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2825715229,868722476&fm=26&gp=0.jpg",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/9d279e89987645d1acc4ec7ecfd427bf.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/2e41ce9dd3ae41e490108d6113a933b4.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/8be92c3a6a0c47a4be1518729a8869b6.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/bd432fc0327a410a80a63c6b06821684.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/e10ce132c4a54be486612f9847ee3cb6.gif"
+            ],
+            // 存储当前指示照片是哪一张
+            index:0
+        },
+        methods:{
+            prev:function(){
+                this.index--;
+            },
+            next:function(){
+                this.index++;
+            },
+        }
+    })
+</script>
+```
+

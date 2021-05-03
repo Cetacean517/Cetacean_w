@@ -33,3 +33,26 @@
 <a>
 <script>
 ```
+
+## input 组件和弹框使用
+### button
+```html
+        <input type="button" value="点击有惊喜" @click="beautylady">
+```
+### 弹框使用alert()
+```js
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        methods:{
+            doIt:function(){
+                alert("做IT.")
+            },
+            beautylady:function(){
+                alert("你今天真好看")
+            },
+        }
+    })
+</script>
+```
