@@ -283,6 +283,25 @@ if __name__ == '__main__':
 ```
 
 ### 5.random库
+#### random.sample()
+**生成含有20个1到100之间随机数的、所有元素不相同的列表。**
+- sample(list, k)返回一个长度为k新列表，新列表存放list所产生k个随机唯一的元素
+
+```python
+# 实现题目
+a = random.sample(range(1,101),20)
+# [50, 3, 56, 81, 11, 25, 98, 100, 4, 89, 19, 93, 86, 92, 10, 62, 7, 6, 99, 13]
+
+# 其他样例
+list = [1, 2, 3]
+print(random.sample(list ,2))
+# [1, 2]
+
+list = ["china","python","sky"]
+print(random.sample(list ,2))
+# ['python', 'sky']
+```
+
 
 ### 6.numpy库
 
@@ -601,4 +620,228 @@ Time: 1.9192843437194824'''
 [(1, 4), (2, 5), (3, 6)]
 >>> zip(*zipped)          # 与 zip 相反，*zipped 可理解为解压，返回二维矩阵式
 [(1, 2, 3), (4, 5, 6)]
+```
+
+
+### 12. bisect模块
+这是一个python的针对有序 数组的插入和排序操作的一个模块。
+#### 方法
+```python
+import bisect
+[print(i) for i in dir(bisect)if i.find('__') == -1]
+
+bisect
+bisect_left
+bisect_right
+insort
+insort_left
+insort_right
+```
+- bisect 就是调用的bisect_right
+- insort 就是调用 的insort_right
+
+#### bisect
+```python
+import bisect
+
+li = [1, 23, 45, 12, 23, 42, 54, 123, 14, 52, 3]
+li.sort()
+print(li)
+print(bisect.bisect(li, 3))
+
+# [1, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+# 2
+```
+
+- **源码**
+
+```python
+bisect = bisect_right   # backward compatibility
+```
+
+#### bisect_left(a, x, lo=0, hi=None)
+- 其目的在于查找该数值将会插入的位置并返回，而不会插入。如果x存在在a中则返回x左边的位置。
+
+```python
+import bisect
+
+li = [1, 23, 45, 12, 23, 42, 54, 123, 14, 52, 3]
+li.sort()
+print(li)
+print(bisect.bisect_left(li, 3))
+
+# [1, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+# 1
+```
+
+- **源码**
+
+```python
+def bisect_left(a, x, lo=0, hi=None):
+    # a 原列表
+    # x 插入的元素
+    # lo 起始位置 默认值为0
+    # hi 结束位置 默认值为len(a)    
+
+    # 如果起始位置小于0 则报错
+    if lo < 0:
+        raise ValueError('lo must be non-negative')
+    # 如果没有 结束位置 则 默认为 列表的长度
+    if hi is None:
+        hi = len(a)
+    # 二分法
+    while lo < hi:
+        mid = (lo+hi)//2
+        if a[mid] < x: lo = mid+1
+        else: hi = mid
+    # 仅返回位置
+    return lo
+```
+
+#### bisect_right(a, x, lo=0, hi=None)
+- 其目的在于查找该数值将会插入的位置并返回，而不会插入。如果x存在在a中则返回x右边的位置
+
+```python
+import bisect
+
+li = [1, 23, 45, 12, 23, 42, 54, 123, 14, 52, 3]
+li.sort()
+print(li)
+print(bisect.bisect_right(li, 3))
+
+# [1, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+# 2
+```
+
+- **源码**
+```python
+def bisect_right(a, x, lo=0, hi=None):
+    # a 原列表
+    # x 插入的元素
+    # lo 起始位置 默认值为0
+    # hi 结束位置 默认值为len(a)   
+
+    # 如果起始位置小于0 则报错
+    if lo < 0:
+        raise ValueError('lo must be non-negative')
+    # 如果没有 结束位置 则 默认为 列表的长度
+    if hi is None:
+        hi = len(a)
+    # 二分法
+    while lo < hi:
+        mid = (lo+hi)//2
+        if x < a[mid]: hi = mid
+        else: lo = mid+1
+    # 仅返回位置
+    return lo
+```
+
+#### insort
+- 在列表a中插入元素x，并在排序后保持排序。如果x已经在a中，把它插入右x的右边。
+
+```python
+import bisect
+
+li = [1, 23, 45, 12, 23, 42, 54, 123, 14, 52, 3]
+li.sort()
+print(li)
+bisect.insort(li, 3.0)
+print(li)
+
+# [1, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+# [1, 3, 3.0, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+```
+- **源码**
+
+```python
+insort = insort_right   # backward compatibility
+```
+
+#### insort_left(a, x, lo=0, hi=None)
+- 在列表a中插入元素x，并在排序后保持排序。如果x已经在a中，把它插入右x的左边。
+```python
+import bisect
+
+li = [1, 23, 45, 12, 23, 42, 54, 123, 14, 52, 3]
+li.sort()
+print(li)
+bisect.insort_left(li, 3.0)
+print(li)
+
+# [1, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+# [1, 3.0, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+```
+- **源码**
+
+```python
+def insort_left(a, x, lo=0, hi=None):
+    # a 原列表
+    # x 插入的元素
+    # lo 起始位置 默认值为0
+    # hi 结束位置 默认值为len(a)
+
+    # 如果起始位置小于0 则报错
+    if lo < 0:
+        raise ValueError('lo must be non-negative')
+    # 如果没有 结束位置 则 默认为 列表的长度
+    if hi is None:
+        hi = len(a)
+    # 二分查找
+    while lo < hi:
+        mid = (lo+hi)//2
+        if a[mid] < x: lo = mid+1
+        else: hi = mid
+    # 插入
+    a.insert(lo, x)
+```
+
+#### insort_right(a, x, lo=0, hi=None)
+- 在列表a中插入元素x，并在排序后保持排序。如果x已经在a中，把它插入右x的右边。
+
+```python
+import bisect
+
+li = [1, 23, 45, 12, 23, 42, 54, 123, 14, 52, 3]
+li.sort()
+print(li)
+bisect.insort_right(li, 3.0)
+print(li)
+
+# [1, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+# [1, 3.0, 3, 12, 14, 23, 23, 42, 45, 52, 54, 123]
+```
+
+- **源码**
+
+```python
+def insort_right(a, x, lo=0, hi=None):
+    # a 原列表
+    # x 插入的元素
+    # lo 起始位置 默认值为0
+    # hi 结束位置 默认值为len(a)
+
+    # 如果起始位置小于0 则报错
+    if lo < 0:
+        raise ValueError('lo must be non-negative')
+    # 如果没有 结束位置 则 默认为 列表的长度
+    if hi is None:
+        hi = len(a)
+    # 二分法查找 
+    while lo < hi:
+        mid = (lo+hi)//2
+        if x < a[mid]: hi = mid
+        else: lo = mid+1
+    # 插入
+    a.insert(lo, x)
+```
+
+### Counter()
+- 统计列表中的单词数。
+
+```python
+from collections import Counter
+cnt = Counter()
+for word in ['red','blue','red','green','blue','blue']:
+    cnt[word] += 1
+print(cnt)
 ```

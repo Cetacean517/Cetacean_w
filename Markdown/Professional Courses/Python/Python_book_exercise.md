@@ -1,4 +1,5 @@
 # Python 1~6章 课后习题
+
 ### 第一章 习题
 #### 1.简单说明如何选择正确的Python版本？
 应根据自己所学习的需求和目的选择最合适的版本。并不一定版本号越大，版本就越新。例如，Python2.7.9比Python3.2.6晚几个月发布。同时，也不一定使用最新的版本就是最合适的，因为有些机器并不一定兼容Python3.x的版本。
@@ -541,6 +542,15 @@ moveRepeat(s)
 ```
 
 #### 4. 简单解释Python的字符串驻留机制。
+- **定义**：在计算机科学中，字符串驻留一种仅保存一份相同且不可变字符串的方法。不同的值被存放在字符串驻留池中。
+- **限制**：仅包含下划线（_）、字母和数字的字符串会启用字符串驻留机制驻留。因为解释器仅对看起来像python标识符的字符串使用intern()方法，而python标识符正是由下划线、字母和数字组成。python只会针对整数范围为[-5, 256]的整数启用字符串驻留
+- **字符串驻留机制的优缺点**如下：
+  - **优点**：能够提高一些字符串处理任务在时间和空间上的性能，
+  - **缺点**：在创建或驻留字符串时的会花费更多的时间。
+
+举例：string1 = “aabbcc”
+           string2 =  “aabbcc”
+使用id（string1）和id（string2）得到的内存地址是一样的。
 
 #### 5. 编写程序，用户输入一段英文，然后输出这段英文中所有长度为3个字母的单词。
 ```python
@@ -757,7 +767,33 @@ if __name__ == '__main__':
 field
 
 #### 12. 编写函数，模拟内置函数sorted。
+```python
+""" 12. 编写函数，模拟内置函数sorted。"""
 
+
+def my_sorted(iterable):
+    from collections.abc import Iterable
+    if not isinstance(iterable, Iterable):
+        print('TypeError: only receive iterable')
+        return
+    u = []
+    temp = [x for x in iterable]  # 复制原列表
+    while temp:
+        Min = min(temp)
+        u.append(Min)
+        temp.remove(Min)
+    return u
+
+
+if __name__ == '__main__':
+    # l = [2, 3, 1, 4]
+    l = (2, 3, 1, 4)
+    # [1, 2, 3, 4]
+    print(my_sorted(l))
+    l1 = ['a', 'd', 'b', 'z', 'q']
+    print(my_sorted(l1))
+    # ['a', 'b', 'd', 'q', 'z']
+```
 
 ### 第六章 习题
 #### 1.继承6.5节例6-2中的Person类生成Student类，编写新的函数用来设置学生专业，然后生成该类对象并显示信息。
@@ -997,3 +1033,4 @@ a._A__value = 3
 >>> a.show()
 3
 ```
+
