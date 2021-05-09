@@ -48,3 +48,5 @@ print(x < y)
 x = MyArray(1, 2, 3, 4, 5, 6)
 print(x + y)
 # [7, 7, 7, 7, 7, 7]
+
+print(x)

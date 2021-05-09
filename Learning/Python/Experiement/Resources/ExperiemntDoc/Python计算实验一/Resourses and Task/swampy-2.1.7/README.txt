@@ -1,0 +1,37 @@
+Swampy
+======
+by Allen Downey (downey@allendowney.com)
+
+Swampy is a suite of Python programs that support the textbooks
+
+Python for Software Design (http://greenteapress.com/thinkpython)
+Think Python (http://greenteapress.com/thinkpython/thinkpython.html)
+The Little Book of Semaphores (http://greenteapress.com/semaphores)
+
+It includes the following modules:
+
+AmoebaWorld: a fun way for beginning programmer to practice writing
+	     Python expressions.
+
+TurtleWorld: an implementation of turtle graphics used in Think Python
+	     and Python for Software Design
+
+TurmiteWorld: an implementation of Langton's ant.
+
+Lumpy: a program that generates UML object and class diagrams from a
+       Python program.
+
+Sync: a thread simulator for use with The Little Book of Semaphores.
+
+structshape: a module to help with debugging by generating a string
+             description of any Python data structure.
+
+A description of the project and documentation is available at:
+
+http://www.greenteapress.com/thinkpython/swampy/
+
+The source code is hosted by Google code at
+
+http://code.google.com/p/swampy/
+
+
