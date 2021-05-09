@@ -532,3 +532,233 @@ var app = new Vue({
 </script>
 ```
 
+### 2.3 列表循环，表单元素绑定
+#### v-for
+- 作用：根据数据生成列表结构
+- 语法：
+
+
+html
+```html
+ <div id="app">
+        <ul>
+            <!-- 绑定Item对象和对象的索引,用{{}}语法渲染 -->
+            <li v-for = "(item,index) in arr">
+                {{index}} {{item}}
+            </li>
+            <!-- 对于对象的访问使用.语法 -->
+            <li v-for="(item, index) in fruits" :title="item.name">
+                {{item.name}}
+            </li>
+        </ul>
+    </div>
+```
+js
+```js
+    var app = new Vue({
+        el:"#app",
+        data:{
+            // 列表元素
+            arr:["BJ","SH","GZ","SZ"],
+            // 对象元素
+            fruits:[
+                {name:"watermelon"},
+                {name:"apple"}
+            ]
+        },
+    })
+```
+- 利用数组演示v-for的列表循环效果
+- 数组经常和v-for结合使用
+- 语法（item, index) in 数据
+- item 和 index 可以结合其他指令一起使用
+- 数组长度的更新会同步到页面上，是响应式的
+
+- 案例
+  - 单项循环，（语法类似Python)
+
+```html
+<!-- 仅绑定item元素 -->
+        <ul>
+            <!-- 绑定的Item对应绑定的每一项 -->
+            <li v-for = "index in arr">
+                Hello, good morning. I'm in {{item}}
+            </li>
+        </ul>
+
+<!-- 
+    - Hello, good morning. I'm in BJ
+    - Hello, good morning. I'm in SH
+    - Hello, good morning. I'm in GZ
+    - Hello, good morning. I'm in SZ
+ -->
+
+<!-- 仅绑定item,index元素 -->
+        <ul>
+            <!-- 绑定的Item对应绑定的每一项 -->
+            <li v-for = "index in arr">
+                {{index}} Hello, good morning. I'm in {{item}}
+            </li>
+        </ul>
+
+<!-- 
+    - 0Hello, good morning. I'm in BJ
+    - 1Hello, good morning. I'm in SH
+    - 2Hello, good morning. I'm in GZ
+    - 3Hello, good morning. I'm in SZ
+ -->
+
+ <!-- 实例 -->
+     <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value="add" @click="add">
+        <input type="button" value="remove" @click="remove">
+        <ul>
+            <!-- 绑定的Item对应绑定的每一项 -->
+            <li v-for = "(item,index) in arr">
+                {{index + 1}} Hello, good morning. I'm in {{item}}
+            </li>
+        </ul>
+        <h2 v-for="(item) in fruits" :title="item.name">
+            {{item.name}}
+        </h2>
+    </div>
+```
+
+js
+```js
+    var app = new Vue({
+        el:"#app",
+        data:{
+            arr:["BJ","SH","GZ","SZ"],
+            fruits:[
+                {name:"watermelon"},
+                {name:"apple"}
+            ]
+        },
+        methods:{
+            // 追加属性
+            add:function(){
+                this.fruits.push({name:"grapes"})
+            },
+            // 移除属性,移除最左边的元素
+            remove:function(){
+                this.fruits.shift();
+            }
+        }
+    })
+```
+#### v-on 补充
+- 作用： 传递自定义参数，事件修饰符
+- 语法：
+
+html
+```html
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" @click="doIt(p1,p2)"/>
+        <input type="text" @keyup.enter="sayHi">
+    </div>
+```
+js
+```js
+    var app = new Vue({
+        el:"#app",
+        methods:{
+            doIt:function(p1,p2){},
+            sayHi:function(){}
+        }
+    })
+```
+- 事件绑定的方法写成函数调用的形式，可以传入自定义参数。
+- 定义方法时需要定义形参来接收传入的实参
+- 事件的后面跟上`.修饰符`可以对事件进行限制
+- `.enter`可以限制除法的按键为回车
+- 事件修饰符有多种
+- `http://cn.vuejs.org/v2/api/#v-on`可以查到更多事件修饰符的使用
+
+- 案例
+
+```html
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value= "click" @click="doIt('Today is ',5.9)"/>
+        <!-- 用keyup.修饰键 的语法来实行事件修饰符功能 -->
+        <input type="text" @keyup.enter="sayHi">
+    </div>
+```
+```js
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        methods:{
+            doIt:function(t,today){
+                console.log("hello world")
+                console.log(t+today)
+            },
+            sayHi:function(){
+                alert("吃了吗？")
+            }
+        }
+    })
+</script>
+```
+#### v-model
+- 作用：获取和设置表单元素的值（双向数据绑定）
+- 语法：
+
+- 绑定的数据会和表单元素值相关联
+- 绑定的数据==表单元素的值（双向绑定）
+
+- 案例
+
+```html
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value="修改message" @click="setM">
+        <input type="text" v-model="message" @keyup.enter="getM">
+        <h2>{{message}}</h2>
+    </div>
+```
+```js
+    // 3. 创建Vue实例
+    var app =new Vue({
+        el:"#app",
+        data:{
+            message:"Cetacean"
+        },
+        methods:{
+            getM:function(){
+                alert(this.message)
+            },
+            setM:function(){
+                this.message="fish";
+            }
+        }
+    })
+```
+
+#### 案例：小黑记事本
+- 功能
+  - 1. 新增
+    - 生成列表结构(v-for 数组)
+    - 获取用户输入(v-model)
+    - 回车，新增数据(v-on.enter 添加数据)
+  - 2. 删除
+    - 点击删除指定内容(v-on splice 索引)
+  - 3. 统计
+    - 统计信息个数(v-text length)
+  - 4. 删除
+    - 点击清除所有信息(v-on 清空数组)
+  - 5. 隐藏
+    - 没有数据，隐藏元素(v-show/ v-if 数组非空)
+
+- 记事本要点：
+  - 列表结构可以通过v-for指令结合数据生成
+  - v-on结合事件修饰符可以对事件进行限制，比如`.enter`
+  - v-on在绑定事件时可以传递自定义参数
+  - 通过v-model可以快速的设置和获取表单元素的值
+  - 基于数据的开发方式
