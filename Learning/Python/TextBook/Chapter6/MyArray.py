@@ -102,7 +102,7 @@ class MyArray:
         return len(self.__value)
 
     def __repr__(self):  # 直接使用对象作为语句时调用该函数
-        # equibalent to return'self.__value)
+        # equivalent to return(self.__value)
         return repr(self.__value)
 
     def __str__(self):  # 使用print()函数输出对象时调用该函数

@@ -112,30 +112,69 @@ if __name__ == '__main__':
     h_error = Time(24, 2, 2)
     m_error = Time(12, 67, 2)
     s_error = Time(12, 24, 88)
+    '''
+    --测试 构造函数--
+    24:02:02 TypeError: Time is not correct.
+    12:67:02 TypeError: Time is not correct.
+    12:24:88 TypeError: Time is not correct.
+    '''
     # 测试 __str__重载：
     print('--测试 __str__重载--')
     print('t0:', t0)
+    '''
+    --测试 __str__重载--
+    t0: 00:00:00
+    '''
     # 测试 __add__重载
     print('--测试 __add__重载--')
     print(t1, '+', t2)
     print(t1 + t2)
+    '''
+    --测试 __add__重载--
+    01:02:03 + 04:05:06
+    05:07:09
+    '''
     # 测试 time2int
     print('--测试 t1 + t2--')
     print('time:', t0, 'second:', t0.time2int())
     print('time:', t1, 'second:', t1.time2int())
+    '''
+    --测试 t1 + t2--
+    time: 00:00:00 second: 0
+    time: 01:02:03 second: 3723
+    '''
     # 测试 printtime
     print('--测试 printtime--')
     t1.printtime()
+    '''
+    --测试 printtime--
+    01:02:03    
+    '''
     # 测试 isafter
     print('--测试 isafter()--')
     print('cmp:', t1, 'and', t2)
     t1.isafter(t2)
     t2.isafter(t3)
+    '''
+    --测试 isafter()--
+    cmp: 01:02:03 and 04:05:06
+    04:05:06 is after
+    04:05:07 is after
+    '''
     # 测试 increment
     print('--测试 increment()--')
     print('time:', t1, 'add:', t1.increment(3670))
+    '''
+    --测试 increment()--
+    time: 01:02:03 add: 02:03:13
+    '''
     # 测试 isvalid
     print('--测试 isvalid()--')
     t1.changeTimeErro()
     print(t1)
     t1.isvalid()
+    '''
+    --测试 isvalid()--
+    25:66:70
+    Time is illegal.
+    '''
