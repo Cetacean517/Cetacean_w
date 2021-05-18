@@ -1,4 +1,5 @@
 # Vue项目开发
+
 ## 通过Vue脚手架创建项目 配置Vue路由
 - 在cmd中输入`vue ui` 通过图形化界面创建初始化文件。
 - 设置项目名称，英文
@@ -28,3 +29,16 @@
 ## 初始化git远程仓库
 
 ## 将本地项目托管到GitHub或者码云中
+
+# Vue 语法
+## 页面跳转
+
+```vue
+    jmp: function (path) {
+      this.$router.replace("/backstage/" + path).catch((err) => {
+        err;
+      });
+    },
+```
+
+http://localhost:8080/backstage/other

@@ -1786,3 +1786,83 @@ print(X.attr)
 - 使用super()方法的作：
   - 如果对于基类进行增删，使用super()时，不需要对派生类进行修改。
   - 如果只是再派生类自己定义，则对于基类修改的时候，需要对派生类进行手动修改。
+
+# 第9章  GUI编程
+## 9.1 wxPython
+### 创建GUI程序的三个主要步骤：
+- 导入wxPython包
+- 建立框架类：框架类父类为wx.Frame
+- 建立主程序：
+  - 创建应用程序对象
+  - 创建框架类对象
+  - 显示框架
+  - 开始事件循环
+- 执行frame.Show(True)
+- 执行app.MainLoop(),框架处理事件
+
+### 9.1.1 Frame
+- Frame也成为框架或窗体，是所有框体的父类
+- 创建GUI程序框架时，需要继承wx.Frame派生出子类，在派生类中调用基类构造数进行必要的初始化
+- 它的构造函数格式为
+
+```python
+__init__(self, Windoww parent, int id=-1, String title = EmptyString, Point pos = DefaultPosition, Size size = DefaultSize, long style = DEFAULT_FRAME_STYLE, String name = FrameNameStr)
+```
+
+```python
+
+
+
+class MyFrame(wx.Frame):
+    def __init__(self, superior):
+        # 调用了父类的Frame函数
+        wx.Frame.__init__(self, parent=superior, title=u'My First Form', size=(300, 300))
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.Bind(wx.EVT_MOVE, self.OnFrameMove)
+
+        panel = wx.Panel(self, -1)
+        label1 = wx.StaticText(panel, -1, "FrameSize:")
+        label2 = wx.StaticText(panel, -1, "FramePos:")
+        label3 = wx.StaticText(parent=panel, label='MousePos:')
+        self.sizeFrame = wx.TextCtrl(panel, -1, '', style=wx.TE_READONLY)
+        self.posFrame = wx.TextCtrl(panel, -1, '', style=wx.TE_READONLY)
+        self.posMouse = wx.TextCtrl(panel, -1, '', style=wx.TE_READONLY)
+        panel.Bind(wx.EVT_MOTION, self.OnMouseMove)
+        self.panel = panel
+
+        # Use some sizers for layout of the widgets
+        sizer = wx.FlexGridSizer(3, 2, 5, 5)
+        sizer.Add(label1)
+        sizer.Add(self.sizeFrame)
+        sizer.Add(label2)
+        sizer.Add(self.posFrame)
+        sizer.Add(label3)
+        sizer.Add(self.posMouse)
+
+        border = wx.BoxSizer()
+        border.Add(sizer, 0, wx.ALL, 15)
+        panel.SetSizerAndFit(border)
+        self.Fit()
+
+    def OnSize(self, event):
+            size = event.GetSize()
+            self.sizeFrame.SetValue("%s, %s" % (size.width, size.height))
+            # tell the event system to continue looking for an event handler,
+            # so the default handler will get called.
+            event.Skip()
+
+    def OnFrameMove(self, event):
+            pos = event.GetPosition()
+            self.posFrame.SetValue('%s, %s' % (pos.x, pos.y))
+
+    def OnMouseMove(self, event):
+            pos = event.GetPosition()
+            self.posMouse.SetValue('%s, %s' % (pos.x, pos.y))
+
+
+if __name__ == '__main__':
+    app = wx.App()  # Create an instance of the application class
+    frame = MyFrame(None)
+    frame.Show(True)
+    app.MainLoop()  # Tell it to start processing events
+```

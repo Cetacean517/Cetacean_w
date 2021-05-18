@@ -14,7 +14,7 @@ pygame.display.set_caption("Pygame壁球鼠标控制模式")
 # 将filename路径下的图像载入游戏，支持JPG、PNG等13种格式
 ball = pygame.image.load("doramon.gif")
 ballrect = ball.get_rect()
-fps = 500   # frame per second 每秒帧率参数
+fps = 5000   # frame per second 每秒帧率参数
 fclock = pygame.time.Clock()    # 创建一个Clock对象，用于操作时间
 still = False
 
