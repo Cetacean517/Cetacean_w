@@ -85,26 +85,29 @@ class Food:
 
 class LunchGUI(wx.Frame):
     def __init__(self, superion):
-        wx.Frame.__init__(self, parent=superion, title='Check Prime', size=(600, 400))
+        wx.Frame.__init__(self, parent=superion, title='Cetacean\'s Homemade restaurant', size=(600, 400))
         panel = wx.Panel(self)
-        panel.SetBackgroundColour('Pink')  # 设置窗体背景颜色
+        color = (130,130,200)
+        panel.SetBackgroundColour(color)  # 设置窗体背景颜色
+        font = wx.Font(16, wx.DECORATIVE, wx.ITALIC, wx.NORMAL)
         # 设置迎接语
         # wx.StaticText(parent=panel, label='Welcome to our restaurant!!!', pos=(10, 10))
         # 欢迎语
         self.nameInfo = wx.StaticText(panel, label='Welcome', pos=(10, 10))
+        self.nameInfo.SetFont(font)
         # 输入名字 登录
-        self.nameText = wx.StaticText(panel, label='Please enter your name:', pos=(10, 30))
-        self.inputN = wx.TextCtrl(panel, pos=(160, 30))
-        self.nameCheck = wx.Button(panel, label='Check Name', pos=(300, 30))
+        self.nameText = wx.StaticText(panel, label='Please enter your name:', pos=(10, 45))
+        self.inputN = wx.TextCtrl(panel, pos=(160, 45))
+        self.nameCheck = wx.Button(panel, label='Check Name', pos=(300, 45))
         # 输入菜品
-        self.nameText = wx.StaticText(panel, label='Please enter a dish:', pos=(10, 70))
-        self.inputF = wx.TextCtrl(panel, pos=(160, 70))
-        self.buttonCheck = wx.Button(panel, label='Order', pos=(300, 70))
-        self.result = wx.StaticText(panel, label='', pos=(10, 110))
+        self.nameText = wx.StaticText(panel, label='Please enter a dish:', pos=(10, 90))
+        self.inputF = wx.TextCtrl(panel, pos=(160, 90))
+        self.buttonCheck = wx.Button(panel, label='Order', pos=(300, 90))
+        self.result = wx.StaticText(panel, label='', pos=(10, 120))
         # 设置显示菜单按钮
-        self.foodTitle = wx.StaticText(panel, label='', pos=(10, 130))
-        self.foodList = wx.StaticText(panel, label='', pos=(70, 150))
-        self.showList = wx.Button(panel, label="Show your order list.", pos=(300, 160))
+        self.foodTitle = wx.StaticText(panel, label='', pos=(10, 150))
+        self.foodList = wx.StaticText(panel, label='', pos=(70, 170))
+        self.showList = wx.Button(panel, label="Show your order list.", pos=(300, 180))
 
         # 按钮事件绑定
         # 名字确认
