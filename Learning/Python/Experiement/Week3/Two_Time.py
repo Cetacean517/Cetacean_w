@@ -25,6 +25,9 @@ class Time:
 
     # 调用print()函数时，输出__str__返回的内容
     def __str__(self):
+        return 'this is your time :%02d:%02d:%02d' % (self.__hour, self.__minute, self.__second)
+
+    def __repr__(self):
         return '%02d:%02d:%02d' % (self.__hour, self.__minute, self.__second)
 
     def __add__(self, t):

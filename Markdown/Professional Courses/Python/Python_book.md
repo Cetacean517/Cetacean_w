@@ -764,16 +764,111 @@ for语句中的i循环值为：1,2,3,4;
   - 可以使用type()和instance()方法
 
 ### 4.1.1 字符串格式化
+- 格式化方法
+- chr() :unicode转换为char
+- ord() :char转换为unicode
+
+```python
+>>> chr(ord("3")+1)
+'4'
+>>> ord("3")
+51
+>>> ord("a")
+97
+>>> chr(97)
+'a'
+```
+- 案例
+```python
+# 进制间转换
+>>> x = 1235
+>>> so = "%o" %x
+>>> so
+'2323'
+>>> sh = "%x" %x
+>>> sh
+'4d3'
+>>> se = "%e" %x
+>>> se
+'1.235000e+03'
+>>> chr(ord("3")+1)
+'4'
+>>> ord("3")
+51
+>>> ord("a")
+97
+>>> chr(97)
+'a'
+>>> 
+>>> "%s %65"
+'%s %65'
+>>> "%s" %65
+'65'
+>>> '%d,%c'%(65,65)
+'65,A'
+>>> '%d,%c'%(97,97)
+'97,a'
+>>> '%d'%555
+'555'
+>>> '%d'%'555'
+Traceback (most recent call last):
+  File "<pyshell#19>", line 1, in <module>
+    '%d'%'555'
+TypeError: %d format: a number is required, not str
+>>> '%s'%[1,2,3]
+'[1, 2, 3]'
+>>> 
+```
 - 使用format方法进行格式化
+  - '{index:格式化方式}'.format(带入的字符)
+
+```python
+def format():
+    print("The number {0:,} in hex is : {0:#x}, the number {1} in oct is {1:#o}".format(5555, 55))
+    # The number 5,555 in hex is : 0x15b3, the number 55 in oct is 0o67
+    print("The number {1:,} in hex is : {1:#x}, the number {0} in oct is {0:#o}".format(5555, 55))
+    # The number 55 in hex is : 0x37, the number 5555 in oct is 0o12663
+    # 把元组中的元素作为列表中的一项，二维调用
+    positon = (5, 8, 13)
+    print("X:{0[0]};Y:{0[1]};Z:{0[2]}".format(positon))
+#     X:5;Y:8;Z:13
+```
   
 ### 4.1.2 字符串常用方法
-- find(),rfind()
+- dir(""):查看所有字符串操作函数列表
+- help()查看每个函数帮助
+- find(),rfind(): 查找一个字符串在另一个字符串指定范围（默认是整个字符串）中首次和最后一次出现的位置，如果不存在则返回-1.
 - index(),rindex()
 - count()
 - split(),rsplit()
 - partition(),rpartition()
 - 字符串连接join()
-- s.s
+- lower(),upper(),capitalize(),title(),swapcase()
+- replace()
+- maketrans(),translate()
+- strip(),rstrip(),lstrip()
+- eval()
+- 关键字in
+- startswith(),endswith()
+- isalnum(),isalpha(),isdigit(),isspace(),isupper(),islower()
+- center(),ljust(),rjust()
+
+### 4.1.3 字符串常量
+- string.digits
+- string.punctuation
+- string.letters
+- string.printable
+- string.lowercase
+- string.uppercase
+
+- random库
+  - random.getranbits(17)
+  - random.choice()
+  - random.randrange()
+  - random.randint()
+  - random.shuffle(list)
+
+### 可变字符串
 
 ## 4.2 正则表达式
 - 正则表达式
