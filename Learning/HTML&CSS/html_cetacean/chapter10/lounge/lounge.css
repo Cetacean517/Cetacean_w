@@ -1,0 +1,102 @@
+body {
+  font:				   small/1.6em Verdana, Helvetica, Arial, sans-serif;
+  width:1000px;
+  margin:0px 200px ;
+}
+
+#logo{
+	padding-right:1200px;
+}
+
+h1, h2 {
+  color:               #007e7e;
+}
+
+h1 {
+  font-size:           150%;
+}
+
+h2 {
+  font-size:           130%;
+}
+
+#guarantee {
+  line-height:         1.9em;
+  font-style:          italic;
+  font-family:         Georgia, "Times New Roman", Times, serif;
+  color:               #444444;
+  border-color:        white;
+  border-width:        1px;
+  border-style:        dashed;
+  background-color:    #a7cece;
+  padding:             25px;
+  padding-left:        80px;
+  margin:              30px;
+  margin-right:        250px;
+  background-image:    url("images/background.gif");
+  background-repeat:   no-repeat;
+  background-position: top left;
+}
+
+#elixirs{
+	border-width:thin;
+	border-style:solid;
+	border-color: #007e7e;
+	width:200px;
+	
+	line-height:1;
+	
+	padding-bottom:20px;
+	padding-left:20px;
+	padding-right:20px;
+	
+	margin-left:20px;
+	
+	text-align:center;
+	
+	background-image:url(images/cocktail.gif);
+	background-repeat:repeat-x;
+	
+	float:right;
+}
+#elixirs h2{
+	color:black;
+}
+
+#elixirs h3{
+	color:#d12c47;
+}
+
+#footer{
+	font-size:50%;
+	text-align:center;
+	line-height: normal;
+	margin-top:30 px;
+}
+
+.cd{
+	font-style: italic;
+}
+
+.artist{
+	font-weight:bold;
+}
+
+#elixirs a:link{
+	color:#007e7e;
+}
+#elixirs a:visited{
+	color:#333333;
+}
+#elixirs a:hover{
+	background:#f88396;
+	color:#0d5353;
+}
+
+a:link{
+	color:#007e7e;
+}
+a:visited{
+	color:#333333;
+}
+

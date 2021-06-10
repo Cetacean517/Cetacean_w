@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title> 新型冠状流感病毒肺炎最新状态 </title>
+    </head>
+
+    <body>
+        <p>前线战报实时更新</p>
+        <p>
+            <img src="https://dss1.bdstatic.com/5aAHeD3nKgcUp2HgoI7O1ygwehsv/media/ch1/jpg/%E8%82%BA%E7%82%8Epc%E9%80%9A%E6%A0%8F.jpg"
+               alt= "实时查询入口">
+        </p>
+    </body>
+ </html>
