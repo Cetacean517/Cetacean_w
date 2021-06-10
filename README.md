@@ -5,7 +5,7 @@ ALL the files,including all the notes and all the programming work that I have d
 
 ## Structure
 ### Learning 
-Mainly, the code part are saved in "Learning" file.
-### Markdown
-ALL the markdown notes and pdf files are put in "Markdown" file.
+Mainly, the code part are saved in "Learning" file. AND all the notes are included in the files.
+
+
 
