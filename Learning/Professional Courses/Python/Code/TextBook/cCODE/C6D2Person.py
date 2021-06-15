@@ -55,4 +55,3 @@ if __name__ =='__main__':
     lisi.setAge(40) #调用继承的方法修改年龄
     lisi.show()
 
-
