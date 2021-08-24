@@ -12,7 +12,7 @@
     <div id="app">
         <input type="button" value= "click" @click="doIt('Today is ',5.9)"/>
         <!-- 用keyup.修饰键 的语法来实行事件修饰符功能 -->
-        <input type="text" @keyup.enter="sayHi">
+        <input type="text" v-model="name" @keyup.enter="sayHi">
     </div>
     <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -21,12 +21,16 @@
     // 3. 创建Vue实例
     var app = new Vue({
         el:"#app",
+        data:{
+            name:'',
+        },
         methods:{
             doIt:function(t,today){
                 console.log("hello world")
                 console.log(t+today)
             },
             sayHi:function(){
+                console.log(this.name)
                 alert("吃了吗？")
             }
         }
