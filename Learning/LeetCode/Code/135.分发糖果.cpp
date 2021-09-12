@@ -22,18 +22,13 @@ public:
     int candy(vector<int>& ratings) {
         int count = 0;
         int num = 1;
-        cout << ratings.size();
-        sort(ratings.begin(),ratings.end());
         for(int i = 0; i < ratings.size();i++){
             if(ratings[i] < ratings[i+1]){
-                num++;
-                count += num;
             }
             else{
                 count += num;
             }
         }
-        cout << count;
         return count;
     }
 };
