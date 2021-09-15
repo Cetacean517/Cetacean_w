@@ -146,8 +146,95 @@ CPU的组成：
 格式：操作码（只有一个）+ 操作数（n个）
 
 ### 3.1 80x86的寻址方式
+> **考试不会出现32位的指令**
 #### 3.1.1 与数据有关的寻址方式
-- 立即寻址方式 immediate addressing
+- 8086/80286系列
+  - 立即寻址
+  - 寄存器寻址
+  - 直接寻址
+  - 寄存器间接寻址
+  - 寄存器相对寻址
+  - 基址变址寻址
+  - 相对基址变址寻址
 
-- `MOV AL,5`
 
+- 80386及后继机型
+  - 比例变址寻址
+  - 基址比例变址寻址
+  - 相对基址比例变址寻址
+
+##### 立即寻址方式 immediate addressing
+``` 
+MOV AL 5  不限位数
+MOV AX, 3064H   // (AX) = (AH , AL) = (30H, 64H) 32位不能用
+MOV EAX, 12345678H  *32位可用
+```
+
+##### 寄存器寻址方式 register addressing
+- 方向：右 → 左
+- 源寄存器和目的寄存器的位数，类型必须一致
+
+```
+// 设 (AX) = 3046H, (BX) = 1234H
+MOV AX, BX
+// 结果： AX = 1234H, (BH) = 1234H
+```
+
+##### 有效地址计算公式
+EA = 基址 + （变址 * 比例因子） + 位移量
+- EA： efficient address
+- 基址：数据段中数组或者字符串的首地址
+- 变址：数组中的某个元素或者字符串中某个字符
+- 比例因子：1, 2, 3 ,4
+
+之后的寻址方式，都存在的首地址存放在DS中，在指令中指定的所有地址量，都是一个相对位移量。
+
+##### 直接寻址方式 
+```
+// e.g (DS) = 3000H
+MOV AX, [2000H]
+// OUT: (AX) = 3050H
+
+// 会根据VALUE类型判断 是立即还是直接寻址。
+MOV AX, VALUE   
+MOV AX, [VALUE]
+
+// 当VALUE在附加段中，应指定段跨越前缀：
+MOV AX, ES:VALUE
+MOV AX, ES:[VALUE]
+```
+
+##### 寄存器间接寻址方式  register indirect addressing
+```
+// 模板：MOV AX [BX/BP/SI/DI]
+// 区别首地址存放的寄存器：
+// 物理地址 = DS + BX/SI/DI
+// 物理地址 = SS + BP (堆栈段普通，一般用于找参数)
+
+// (DS) = 2000H, (BX) =1000H
+// 取 21000H 地址内存中数据
+MOV AX,[BX]
+
+```
+
+##### 寄存器相对寻址方式  register relative addressing
+```
+// EA = (BX/BP/SI/DI) + 8bit/ 16bit 位移量
+// 物理地址 = (DS) + (BX/SI/DI) + 8bit/ 16bit 位移量
+// 物理地址 = (SS) + (BP) + 8bit/ 16bit 位移量
+
+MOV AX, COUNT[SI]
+MOV AX, [COUNT + SI]
+```
+##### 基址变址寻址方式 based indexed addressing
+```
+// 物理地址 = (DS) + (BX) + (SI/DI)
+// 物理地址 = (SS) + (BP) + (SI/DI)
+
+MOV AX, [BX][DI]
+```
+
+##### 相对基址变址寻址方式 relative based indexed addressing
+```
+MOV AX, MASK[BX][SI]
+```
