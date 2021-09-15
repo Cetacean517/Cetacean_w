@@ -12,7 +12,7 @@ START:
 	;push ds
 	;sub ax, ax
 	;push ax
-	mov ch, 16 ; 设置循环的位数
+	mov ch, 10h ; 设置循环的位数
 	mov dh, 15	; 设置循环的行数
 	mov bl, 10h ;
 	;ASCII 打印不了向左箭头
@@ -46,6 +46,7 @@ endloop:
 	int 21h
 CODES ENDS
     END START
+
 
 
 

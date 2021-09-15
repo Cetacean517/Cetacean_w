@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 6.11		    09/15/21 18:11:30
+Microsoft (R) Macro Assembler Version 6.11		    09/15/21 21:01:31
 tempfile.asm						     Page 1 - 1
 
 
@@ -16,7 +16,7 @@ tempfile.asm						     Page 1 - 1
 					;push ds
 					;sub ax, ax
 					;push ax
- 0000  B5 10				mov ch, 16 ; 设置循环的位数
+ 0000  B5 10				mov ch, 10h ; 设置循环的位数
  0002  B6 0F				mov dh, 15	; 设置循环的行数
  0004  B3 10				mov bl, 10h ;
 					;ASCII 打印不了向左箭头
@@ -53,7 +53,8 @@ tempfile.asm						     Page 1 - 1
 
 
 
-Microsoft (R) Macro Assembler Version 6.11		    09/15/21 18:11:30
+
+Microsoft (R) Macro Assembler Version 6.11		    09/15/21 21:01:31
 tempfile.asm						     Symbols 2 - 1
 
 
