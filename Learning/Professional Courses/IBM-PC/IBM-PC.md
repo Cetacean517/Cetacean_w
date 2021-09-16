@@ -238,3 +238,97 @@ MOV AX, [BX][DI]
 ```
 MOV AX, MASK[BX][SI]
 ```
+
+#### 3.1.2 与转移地址有关的寻址方式
+> CS: 当前代码段的地址
+> IP：当前便宜地址
+> 条件转移指令：段内间接寻址的8位位移量
+> JMP 和 CALL 指令：四种寻址方式的任意一种
+> 段内转移：直接把求得的转向的有效地址 => IP
+> 
+- 转移分类
+  - 条件转移：段内转移
+  - 无条件转移：段内/间转移
+##### 段内直接寻址 intrasegment direct addressing
+```
+// 当前 (IP) = 3000 H, NEW_ADDR = 3050H, 则偏移量 = 50H 
+JMP SHORT NEW_ADDR
+```
+- EA : 当前IP寄存器的内容 + 指令中指定的8bit/16bit位移量
+- 条件转移/非条件转移
+- 段内直接短转移：位移量8位 `JMP NEAR PTR PROGIA`
+- 段内直接近跳转：位移量16位 `JMP SHORT QUEST`
+
+##### 段内间接寻址 intrasegment indirect addressing
+```
+JMP BX
+JMP WORD PTR[BP + TABLE] // WORD PTR 为操作符，说明它是一个段内转移
+```
+- EA: 寄存器 / 存储单元 的内容
+  - 用数据寻址方式任意一种（立即数除外）
+##### 段间直接寻址 intersegment direct addressing
+```
+JMP FAR PTR NEXTROUTINT 
+// NEXTROUTINT 转向的符号地址
+// FAR PTR 段间转移操作符
+```
+- EA：指令中**直接**提供转向段地址，偏移地址
+##### 段间间接寻址 intersegment indirect addressing
+```
+JMP DWORD PTR [INTERS + BX]
+// DWORD PTR 双字节操作符
+// [INTERS + BX] 说明数据寻址方式为直接变址寻址方式
+```
+- EA：存储器中的两个相继字的内容取代IP和CS
+  - 用数据寻址方式任意一种（立即数和寄存器直接除外）
+### 3.2 程序占有的时间和执行时间
+### 3.3 80x86的指令系统
+##### 分类
+>  数据传送指令
+>  算术指令
+>  逻辑指令
+>  串处理指令
+>  控制转移指令
+>  处理机控制指令
+#### 3.3.1 数据传送指令
+> 功能：数据、地址、立即数 => 寄存器 / 存储单元
+##### 1. 通用数据传送指令
+- MOV
+- PUSH
+- POP
+- XCHG
+```
+1. MOV DST, SRC   // (DST) <- (SRC)
+
+   MOV指令的7种格式 书 p48
+
+* 注意：
+   立即数不能直接送段寄存器
+   目的寄存器 != 立即数/ CS寄存器
+   双操作数指令不允许两个操作数都是用存储器
+      MOV [SI], TABLE (ERROR!!)
+      TABLE 变量 : 存储器地址; [SI] 把内容作为地址
+```
+```
+2. PUSH SRC   // (SP) <- (SP)-2
+              // ((SP)+1,(SP)) <- (SRC)
+  
+  SP: 堆栈栈顶指针 ；地址越小，越往上
+
+3. PUSH SRC   // (DST) <- ((SP)+1,(SP))
+              // (SP) <- (SP) + 2
+
+* 注意：
+    PUSH 和 POP 指令不影响标志位
+    POP指令不能使用CS寄存器
+```
+
+##### 补充内容
+```
+DATA_BYTE DB 10, 4, 10H
+```
+#### 3.3.2 算术指令
+#### 3.3.3 逻辑指令
+#### 3.3.4 串处理指令
+#### 3.3.5 控制转移指令
+#### 3.3.5 处理机控制指令
