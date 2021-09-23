@@ -4,6 +4,14 @@ import Vue from 'vue'
 import App from './App'
 
 Vue.config.productionTip = false
+import VueSocketIO from 'vue-socket.io'
+
+Vue.use(new VueSocketIO({
+  // 控制台调试 console.log
+  debug: true,
+  // 连接地址 后端提供
+  connection: 'http://localhost:3000',
+}))
 
 /* eslint-disable no-new */
 new Vue({
@@ -11,3 +19,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

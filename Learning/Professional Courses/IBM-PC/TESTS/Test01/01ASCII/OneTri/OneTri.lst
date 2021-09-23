@@ -1,0 +1,74 @@
+Microsoft (R) Macro Assembler Version 6.11		    09/15/21 16:25:02
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATAS SEGMENT
+				    ;此处输入数据段代码  
+ 0000				DATAS ENDS
+
+ 0000				STACKS SEGMENT
+				    ;此处输入堆栈段代码
+ 0000				STACKS ENDS
+
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES,DS:DATAS,SS:STACKS
+ 0000				START:
+					;push ds
+					;sub ax, ax
+					;push ax
+ 0000  B5 01				mov ch, 1h ; 设置循环的位数
+ 0002  8A FD				mov bh, ch
+ 0004  B6 05				mov dh, 5h	; 设置循环的行数
+ 0006  B3 18				mov bl, 18h ;
+ 0008  E8 0011				call printit
+ 000B				newline:
+ 000B  FE CE				dec dh
+ 000D  B2 0A				mov dl, 0Ah
+ 000F  B4 02				mov ah,2
+ 0011  CD 21				int 21h
+ 0013  FE C7				inc bh
+ 0015  8A EF				mov ch, bh
+ 0017  75 03				jnz printit
+ 0019  E8 0011				call endloop
+					
+ 001C				printit:
+ 001C  8A D3				mov dl, bl	;输出bl
+ 001E  B4 02				mov ah,2
+ 0020  CD 21				int 21h
+ 0022  80 C3 01				add bl, 1	;bl+1
+ 0025  80 ED 01				sub ch, 1
+ 0028  75 F2				jnz printit
+ 002A  E8 FFDE				call newline;循环输出19个，输出换行
+ 002D				endloop:
+ 002D  B4 4C				mov ah, 4ch	; 以下两行类似于return
+ 002F  CD 21				int 21h
+ 0031				CODES ENDS
+				    END START
+
+
+Microsoft (R) Macro Assembler Version 6.11		    09/15/21 16:25:02
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 0031	  Para	  Private 
+DATAS  . . . . . . . . . . . . .	16 Bit	 0000	  Para	  Private 
+STACKS . . . . . . . . . . . . .	16 Bit	 0000	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+endloop  . . . . . . . . . . . .	L Near	 002D	  CODES	
+newline  . . . . . . . . . . . .	L Near	 000B	  CODES	
+printit  . . . . . . . . . . . .	L Near	 001C	  CODES	
+
+	   0 Warnings
+	   0 Errors
