@@ -1,0 +1,144 @@
+Microsoft (R) Macro Assembler Version 6.11		    09/26/21 16:45:34
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATA SEGMENT
+					;样例：mess db 'abcde1234%%^&*',10,13,'12$' ;10,13表示输出换行,字符串以$为结尾
+ 0000 61 62 63 64 65 31			mess db 'abcde1234%%^&*$' ;10,13表示输出换行,字符串以$为结尾
+       32 33 34 25 25 5E
+       26 2A 24
+ 000F 0A 0D 24				crlf db 10,13,'$'
+ 0012 6C 65 74 74 65 72			letter_n db 'letterNum:$'
+       4E 75 6D 3A 24
+ 001D 64 69 67 69 74 4E			digit_n db 'digitNum:$'
+       75 6D 3A 24
+ 0027 73 69 67 6E 4E 75			other_n db 'signNum:$'
+       6D 3A 24
+					;设置一些存取数据逇值
+ 0030 00				letter_count       db  0
+ 0031 00				digit_count        db  0
+ 0032 00				other_count        db  0
+					;bb db 00110100b, 00010010b
+ 0033 0D 0A 6C 65 74 74			output_letter_count       db 0dh,0ah,'letter count:$'
+       65 72 20 63 6F 75
+       6E 74 3A 24
+ 0043				DATA ENDS
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES, DS:DATA	;代码段和数据段的名字不一定一定是DATA
+ 0000				START:
+ 0000  B8 ---- R			mov ax, DATA
+ 0003  8E D8				mov ds, ax
+					;输出输入字符串
+ 0005  8D 16 0000 R			lea dx, mess
+ 0009  B4 09				mov ah, 9
+ 000B  CD 21				int 21h
+ 000D  8D 16 000F R			lea dx, crlf
+ 0011  B4 09				mov ah, 9
+ 0013  CD 21				int 21h
+					;数据统计
+					;1. 读入数据
+ 0015  BE 0000				mov si,0	;存放数组的下标要用si
+ 0018  B4 0E				mov ah, 14
+					
+ 001A				read:
+ 001A  8A 84 0000 R			mov al, mess[si]
+ 001E  3C 30				cmp al, '0'
+ 0020  72 1A				jb other
+ 0022  3C 39				cmp al, '9'
+ 0024  77 06				ja letterOrdigit
+ 0026  FE 06 0031 R			inc digit_count
+ 002A  EB 14				jmp next
+					
+ 002C				letterOrdigit:
+ 002C  24 DF				and al,11011111b	;将字符串转换为大写字符
+ 002E  3C 41				cmp al, 'A'
+ 0030  72 0A				jb other
+ 0032  3C 5A				cmp al, 'Z'
+ 0034  77 06				ja other
+ 0036  FE 06 0030 R			inc letter_count
+ 003A  EB 04				jmp next
+
+ 003C				other:
+ 003C  FE 06 0032 R			inc other_count ;other统计器加1
+					;输出结果
+
+ 0040				next: 
+ 0040  46				inc si
+ 0041  FE CC				dec ah
+ 0043  75 D5				jnz read	;没读完，继续读
+ 0045				break:
+ 0045  8D 16 0012 R			lea dx, letter_n
+ 0049  B4 09				mov ah, 9
+ 004B  CD 21				int 21h
+ 004D  80 06 0030 R 30			add letter_count, 30h
+ 0052  8A 16 0030 R			mov dl, letter_count
+ 0056  B4 02				mov ah, 2
+ 0058  CD 21				int 21h
+ 005A  8D 16 000F R			lea dx, crlf
+ 005E  B4 09				mov ah, 9
+ 0060  CD 21				int 21h
+					;
+ 0062  8D 16 001D R			lea dx, digit_n
+ 0066  B4 09				mov ah, 9
+ 0068  CD 21				int 21h
+ 006A  80 06 0031 R 30			add digit_count, 30h
+ 006F  8A 16 0031 R			mov dl, digit_count
+ 0073  B4 02				mov ah, 2
+ 0075  CD 21				int 21h
+ 0077  8D 16 000F R			lea dx, crlf
+ 007B  B4 09				mov ah, 9
+ 007D  CD 21				int 21h
+					;
+ 007F  8D 16 0027 R			lea dx, other_n
+ 0083  B4 09				mov ah, 9
+ 0085  CD 21				int 21h
+ 0087  80 06 0032 R 30			add other_count, 30h
+ 008C  8A 16 0032 R			mov dl, other_count
+ 0090  B4 02				mov ah, 2
+ 0092  CD 21				int 21h
+ 0094  8D 16 000F R			lea dx, crlf
+ 0098  B4 09				mov ah, 9
+ 009A  CD 21				int 21h
+					
+ 009C  B4 4C			    MOV AH,4CH
+ 009E  CD 21			    INT 21H
+ 00A0				CODES ENDS
+				    END START
+
+
+Microsoft (R) Macro Assembler Version 6.11		    09/26/21 16:45:34
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 00A0	  Para	  Private 
+DATA . . . . . . . . . . . . . .	16 Bit	 0043	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+break  . . . . . . . . . . . . .	L Near	 0045	  CODES	
+crlf . . . . . . . . . . . . . .	Byte	 000F	  DATA	
+digit_count  . . . . . . . . . .	Byte	 0031	  DATA	
+digit_n  . . . . . . . . . . . .	Byte	 001D	  DATA	
+letterOrdigit  . . . . . . . . .	L Near	 002C	  CODES	
+letter_count . . . . . . . . . .	Byte	 0030	  DATA	
+letter_n . . . . . . . . . . . .	Byte	 0012	  DATA	
+mess . . . . . . . . . . . . . .	Byte	 0000	  DATA	
+next . . . . . . . . . . . . . .	L Near	 0040	  CODES	
+other_count  . . . . . . . . . .	Byte	 0032	  DATA	
+other_n  . . . . . . . . . . . .	Byte	 0027	  DATA	
+other  . . . . . . . . . . . . .	L Near	 003C	  CODES	
+output_letter_count  . . . . . .	Byte	 0033	  DATA	
+read . . . . . . . . . . . . . .	L Near	 001A	  CODES	
+
+	   0 Warnings
+	   0 Errors

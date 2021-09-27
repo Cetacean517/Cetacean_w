@@ -168,3 +168,57 @@ skip:
 CODES ENDS
     END START
 ```
+
+## 2021.09.26
+### 字符串的输出
+```
+DATA SEGMENT
+	;样例：mess db 'abcde1234%%^&*',10,13,'12$' ;10,13表示输出换行,字符串以$为结尾
+	mess db 'Input:abcde1234%%^&*$' ;10,13表示输出换行,字符串以$为结尾
+	crlf db 10,13,'$'
+	letter db 'letterNum:$'
+	num db 'numNum:$'
+	sign db 'signNum:$'
+	bb db 00110100b, 00010010b
+DATA ENDS
+CODES SEGMENT
+    ASSUME CS:CODES, DS:DATA	;代码段和数据段的名字不一定一定是DATA
+START:
+	mov ax, DATA
+	mov ds, ax
+	;输出输入字符串
+	lea dx, mess
+	mov ah, 9
+	int 21h
+	lea dx, crlf
+	mov ah, 9
+	int 21h
+	;数据统计
+	
+	;输出结果
+	lea dx, letter
+	mov ah, 9
+	int 21h
+	lea dx, crlf
+	mov ah, 9
+	int 21h
+	;
+	lea dx, num
+	mov ah, 9
+	int 21h
+	lea dx, crlf
+	mov ah, 9
+	int 21h
+	;
+	lea dx, sign
+	mov ah, 9
+	int 21h
+	lea dx, crlf
+	mov ah, 9
+	int 21h
+	;
+    MOV AH,4CH
+    INT 21H
+CODES ENDS
+    END START
+```
