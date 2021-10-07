@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 from numpy import double
-from skimage import exposure
+from geskima import exposure
 import time
 
 # def to_grey(img):
