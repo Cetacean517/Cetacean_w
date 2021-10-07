@@ -1,0 +1,219 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/05/21 16:04:19
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATA SEGMENT
+					;样例：mess db 'abcde1234%%^&*',10,13,'12$' ;10,13表示输出换行,字符串以$为结尾
+					;mess 		db 'abcde1234%%^&*$' ;10,13表示输出换行,字符串以$为结尾
+					;一些输出提示
+ 0000 69 6E 70 75 74 20			input		db 'input a line:$'
+       61 20 6C 69 6E 65
+       3A 24
+ 000E 0A 0D 24				crlf		db 10,13,'$'
+ 0011 6C 65 74 74 65 72			letter_n 	db 'letterNum:$'
+       4E 75 6D 3A 24
+ 001C 64 69 67 69 74 4E			digit_n 	db 'digitNum:$'
+       75 6D 3A 24
+ 0026 73 69 67 6E 4E 75			other_n 	db 'signNum:$'
+       6D 3A 24
+					
+					;输入的字符串
+
+ 002F 50				line        db  80	;预定义80字节的空间
+ 0030  00							db  ?	;待输入完成后，自动获得输入的字符个数
+ 0031  0050 [							db  80 dup(?)
+        00
+       ]
+					
+ 0081 = 0052				len  equ  $ - line	;获取字符串的长度
+					
+					;设置一些计数器
+ 0081 00				letter_count       db  ?
+ 0082 00				digit_count        db  ?
+ 0083 00				other_count        db  ?
+					
+ 0084				DATA ENDS
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES, DS:DATA	;代码段和数据段的名字不一定一定是DATA
+ 0000				START:
+				;数据初始化，把0h 放入堆栈
+ 0000  1E			   push ds
+ 0001  B8 0000			   mov ax,0h
+ 0004  50			   push ax
+ 0005  B8 ---- R		   mov ax,DATA          ;初始化ds
+ 0008  8E D8			   mov ds,ax
+ 000A  C6 06 0081 R 00		   mov letter_count,0
+ 000F  C6 06 0082 R 00		   mov digit_count,0
+ 0014  C6 06 0083 R 00		   mov other_count,0
+				 
+				; 输入，输入一行字符提示
+ 0019  8D 16 0000 R		   lea dx,input
+ 001D  B4 09			   mov ah,9
+ 001F  CD 21			   int 21h
+				;输入一行字符
+ 0021  8D 16 002F R		   lea dx,line
+ 0025  B4 0A			   mov ah,10 
+ 0027  CD 21			   int 21h
+				;数据统计
+				;1. 读入数据
+ 0029  BE 0002				mov si,2	;存放数组的下标要用si
+ 002C  8A 0E 0030 R			mov cl, [line+1]
+ 0030  B4 52				mov ah, len
+					
+ 0032				read:
+ 0032  8A 84 002F R			mov al, line[si]
+ 0036  3C 30				cmp al, '0'
+ 0038  72 1C				jb other
+ 003A  3C 39				cmp al, '9'
+ 003C  77 07				ja letterOrdigit
+ 003E  80 06 0082 R 01			add digit_count,1
+ 0043  EB 16				jmp next
+					
+ 0045				letterOrdigit:
+ 0045  24 DF				and al,11011111b	;将字符串转换为大写字符
+ 0047  3C 41				cmp al, 'A'
+ 0049  72 0B				jb other
+ 004B  3C 5A				cmp al, 'Z'
+ 004D  77 07				ja other
+ 004F  80 06 0081 R 01			add letter_count,1
+ 0054  EB 05				jmp next
+
+ 0056				other:
+ 0056  80 06 0083 R 01			add other_count,1 ;other统计器加1
+					;输出结果
+
+ 005B				next: 
+ 005B  83 C6 01				add si,1
+ 005E  80 EC 01				sub ah,1
+ 0061  FE C9				dec cl
+ 0063  80 F9 00				cmp cl,0
+ 0066  74 02				jz break
+ 0068  75 C8				jnz read	;没读完，继续读
+
+ 006A				break:
+					;输出输入的字符串
+ 006A  8D 16 000E R			LEA DX, crlf                         ;另取一行                  
+ 006E  B4 09			    MOV AH, 09H							 
+ 0070  CD 21			    INT 21H
+ 0072  A0 0030 R		    MOV AL, line+1                     ;对字符串进行处理
+ 0075  04 02			    ADD AL, 2
+ 0077  B4 00			    MOV AH, 0
+ 0079  8B F0			    MOV SI, AX
+ 007B  C6 84 002F R 24		    MOV line[SI], '$'
+ 0080  8D 16 000E R		    LEA DX, crlf                        ;另取一行                   
+ 0084  B4 09			    MOV AH, 09H
+ 0086  8D 16 0031 R		    LEA DX, line+2                     ;输出输入的字符串
+ 008A  B4 09			    MOV AH, 09H							 
+ 008C  CD 21			    INT 21H
+ 008E  8D 16 000E R		    LEA DX, crlf                         ;另取一行                  
+ 0092  B4 09			    MOV AH, 09H							 
+ 0094  CD 21			    INT 21H
+				;
+ 0096  8D 16 000E R			lea dx, crlf
+ 009A  B4 09				mov ah, 9
+ 009C  CD 21				int 21h
+ 009E  8D 16 0011 R			lea dx, letter_n
+ 00A2  B4 09				mov ah, 9
+ 00A4  CD 21				int 21h
+ 00A6  8D 16 0081 R			lea dx, letter_count
+ 00AA  A0 0081 R			mov al, letter_count
+ 00AD  E8 0040				call disp
+ 00B0  8D 16 000E R			lea dx, crlf
+ 00B4  B4 09				mov ah, 9
+ 00B6  CD 21				int 21h
+					;
+ 00B8  8D 16 001C R			lea dx, digit_n
+ 00BC  B4 09				mov ah, 9
+ 00BE  CD 21				int 21h
+ 00C0  8D 16 0082 R			lea dx, digit_count
+ 00C4  A0 0082 R			mov al, digit_count
+ 00C7  E8 0026				call disp
+ 00CA  8D 16 000E R		    LEA DX, crlf                         ;另取一行                  
+ 00CE  B4 09			    MOV AH, 09H							 
+ 00D0  CD 21			    INT 21H
+				;
+ 00D2  8D 16 0026 R			lea dx, other_n
+ 00D6  B4 09				mov ah, 9
+ 00D8  CD 21				int 21h
+ 00DA  8D 16 0083 R			lea dx, other_count
+ 00DE  A0 0083 R			mov al, other_count
+ 00E1  E8 000C				call disp
+ 00E4  8D 16 000E R			lea dx, crlf
+ 00E8  B4 09				mov ah, 9
+ 00EA  CD 21				int 21h
+
+ 00EC				exit:
+ 00EC  B4 4C			    MOV AH,4CH
+ 00EE  CD 21			    INT 21H
+
+ 00F0				disp:                 ;十进制数形式显示AL中的内容.
+ 00F0  B4 00			       mov  ah, 0
+ 00F2  B3 0A			       mov  bl, 10
+ 00F4  F6 F3			       div  bl        ;div 无符号:div src 16位操作:商ax=(dx,ax)/src,余数dx
+ 00F6  04 30			       add  al, 30h    ;比如说al=15h,即21，表示letter数量，然后，这个过程就是，ax=0015h(21),除以bl，bl值为10
+ 00F8  8A D0			       mov  dl, al      ;则除完了的结果为2余1，则ah=01,al=02,即ax=0102h;,那么al+30h即为表示该数字的ASCII码值，因为0的ASCII值为30h
+ 00FA  8A FC			       mov  bh, ah       ;则ax=0132h,dl=32,bh=01;
+ 00FC  B4 02			       mov  ah, 02h      ;显示输出dx,则显示32码对应的数字，2
+ 00FE  CD 21			       int  21h           
+ 0100  8A C7			       mov  al, bh        ;把01给al,然后算出ASCII码，然后给dx，然后显示
+ 0102  04 30			       add  al, 30h
+ 0104  8A D0			       mov  dl, al        ;除数B有 8位和16位两种，保存在一个reg寄存器里 或是内存单元中。
+				 
+				                          ;被除数A 默认存放在AX中（16位以内） 或 AX和DX中（32位，DX存放高16位，AX存放低16位）
+				 
+				                          ;结果： 如果除数B是8位，那么除法的结果AL保存商，AH保存余数，
+				                          ;如果除数B是16位，那么除法的结果 AX保存商，DX保存余数。
+ 0106  B4 02			       mov  ah, 02h
+ 0108  CD 21			       int  21h     
+ 010A  C3			       ret
+
+ 010B				CODES ENDS
+				    END START
+
+
+
+
+
+
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/05/21 16:04:19
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 010B	  Para	  Private 
+DATA . . . . . . . . . . . . . .	16 Bit	 0084	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+break  . . . . . . . . . . . . .	L Near	 006A	  CODES	
+crlf . . . . . . . . . . . . . .	Byte	 000E	  DATA	
+digit_count  . . . . . . . . . .	Byte	 0082	  DATA	
+digit_n  . . . . . . . . . . . .	Byte	 001C	  DATA	
+disp . . . . . . . . . . . . . .	L Near	 00F0	  CODES	
+exit . . . . . . . . . . . . . .	L Near	 00EC	  CODES	
+input  . . . . . . . . . . . . .	Byte	 0000	  DATA	
+len  . . . . . . . . . . . . . .	Number	 0052h	 
+letterOrdigit  . . . . . . . . .	L Near	 0045	  CODES	
+letter_count . . . . . . . . . .	Byte	 0081	  DATA	
+letter_n . . . . . . . . . . . .	Byte	 0011	  DATA	
+line . . . . . . . . . . . . . .	Byte	 002F	  DATA	
+next . . . . . . . . . . . . . .	L Near	 005B	  CODES	
+other_count  . . . . . . . . . .	Byte	 0083	  DATA	
+other_n  . . . . . . . . . . . .	Byte	 0026	  DATA	
+other  . . . . . . . . . . . . .	L Near	 0056	  CODES	
+read . . . . . . . . . . . . . .	L Near	 0032	  CODES	
+
+	   0 Warnings
+	   0 Errors

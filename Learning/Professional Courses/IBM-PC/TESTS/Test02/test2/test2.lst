@@ -1,0 +1,48 @@
+Microsoft (R) Macro Assembler Version 6.11		    09/26/21 15:22:14
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATA SEGMENT
+ 0000 59 6F 75 72 20 48			mess db 'Your Hex number is:$'
+       65 78 20 6E 75 6D
+       62 65 72 20 69 73
+       3A 24
+ 0014 34 12				bb db 00110100b, 00010010b
+ 0016				DATA ENDS
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES, DS:DATA	;代码段和数据段的名字不一定一定是DATA
+ 0000				START:
+ 0000  B8 ---- R			mov ax, DATA
+ 0003  8E D8				mov ds, ax
+ 0005  8D 16 0014 R			lea dx, bb
+ 0009  B4 09				mov ah, 9
+ 000B  CD 21				int 21h
+					
+ 000D  B4 4C			    MOV AH,4CH
+ 000F  CD 21			    INT 21H
+ 0011				CODES ENDS
+				    END START
+Microsoft (R) Macro Assembler Version 6.11		    09/26/21 15:22:14
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 0011	  Para	  Private 
+DATA . . . . . . . . . . . . . .	16 Bit	 0016	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+bb . . . . . . . . . . . . . . .	Byte	 0014	  DATA	
+mess . . . . . . . . . . . . . .	Byte	 0000	  DATA	
+
+	   0 Warnings
+	   0 Errors

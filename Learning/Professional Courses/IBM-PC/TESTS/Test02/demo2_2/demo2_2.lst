@@ -1,0 +1,169 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/05/21 15:11:23
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATA SEGMENT
+					;样例：mess db 'abcde1234%%^&*',10,13,'12$' ;10,13表示输出换行,字符串以$为结尾
+					;mess 		db 'abcde1234%%^&*$' ;10,13表示输出换行,字符串以$为结尾
+					;一些输出提示
+ 0000 69 6E 70 75 74 20			input		db 'input a line:$'
+       61 20 6C 69 6E 65
+       3A 24
+ 000E 0A 0D 24				crlf		db 10,13,'$'
+ 0011 6C 65 74 74 65 72			letter_n 	db 'letterNum:$'
+       4E 75 6D 3A 24
+ 001C 64 69 67 69 74 4E			digit_n 	db 'digitNum:$'
+       75 6D 3A 24
+ 0026 73 69 67 6E 4E 75			other_n 	db 'signNum:$'
+       6D 3A 24
+					
+					;输入的字符串
+ 002F FF				mess		db 0ffh
+ 0030 00				line        db  0, 100h  dup(?)
+       0100 [
+        00
+       ]
+					
+					;设置一些计数器
+ 0131 00				letter_count       db  0
+ 0132 00				digit_count        db  0
+ 0133 00				other_count        db  0
+					
+ 0134 0D 0A 6C 65 74 74			output_letter_count       db 0dh,0ah,'letter count:$'
+       65 72 20 63 6F 75
+       6E 74 3A 24
+ 0144				DATA ENDS
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES, DS:DATA	;代码段和数据段的名字不一定一定是DATA
+ 0000				START:
+				;数据初始化，把0h 放入堆栈
+ 0000  1E			   push ds
+ 0001  B8 0000			   mov ax,0h
+ 0004  50			   push ax
+ 0005  B8 ---- R		   mov ax,DATA          ;初始化ds
+ 0008  8E D8			   mov ds,ax
+				   
+				; 输入，输入一行字符提示
+ 000A  8D 16 0000 R		   lea dx,input
+ 000E  B4 09			   mov ah,9
+ 0010  CD 21			   int 21h
+				;输入一行字符
+ 0012  8D 16 002F R		   lea dx,mess
+ 0016  B4 0A			   mov ah,10 
+ 0018  CD 21			   int 21h
+				;数据统计
+				;1. 读入数据
+ 001A  BE 0000				mov si,0	;存放数组的下标要用si
+ 001D  B4 0E				mov ah, 14
+					
+ 001F				read:
+ 001F  8A 84 0030 R			mov al, line[si]
+ 0023  3C 30				cmp al, '0'
+ 0025  72 1A				jb other
+ 0027  3C 39				cmp al, '9'
+ 0029  77 06				ja letterOrdigit
+ 002B  FE 06 0132 R			inc digit_count
+ 002F  EB 14				jmp next
+					
+ 0031				letterOrdigit:
+ 0031  24 DF				and al,11011111b	;将字符串转换为大写字符
+ 0033  3C 41				cmp al, 'A'
+ 0035  72 0A				jb other
+ 0037  3C 5A				cmp al, 'Z'
+ 0039  77 06				ja other
+ 003B  FE 06 0131 R			inc letter_count
+ 003F  EB 04				jmp next
+
+ 0041				other:
+ 0041  FE 06 0133 R			inc other_count ;other统计器加1
+					;输出结果
+
+ 0045				next: 
+ 0045  46				inc si
+ 0046  FE CC				dec ah
+ 0048  75 D5				jnz read	;没读完，继续读
+ 004A				break:
+ 004A  8D 16 000E R			lea dx, crlf
+ 004E  B4 09				mov ah, 9
+ 0050  CD 21				int 21h
+ 0052  8D 16 0011 R			lea dx, letter_n
+ 0056  B4 09				mov ah, 9
+ 0058  CD 21				int 21h
+ 005A  80 06 0131 R 30			add letter_count, 30h
+ 005F  8A 16 0131 R			mov dl, letter_count
+ 0063  B4 02				mov ah, 2
+ 0065  CD 21				int 21h
+ 0067  8D 16 000E R			lea dx, crlf
+ 006B  B4 09				mov ah, 9
+ 006D  CD 21				int 21h
+					;
+ 006F  8D 16 001C R			lea dx, digit_n
+ 0073  B4 09				mov ah, 9
+ 0075  CD 21				int 21h
+ 0077  80 06 0132 R 30			add digit_count, 30h
+ 007C  8A 16 0132 R			mov dl, digit_count
+ 0080  B4 02				mov ah, 2
+ 0082  CD 21				int 21h
+ 0084  8D 16 000E R			lea dx, crlf
+ 0088  B4 09				mov ah, 9
+ 008A  CD 21				int 21h
+					;
+ 008C  8D 16 0026 R			lea dx, other_n
+ 0090  B4 09				mov ah, 9
+ 0092  CD 21				int 21h
+ 0094  80 06 0133 R 30			add other_count, 30h
+ 0099  8A 16 0133 R			mov dl, other_count
+ 009D  B4 02				mov ah, 2
+ 009F  CD 21				int 21h
+ 00A1  8D 16 000E R			lea dx, crlf
+ 00A5  B4 09				mov ah, 9
+ 00A7  CD 21				int 21h
+					
+ 00A9  B4 4C			    MOV AH,4CH
+ 00AB  CD 21			    INT 21H
+ 00AD				CODES ENDS
+				    END START
+
+
+
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/05/21 15:11:23
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 00AD	  Para	  Private 
+DATA . . . . . . . . . . . . . .	16 Bit	 0144	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+break  . . . . . . . . . . . . .	L Near	 004A	  CODES	
+crlf . . . . . . . . . . . . . .	Byte	 000E	  DATA	
+digit_count  . . . . . . . . . .	Byte	 0132	  DATA	
+digit_n  . . . . . . . . . . . .	Byte	 001C	  DATA	
+input  . . . . . . . . . . . . .	Byte	 0000	  DATA	
+letterOrdigit  . . . . . . . . .	L Near	 0031	  CODES	
+letter_count . . . . . . . . . .	Byte	 0131	  DATA	
+letter_n . . . . . . . . . . . .	Byte	 0011	  DATA	
+line . . . . . . . . . . . . . .	Byte	 0030	  DATA	
+mess . . . . . . . . . . . . . .	Byte	 002F	  DATA	
+next . . . . . . . . . . . . . .	L Near	 0045	  CODES	
+other_count  . . . . . . . . . .	Byte	 0133	  DATA	
+other_n  . . . . . . . . . . . .	Byte	 0026	  DATA	
+other  . . . . . . . . . . . . .	L Near	 0041	  CODES	
+output_letter_count  . . . . . .	Byte	 0134	  DATA	
+read . . . . . . . . . . . . . .	L Near	 001F	  CODES	
+
+	   0 Warnings
+	   0 Errors
