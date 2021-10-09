@@ -405,5 +405,37 @@ e.g LAHF //标志送AH
 ```
 #### 3.3.3 逻辑指令
 #### 3.3.4 串处理指令
+- MOVS 串传送
+
+##### 与REP配合： MOVS, STOS, LODS, INS, OUTS
+```
+'''
+REP重复操作直到计数器寄存器Count Reg的内容为0为止。
+地址长16位（一个字）时，CX 是 Count Reg
+
+'''
+格式：
+1. REP string primitive 
+
+2. MOVS DST, SRC  //需要表明 -> 操作数是双字？字？字节？
+   MOVSB (字节)
+   MOVSW (字)
+
+e.g. MOVS ES: BYTE PTR[DI], DS: [SI]
+
+* 当方向标志 DF = 0时，用+，DF=1时，用-。
+  当地址长度16位时，DST用DI(目的变址寄存器)，SRC用SI(源变址寄存器)
+  MOVS指令，不影响条件码
+```
+##### MOVS指令：将数据段中的郑传数据传送到附加段
+```
+- 源串必须在数据段中，目的串必须在附加段中。
+- 源串允许使用段跨越前缀来修改。
+- 与REP联用，必须先把数据串的长度值送到计数寄存器Count Reg中
+```
+```
+CLD (clear direction flag) // DF = 0
+STD (set direction flag) // DF = 1
+```
 #### 3.3.5 控制转移指令
 #### 3.3.5 处理机控制指令
