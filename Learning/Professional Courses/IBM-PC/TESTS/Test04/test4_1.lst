@@ -1,0 +1,384 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 15:57:40
+tempfile.asm						     Page 1 - 1
+
+
+				;********************************************************************
+ 0000				data  segment
+ 0000 59 6F 75 72 20 6E		mess1    db    'Your name:','$'
+       61 6D 65 3A 24
+ 000B 59 6F 75 72 20 74		mess2    db    'Your telephone number:','$'
+       65 6C 65 70 68 6F
+       6E 65 20 6E 75 6D
+       62 65 72 3A 24
+ 0022 44 6F 20 79 6F 75		mess3    db    'Do you want to search?(y/n)','$'
+       20 77 61 6E 74 20
+       74 6F 20 73 65 61
+       72 63 68 3F 28 79
+       2F 6E 29 24
+ 003E 0D 0A 50 6C 65 61		mess4    db    0dh,0ah,'Please enter the name you want to search?','$'
+       73 65 20 65 6E 74
+       65 72 20 74 68 65
+       20 6E 61 6D 65 20
+       79 6F 75 20 77 61
+       6E 74 20 74 6F 20
+       73 65 61 72 63 68
+       3F 24
+ 006A 46 61 69 6C 65 64		mess5    db    'Failed. No match',0dh,0ah,'$'
+       2E 20 4E 6F 20 6D
+       61 74 63 68 0D 0A
+       24
+ 007D 50 6C 65 61 73 65		mess6    db    'Please enter the number you want to store:','$'
+       20 65 6E 74 65 72
+       20 74 68 65 20 6E
+       75 6D 62 65 72 20
+       79 6F 75 20 77 61
+       6E 74 20 74 6F 20
+       73 74 6F 72 65 3A
+       24
+ 00A8 0D 0A 24			crlf     db     0dh,0ah,'$'
+ 00AB				stokin1  label  byte
+ 00AB 15					 max1      db     21
+ 00AC 00					 act1      db     ?
+ 00AD  0015 [				  	 stokn1    db     21 dup(?)
+        00
+       ]
+ 00C2				stokin2  label  word
+ 00C2 0C					 max2      db     12
+ 00C3 00					 act2      db     ?
+ 00C4  000C [					 stokn2    db     12 dup(?)
+        00
+       ]
+ 00D0  0032 [			numtable   db     50 dup(28 dup(?))
+        001C [
+	 00
+	]
+       ]
+ 0648 0000			name_count dw    0
+ 064A 0000			endaddr   dw     ?
+ 064C 0000			swapped   dw     ?
+ 064E 0000			totalnum dw   ?
+ 0650  001C [			savenp    db     28 dup(?),0dh,0ah,'$'
+        00
+       ] 0D 0A 24
+ 066F 0000			searchaddr dw    ?
+ 0671 00			flag      db     ?
+ 0672 00			flagb      db     ?
+ 0673 6E 61 6D 65 20 20		show      db     'name                phone',0dh,0ah,'$'
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 70 68 6F 6E
+       65 0D 0A 24
+ 068F				data  ends
+				;********************************************************************
+ 0000				codesg  segment
+				   assume ds:data,cs:codesg,es:data
+ 0000				main    proc    far
+ 0000  B8 ---- R		       mov ax,data
+ 0003  8E D8			       mov ds,ax
+ 0005  8E C0			       mov es,ax
+ 0007  8D 3E 00D0 R		       lea di,numtable     ;di must be protected
+ 000B  8D 16 007D R		       lea dx,mess6        ;显示信息，请输入想存入的电话号码总数
+ 000F  B4 09			       mov ah,09   
+ 0011  CD 21			       int 21h
+ 0013  BB 0000			       mov bx,0
+ 0016				  newchar:                ;这个是参考书上例2.6，从键盘接收数字，然后转换成ASCII码
+ 0016  B4 01			       mov ah,1          ;从键盘接收totalnum,并回显AL=输入字符
+ 0018  CD 21			       int 21h
+ 001A  2C 30			       sub al,30h         ;ascii to binary
+ 001C  7C 10			       jl next             ;jump if<0
+ 001E  3C 09			       cmp al,9            ;is it >9d?
+ 0020  7F 0C			       jg next             ;yes jump
+ 0022  98			       cbw                 ;byte in AL to word in AX
+					   	;(digit is now in AX)
+ 0023  93			       xchg ax,bx            ;交换
+ 0024  B9 000A			       mov cx,10             ;put 10 dec in CX
+ 0027  F7 E1			       mul cx                  ;number times 10 （DX,AX）<-(AX)*src
+ 0029  93			       xchg ax,bx               ;交换
+ 002A  03 D8			       add bx,ax              ;add digit to number
+ 002C  EB E8			       jmp newchar                ;get next digit
+ 002E				   next:
+ 002E  89 1E 064E R		       mov totalnum,bx
+ 0032  8D 16 00A8 R		       lea dx,crlf
+ 0036  B4 09			       mov ah,09
+ 0038  CD 21			       int 21h
+ 003A				 a10:                              
+ 003A  8D 16 0000 R		       lea dx,mess1                ;显示请输入名字
+ 003E  B4 09			       mov ah,09
+ 0040  CD 21			       int 21h
+ 0042  E8 0054			       call input_name  
+ 0045  FF 06 0648 R		       inc  name_count
+ 0049  E8 0071			       call stor_name 
+				       
+ 004C  8D 16 000B R		       lea dx,mess2                 ;显示请输入电话
+ 0050  B4 09			       mov ah,09
+ 0052  CD 21			       int 21h
+ 0054  E8 0070			       call inphone
+ 0057  E8 0091			       call stor_phone
+				       
+ 005A  83 3E 0648 R 00		       cmp  name_count,0
+ 005F  74 33			       je  exit
+				       
+ 0061  8B 1E 064E R		       mov bx,totalnum
+ 0065  39 1E 0648 R		       cmp  name_count,bx         ;输入与之前输入总数相等的姓名，电话
+ 0069  75 CF			       jnz  a10
+ 006B  E8 0087			       call name_sort
+ 006E				 a20:
+ 006E  8D 16 0022 R		       lea dx,mess3                 ;显示是否需要查找电话号码
+ 0072  B4 09			       mov ah,09
+ 0074  CD 21			       int 21h
+ 0076  B4 08			       mov ah,08                     ;键盘输入，无回显，检测ctrl-break 或 Ctrl-C,AL=输入字符
+ 0078  CD 21			       int 21h
+ 007A  3C 79			       cmp al,'y'
+ 007C  74 06			       jz  a30
+ 007E  3C 6E			       cmp al,'n'
+ 0080  74 12			       jz  exit
+ 0082  EB EA			       jmp a20                          
+ 0084				 a30:
+ 0084  B4 09			       mov ah,09
+ 0086  8D 16 003E R		       lea dx,mess4             ;显示询问名字
+ 008A  CD 21			       int 21h
+ 008C  E8 000A			       call input_name
+ 008F				 a40:
+ 008F  E8 00B5			       call name_search
+				       ;call printline
+					   ;dec flag
+					   ;sub flag,0  ;要是没结束的话
+				       ;jnz  a40
+ 0092  EB DA			       jmp a20
+ 0094				 exit:
+ 0094  B8 4C00			       mov ax,4c00h            ;;;;带返回码终止，AL=子出口码，AH=返回代码，00=正常终止，01=用Ctrl-c终止，02=严重设备错误终止，03=用功能调用31H终止
+ 0097  CD 21			       int 21h
+ 0099				 main endp
+				;--------------------------------------------------------------------
+ 0099				input_name  proc  near
+ 0099  B4 0A			     mov ah,0ah			;将键盘输入至缓冲区。dx = 缓冲区首
+ 009B  8D 16 00AB R		     lea dx,stokin1
+ 009F  CD 21			     int 21h
+				     
+ 00A1  B4 09			     mov ah,09			;输出回车
+ 00A3  8D 16 00A8 R		     lea dx,crlf
+ 00A7  CD 21			     int 21h
+				     
+ 00A9  2A FF			     sub bh,bh			;bx高位清零
+ 00AB  8A 1E 00AC R		     mov bl,act1		;把输入名字的字符长度存入bl
+ 00AF  B9 0015			     mov cx,21			;最大长度存入cx
+ 00B2  2B CB			     sub cx,bx          ;dst<-dst-src,cx为计数功能寄存器,cx存入剩余字符的个数，为填充空格做准备
+ 00B4				b10:
+ 00B4  C6 87 00AD R 20		     mov stokn1[bx],' '   ;补全空格
+ 00B9  43			     inc bx
+ 00BA  E2 F8			     loop b10
+ 00BC  C3			    ret
+ 00BD				input_name endp
+				;--------------------------------------------------------------------
+ 00BD				stor_name     proc   near
+ 00BD  8D 36 00AD R		      lea  si,stokn1
+ 00C1  B9 0014			      mov  cx,20
+ 00C4  F3/ A4			      rep  movsb
+ 00C6  C3			      ret
+ 00C7				stor_name  endp
+				;--------------------------------------------------------------------
+ 00C7				inphone   proc   near
+ 00C7  B4 0A			     mov ah,0ah
+ 00C9  8D 16 00C2 R		     lea dx,stokin2
+ 00CD  CD 21			     int 21h
+ 00CF  B4 09			     mov ah,09
+				     
+ 00D1  8D 16 00A8 R		     lea dx,crlf
+ 00D5  CD 21			     int 21h
+				     
+ 00D7  2A FF			     sub bh,bh
+ 00D9  8A 1E 00C3 R		     mov bl,act2
+ 00DD  B9 000C			     mov cx,12
+ 00E0  2B CB			     sub cx,bx
+ 00E2				c10:
+ 00E2  C6 87 00C4 R 20		     mov stokn2[bx],' '
+ 00E7  43			     inc bx
+ 00E8  E2 F8			     loop c10
+ 00EA  C3			     ret 
+ 00EB				inphone endp
+				;--------------------------------------------------------------------
+ 00EB				stor_phone  proc near
+ 00EB  8D 36 00C4 R		     lea  si,stokn2
+ 00EF  B9 000B			     mov  cx,11
+ 00F2  F3/ A4			     rep  movsb   ;movs 串传送指令 cmps 串比较操作
+ 00F4  C3			     ret
+ 00F5				stor_phone endp
+				;--------------------------------------------------------------------
+ 00F5				name_sort  proc near     ;;;;;;;;
+ 00F5  83 EF 1C			     sub  di,28
+ 00F8  89 3E 064A R		     mov  endaddr,di
+ 00FC				 c1:
+ 00FC  C7 06 064C R 0000	     mov  swapped,0
+ 0102  8D 36 00D0 R		     lea  si,numtable
+ 0106				 c2:
+ 0106  B9 0014			     mov  cx,20
+ 0109  8B FE			     mov  di,si
+ 010B  83 C7 1C			     add  di,28
+ 010E  8B C7			     mov  ax,di
+ 0110  8B DE			     mov  bx,si   ;cmpsb si-di  movsb di<-si
+ 0112  F3/ A6			     repz cmpsb   ;repz 当为0时重复串操作；repe 当相等时重复串操作；rep 重复串操作直至计数寄存器count reg 的内容为0为止
+ 0114  76 21			     jbe  c3     ;CF与ZF=1，小于等于则转移
+				 ;chang order 
+ 0116  8B F3			     mov si,bx
+ 0118  8D 3E 0650 R		     lea di,savenp
+ 011C  B9 001C			     mov cx,28
+ 011F  F3/ A4			     rep movsb
+ 0121  B9 001C			     mov cx,28
+ 0124  8B FB			     mov di,bx
+ 0126  F3/ A4			     rep movsb
+ 0128  B9 001C			     mov cx,28
+ 012B  8D 36 0650 R		     lea si,savenp
+ 012F  F3/ A4			     rep movsb
+ 0131  C7 06 064C R 0001	     mov swapped,1
+ 0137				 c3:
+ 0137  8B F0			     mov  si,ax
+ 0139  3B 36 064A R		     cmp  si,endaddr
+ 013D  72 C7			     jb   c2        ;CF=1，则转移，小于等于则转移
+ 013F  83 3E 064C R 00		     cmp  swapped,0
+ 0144  75 B6			     jnz  c1    ;结果不为0则转移
+ 0146  C3			     ret
+ 0147				name_sort endp
+				;--------------------------------------------------------------------
+ 0147				name_search proc near
+ 0147  8D 1E 00D0 R		      lea  bx,numtable
+ 014B  C6 06 0671 R 00			  mov  flag,0      ;;;立个flag
+					  ;mov  flagb,0  
+ 0150				   d: 
+				      ;mov  flag,0      ;;;立个flag
+					   ;mov  flagb,0  
+ 0150  B9 0014			      mov  cx,20
+ 0153  8D 36 00AD R			  lea si,stokn1
+ 0157  8B FB			      mov  di,bx
+ 0159  F3/ A6			      repz cmpsb
+ 015B  74 1A			      jz  d2
+				      ;jb  dexit
+ 015D  83 C3 1C			      add bx,28            ;下一条
+ 0160  3B 1E 064A R		      cmp  bx,endaddr   
+ 0164  76 EA			      jbe  d             ;未结束，继续找
+					  ;add flagb,flag
+ 0166  80 2E 0671 R 00			  sub flag,0  ;要是没有找到的话
+ 016B  74 02			       jz  nof
+ 016D  EB 20			    jmp  dexit         ;结束，退出
+ 016F  8D 16 006A R		 nof:  lea dx,mess5
+ 0173  B4 09			       mov ah,09
+ 0175  CD 21			       int 21h 
+ 0177				  d2:
+ 0177  89 1E 066F R		      mov searchaddr,bx
+				      ;mov flag,1         ;标志找到了
+ 017B  FE 06 0671 R			  inc flag
+ 017F  E8 000E				  call printline
+					  ; dec flag
+					   ;sub flag,0  ;要是没结束的话
+ 0182  83 C3 1C				   add bx,28            ;下一条
+ 0185  3B 1E 064A R		      cmp  bx,endaddr   
+ 0189  76 C5			      jbe  d             ;未结束，继续找
+ 018B  EB 02			      jmp  dexit         ;结束，退出
+ 018D  75 C1			       jnz  d
+ 018F				 dexit:
+ 018F  C3			        ret
+ 0190				name_search endp
+				;--------------------------------------------------------------------
+ 0190				printline proc  near
+ 0190  80 2E 0671 R 00		       sub flag,0  ;要是没有找到的话
+ 0195  74 1F			       jz  no
+ 0197				 p10:
+ 0197  B4 09			       mov ah,09
+ 0199  8D 16 0673 R		       lea dx,show
+ 019D  CD 21			       int 21h
+ 019F  B9 001C			       mov cx,28
+ 01A2  8B 36 066F R		       mov si,searchaddr
+ 01A6  8D 3E 0650 R		       lea di,savenp
+ 01AA  F3/ A4			       rep movsb
+ 01AC  8D 16 0650 R		       lea dx,savenp
+ 01B0  B4 09			       mov ah,09
+ 01B2  CD 21			       int 21h
+ 01B4  EB 08			       jmp fexit
+ 01B6  8D 16 006A R		no:    lea dx,mess5
+ 01BA  B4 09			       mov ah,09
+ 01BC  CD 21			       int 21h 
+ 01BE				fexit:  
+ 01BE  C3			       ret
+ 01BF				printline endp
+				;--------------------------------------------------------------------
+ 01BF				codesg ends
+				;--------------------------------------------------------------------
+				end main       
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 15:57:40
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+codesg . . . . . . . . . . . . .	16 Bit	 01BF	  Para	  Private 
+data . . . . . . . . . . . . . .	16 Bit	 068F	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+inphone  . . . . . . . . . . . .	P Near	 00C7	  codesg	Length= 0024 Public
+  c10  . . . . . . . . . . . . .	L Near	 00E2	  codesg	
+input_name . . . . . . . . . . .	P Near	 0099	  codesg	Length= 0024 Public
+  b10  . . . . . . . . . . . . .	L Near	 00B4	  codesg	
+main . . . . . . . . . . . . . .	P Far	 0000	  codesg	Length= 0099 Public
+  newchar  . . . . . . . . . . .	L Near	 0016	  codesg	
+  next . . . . . . . . . . . . .	L Near	 002E	  codesg	
+  a10  . . . . . . . . . . . . .	L Near	 003A	  codesg	
+  a20  . . . . . . . . . . . . .	L Near	 006E	  codesg	
+  a30  . . . . . . . . . . . . .	L Near	 0084	  codesg	
+  a40  . . . . . . . . . . . . .	L Near	 008F	  codesg	
+  exit . . . . . . . . . . . . .	L Near	 0094	  codesg	
+name_search  . . . . . . . . . .	P Near	 0147	  codesg	Length= 0049 Public
+  d  . . . . . . . . . . . . . .	L Near	 0150	  codesg	
+  nof  . . . . . . . . . . . . .	L Near	 016F	  codesg	
+  d2 . . . . . . . . . . . . . .	L Near	 0177	  codesg	
+  dexit  . . . . . . . . . . . .	L Near	 018F	  codesg	
+name_sort  . . . . . . . . . . .	P Near	 00F5	  codesg	Length= 0052 Public
+  c1 . . . . . . . . . . . . . .	L Near	 00FC	  codesg	
+  c2 . . . . . . . . . . . . . .	L Near	 0106	  codesg	
+  c3 . . . . . . . . . . . . . .	L Near	 0137	  codesg	
+printline  . . . . . . . . . . .	P Near	 0190	  codesg	Length= 002F Public
+  p10  . . . . . . . . . . . . .	L Near	 0197	  codesg	
+  no . . . . . . . . . . . . . .	L Near	 01B6	  codesg	
+  fexit  . . . . . . . . . . . .	L Near	 01BE	  codesg	
+stor_name  . . . . . . . . . . .	P Near	 00BD	  codesg	Length= 000A Public
+stor_phone . . . . . . . . . . .	P Near	 00EB	  codesg	Length= 000A Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+act1 . . . . . . . . . . . . . .	Byte	 00AC	  data	
+act2 . . . . . . . . . . . . . .	Byte	 00C3	  data	
+crlf . . . . . . . . . . . . . .	Byte	 00A8	  data	
+endaddr  . . . . . . . . . . . .	Word	 064A	  data	
+flagb  . . . . . . . . . . . . .	Byte	 0672	  data	
+flag . . . . . . . . . . . . . .	Byte	 0671	  data	
+max1 . . . . . . . . . . . . . .	Byte	 00AB	  data	
+max2 . . . . . . . . . . . . . .	Byte	 00C2	  data	
+mess1  . . . . . . . . . . . . .	Byte	 0000	  data	
+mess2  . . . . . . . . . . . . .	Byte	 000B	  data	
+mess3  . . . . . . . . . . . . .	Byte	 0022	  data	
+mess4  . . . . . . . . . . . . .	Byte	 003E	  data	
+mess5  . . . . . . . . . . . . .	Byte	 006A	  data	
+mess6  . . . . . . . . . . . . .	Byte	 007D	  data	
+name_count . . . . . . . . . . .	Word	 0648	  data	
+numtable . . . . . . . . . . . .	Byte	 00D0	  data	
+savenp . . . . . . . . . . . . .	Byte	 0650	  data	
+searchaddr . . . . . . . . . . .	Word	 066F	  data	
+show . . . . . . . . . . . . . .	Byte	 0673	  data	
+stokin1  . . . . . . . . . . . .	Byte	 00AB	  data	
+stokin2  . . . . . . . . . . . .	Word	 00C2	  data	
+stokn1 . . . . . . . . . . . . .	Byte	 00AD	  data	
+stokn2 . . . . . . . . . . . . .	Byte	 00C4	  data	
+swapped  . . . . . . . . . . . .	Word	 064C	  data	
+totalnum . . . . . . . . . . . .	Word	 064E	  data	
+
+	   0 Warnings
+	   0 Errors

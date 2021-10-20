@@ -1,0 +1,33 @@
+DATAS SEGMENT
+    SENTENCE DB 13,10,'Enter Sentence:','$'
+    KEYWORD DB 13,10,'Enter Keyword:','$'
+    ERROR DB 13,10,'Input error!','$'
+    
+    ; LABEL伪指令给变量设置别名，共享内存位置
+    BUFFER LABEL BYTE
+    	   MAX1 DB 80
+    	   ACT1 DB ?
+    	   STOKN1 DB 80 DUP(?)
+    	   
+    KEY	LABEL BYTE
+    	MAX2 DB 80
+    	ACT2 DB ?
+    	STOKN2 DB 80 DUP(?)	 
+    
+    TEMP LABEL BYTE
+    	MAX3 DB 80
+    	ACT3 DB ?
+    	STOKN3 DB 80 DUP(?)
+    	
+    DIVIDING_LINE_1 DB 13,10,'++++++++++++++++++++++++++++++++++',13,10,'$'	;此处分割线
+    DIVIDING_LINE_2 DB 13,10,'----------------------------------','$'	;此处分割线
+   	
+    
+    MATCH  DB 13,10,'Match Successfully!','$'
+    NOMATCH DB 13,10,'Failed.No Match','$'
+    LOCATION_1 DB 13,10,'Match location at:','$'
+    LOCATION_2 DB 13,10,'Keyword location (Decimal) is:','$'
+    RESULT DB 13,10,'The content of the new string is:','$'
+    CRLF DB 13,10,'$'
+    CHAR DB '$'
+DATAS ENDS

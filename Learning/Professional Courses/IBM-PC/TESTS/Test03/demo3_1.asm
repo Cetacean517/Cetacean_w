@@ -1,6 +1,6 @@
 DATAS SEGMENT
-    INPUT1 DB 13,10,'Please input a string:','$'
-    INPUT2 DB 13,10,'Please input a key:','$'
+    SENTENCE DB 13,10,'Enter Sentence:','$'
+    KEYWORD DB 13,10,'Enter Keyword:','$'
     ERROR DB 13,10,'Input error!','$'
     
     ; LABEL伪指令给变量设置别名，共享内存位置
@@ -69,15 +69,19 @@ START:
    	JNE ERROR_1
    	
 BEGIN_1:
-   	LEA DX,INPUT1	;提示输入
+   	LEA DX,SENTENCE	;提示输入
    	MOV AH,09H
    	INT 21H
+   	
+   	MOV AH, 8
+	INT 33
+	
    	
    	LEA DX,BUFFER	;输入字符串
    	MOV AH,0AH
    	INT 21H
    	 
-   	LEA DX,INPUT2	;提示输入
+   	LEA DX,KEYWORD	;提示输入
    	MOV AH,09H
    	INT 21H
    	
@@ -255,6 +259,7 @@ END_0:
 CODES ENDS
     END START
     
+
 
 
 

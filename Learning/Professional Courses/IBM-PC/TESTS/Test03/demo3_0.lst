@@ -1,9 +1,8 @@
-Microsoft (R) Macro Assembler Version 6.11		    10/05/21 19:26:52
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 11:29:00
 tempfile.asm						     Page 1 - 1
 
 
  0000				DATAS SEGMENT
-				    ;此处输入数据段代码  
  0000 0D 0A 50 6C 65 61		    INPUT1 DB 13,10,'Please input a string:','$'
        73 65 20 69 6E 70
        75 74 20 61 20 73
@@ -17,6 +16,7 @@ tempfile.asm						     Page 1 - 1
        74 20 65 72 72 6F
        72 21 24
 				    
+				    ; LABEL伪指令给变量设置别名，共享内存位置
  003E				    BUFFER LABEL BYTE
  003E 50			    	   MAX1 DB 80
  003F 00			    	   ACT1 DB ?
@@ -38,12 +38,12 @@ tempfile.asm						     Page 1 - 1
         00
        ]
 				    	
- 0134 0D 0A 2A 2A 2A 2A		    DIVIDING_LINE_1 DB 13,10,'**********************************',13,10,'$'	;此处分割线
-       2A 2A 2A 2A 2A 2A
-       2A 2A 2A 2A 2A 2A
-       2A 2A 2A 2A 2A 2A
-       2A 2A 2A 2A 2A 2A
-       2A 2A 2A 2A 2A 2A
+ 0134 0D 0A 2B 2B 2B 2B		    DIVIDING_LINE_1 DB 13,10,'++++++++++++++++++++++++++++++++++',13,10,'$'	;此处分割线
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
        0D 0A 24
  015B 0D 0A 2D 2D 2D 2D		    DIVIDING_LINE_2 DB 13,10,'----------------------------------','$'	;此处分割线
        2D 2D 2D 2D 2D 2D
@@ -66,30 +66,33 @@ tempfile.asm						     Page 1 - 1
        3A 24
 				    
 				    
- 01BA 0D 0A 4D 61 74 63		    MATCH  DB 13,10,'Match!','$'
-       68 21 24
- 01C3 0D 0A 4E 6F 20 4D		    NOMATCH DB 13,10,'No Match','$'
-       61 74 63 68 24
- 01CE 0D 0A 4B 65 79 77		    LOCATION_1 DB 13,10,'Keyword location (Hex) is:','$'
+ 01BA 0D 0A 4D 61 74 63		    MATCH  DB 13,10,'Match Successfully!','$'
+       68 20 53 75 63 63
+       65 73 73 66 75 6C
+       6C 79 21 24
+ 01D0 0D 0A 46 61 69 6C		    NOMATCH DB 13,10,'Failed.No Match','$'
+       65 64 2E 4E 6F 20
+       4D 61 74 63 68 24
+ 01E2 0D 0A 4B 65 79 77		    LOCATION_1 DB 13,10,'Keyword location (Hex) is:','$'
        6F 72 64 20 6C 6F
        63 61 74 69 6F 6E
        20 28 48 65 78 29
        20 69 73 3A 24
- 01EB 0D 0A 4B 65 79 77		    LOCATION_2 DB 13,10,'Keyword location (Decimal) is:','$'
+ 01FF 0D 0A 4B 65 79 77		    LOCATION_2 DB 13,10,'Keyword location (Decimal) is:','$'
        6F 72 64 20 6C 6F
        63 61 74 69 6F 6E
        20 28 44 65 63 69
        6D 61 6C 29 20 69
        73 3A 24
- 020C 0D 0A 54 68 65 20		    RESULT DB 13,10,'The content of the new string is:','$'
+ 0220 0D 0A 54 68 65 20		    RESULT DB 13,10,'The content of the new string is:','$'
        63 6F 6E 74 65 6E
        74 20 6F 66 20 74
        68 65 20 6E 65 77
        20 73 74 72 69 6E
        67 20 69 73 3A 24
- 0230 0D 0A 24			    CRLF DB 13,10,'$'
- 0233 24			    CHAR DB '$'
- 0234				DATAS ENDS
+ 0244 0D 0A 24			    CRLF DB 13,10,'$'
+ 0247 24			    CHAR DB '$'
+ 0248				DATAS ENDS
 
  0000				STACKS SEGMENT
 				    ;此处输入堆栈段代码
@@ -114,7 +117,7 @@ tempfile.asm						     Page 1 - 1
  001B  B4 09			   	MOV AH,09H
  001D  CD 21			   	INT 21H
 				   	
- 001F  B4 01			   	MOV AH,01H
+ 001F  B4 01			   	MOV AH,01H			;设置带回显的键盘输入
  0021  CD 21			   	INT 21H
 				   	   	
  0023  3C 59			   	CMP AL,'Y'
@@ -180,7 +183,7 @@ tempfile.asm						     Page 1 - 1
  009A  B4 09				MOV AH,09H
  009C  CD 21				INT 21H
 					
- 009E  8D 16 01CE R			LEA DX,LOCATION_1
+ 009E  8D 16 01E2 R			LEA DX,LOCATION_1
  00A2  B4 09				MOV AH,09H
  00A4  CD 21				INT 21H
 					
@@ -189,7 +192,7 @@ tempfile.asm						     Page 1 - 1
  00A9  40				INC AX				;使起始位置从一开始
  00AA  E8 0048				CALL PRINT_2		;将关键字所在位置以十六进制数形式打印
 					
- 00AD  8D 16 01EB R			LEA DX,LOCATION_2
+ 00AD  8D 16 01FF R			LEA DX,LOCATION_2
  00B1  B4 09				MOV AH,09H
  00B3  CD 21				INT 21H
 					
@@ -206,7 +209,7 @@ tempfile.asm						     Page 1 - 1
  00C1  E9 FF3C				JMP START
 					
  00C4				NO_MATCH:
- 00C4  8D 16 01C3 R			LEA DX,NOMATCH		;匹配失败
+ 00C4  8D 16 01D0 R			LEA DX,NOMATCH		;匹配失败
  00C8  B4 09				MOV AH,09H
  00CA  CD 21				INT 21H
 					
@@ -296,7 +299,7 @@ tempfile.asm						     Page 1 - 1
 					
  0154  C6 05 24				MOV BYTE PTR[DI],'$'	;在删除之后字符串尾加'$',表示字符串终止
 					
- 0157  8D 16 020C R			LEA DX,RESULT			;回车换行
+ 0157  8D 16 0220 R			LEA DX,RESULT			;回车换行
  015B  B4 09				MOV AH,09H
  015D  CD 21				INT 21H
 					
@@ -312,7 +315,10 @@ tempfile.asm						     Page 1 - 1
 				    END START
 				    
 
-Microsoft (R) Macro Assembler Version 6.11		    10/05/21 19:26:52
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 11:29:00
 tempfile.asm						     Symbols 2 - 1
 
 
@@ -323,7 +329,7 @@ Segments and Groups:
                 N a m e                 Size     Length   Align   Combine Class
 
 CODES  . . . . . . . . . . . . .	16 Bit	 016C	  Para	  Private 
-DATAS  . . . . . . . . . . . . .	16 Bit	 0234	  Para	  Private 
+DATAS  . . . . . . . . . . . . .	16 Bit	 0248	  Para	  Private 
 STACKS . . . . . . . . . . . . .	16 Bit	 0000	  Para	  Private 
 
 
@@ -338,9 +344,9 @@ ASK_1  . . . . . . . . . . . . .	Byte	 0180	  DATAS
 ASK_2  . . . . . . . . . . . . .	Byte	 01A6	  DATAS	
 BEGIN_1  . . . . . . . . . . . .	L Near	 0033	  CODES	
 BUFFER . . . . . . . . . . . . .	Byte	 003E	  DATAS	
-CHAR . . . . . . . . . . . . . .	Byte	 0233	  DATAS	
+CHAR . . . . . . . . . . . . . .	Byte	 0247	  DATAS	
 CMP_SEG  . . . . . . . . . . . .	L Near	 0077	  CODES	
-CRLF . . . . . . . . . . . . . .	Byte	 0230	  DATAS	
+CRLF . . . . . . . . . . . . . .	Byte	 0244	  DATAS	
 DELETE_KEY . . . . . . . . . . .	L Near	 0124	  CODES	
 DIVIDING_LINE_1  . . . . . . . .	Byte	 0134	  DATAS	
 DIVIDING_LINE_2  . . . . . . . .	Byte	 015B	  DATAS	
@@ -352,15 +358,15 @@ INPUT2 . . . . . . . . . . . . .	Byte	 0019	  DATAS
 KEY  . . . . . . . . . . . . . .	Byte	 0090	  DATAS	
 LETTER_1 . . . . . . . . . . . .	L Near	 0107	  CODES	
 LETTER_2 . . . . . . . . . . . .	L Near	 011B	  CODES	
-LOCATION_1 . . . . . . . . . . .	Byte	 01CE	  DATAS	
-LOCATION_2 . . . . . . . . . . .	Byte	 01EB	  DATAS	
+LOCATION_1 . . . . . . . . . . .	Byte	 01E2	  DATAS	
+LOCATION_2 . . . . . . . . . . .	Byte	 01FF	  DATAS	
 LOOP_1 . . . . . . . . . . . . .	L Near	 007E	  CODES	
 MATCH_1  . . . . . . . . . . . .	L Near	 0096	  CODES	
 MATCH  . . . . . . . . . . . . .	Byte	 01BA	  DATAS	
 MAX1 . . . . . . . . . . . . . .	Byte	 003E	  DATAS	
 MAX2 . . . . . . . . . . . . . .	Byte	 0090	  DATAS	
 MAX3 . . . . . . . . . . . . . .	Byte	 00E2	  DATAS	
-NOMATCH  . . . . . . . . . . . .	Byte	 01C3	  DATAS	
+NOMATCH  . . . . . . . . . . . .	Byte	 01D0	  DATAS	
 NO_MATCH . . . . . . . . . . . .	L Near	 00C4	  CODES	
 NUMBER_1 . . . . . . . . . . . .	L Near	 0103	  CODES	
 NUMBER_2 . . . . . . . . . . . .	L Near	 0117	  CODES	
@@ -368,7 +374,7 @@ OUTPUT_1 . . . . . . . . . . . .	L Near	 0109	  CODES
 OUTPUT_2 . . . . . . . . . . . .	L Near	 011D	  CODES	
 PRINT_1  . . . . . . . . . . . .	L Near	 00DA	  CODES	
 PRINT_2  . . . . . . . . . . . .	L Near	 00F5	  CODES	
-RESULT . . . . . . . . . . . . .	Byte	 020C	  DATAS	
+RESULT . . . . . . . . . . . . .	Byte	 0220	  DATAS	
 START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
 STOKN1 . . . . . . . . . . . . .	Byte	 0040	  DATAS	
 STOKN2 . . . . . . . . . . . . .	Byte	 0092	  DATAS	

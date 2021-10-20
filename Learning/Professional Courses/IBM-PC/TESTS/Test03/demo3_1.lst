@@ -1,0 +1,387 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 11:43:30
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATAS SEGMENT
+ 0000 0D 0A 45 6E 74 65		    SENTENCE DB 13,10,'Enter Sentence:','$'
+       72 20 53 65 6E 74
+       65 6E 63 65 3A 24
+ 0012 0D 0A 45 6E 74 65		    KEYWORD DB 13,10,'Enter Keyword:','$'
+       72 20 4B 65 79 77
+       6F 72 64 3A 24
+ 0023 0D 0A 49 6E 70 75		    ERROR DB 13,10,'Input error!','$'
+       74 20 65 72 72 6F
+       72 21 24
+				    
+				    ; LABEL伪指令给变量设置别名，共享内存位置
+ 0032				    BUFFER LABEL BYTE
+ 0032 50			    	   MAX1 DB 80
+ 0033 00			    	   ACT1 DB ?
+ 0034  0050 [			    	   STOKN1 DB 80 DUP(?)
+        00
+       ]
+				    	   
+ 0084				    KEY	LABEL BYTE
+ 0084 50			    	MAX2 DB 80
+ 0085 00			    	ACT2 DB ?
+ 0086  0050 [			    	STOKN2 DB 80 DUP(?)	 
+        00
+       ]
+				    
+ 00D6				    TEMP LABEL BYTE
+ 00D6 50			    	MAX3 DB 80
+ 00D7 00			    	ACT3 DB ?
+ 00D8  0050 [			    	STOKN3 DB 80 DUP(?)
+        00
+       ]
+				    	
+ 0128 0D 0A 2B 2B 2B 2B		    DIVIDING_LINE_1 DB 13,10,'++++++++++++++++++++++++++++++++++',13,10,'$'	;此处分割线
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       2B 2B 2B 2B 2B 2B
+       0D 0A 24
+ 014F 0D 0A 2D 2D 2D 2D		    DIVIDING_LINE_2 DB 13,10,'----------------------------------','$'	;此处分割线
+       2D 2D 2D 2D 2D 2D
+       2D 2D 2D 2D 2D 2D
+       2D 2D 2D 2D 2D 2D
+       2D 2D 2D 2D 2D 2D
+       2D 2D 2D 2D 2D 2D
+       24
+				   	
+ 0174 0D 0A 57 68 65 74		    ASK_1 DB 13,10,'Whether to perform string matching?','$'
+       68 65 72 20 74 6F
+       20 70 65 72 66 6F
+       72 6D 20 73 74 72
+       69 6E 67 20 6D 61
+       74 63 68 69 6E 67
+       3F 24
+ 019A 0D 0A 50 6C 65 61		    ASK_2 DB 13,10,'Please input Y/N:','$'
+       73 65 20 69 6E 70
+       75 74 20 59 2F 4E
+       3A 24
+				    
+				    
+ 01AE 0D 0A 4D 61 74 63		    MATCH  DB 13,10,'Match Successfully!','$'
+       68 20 53 75 63 63
+       65 73 73 66 75 6C
+       6C 79 21 24
+ 01C4 0D 0A 46 61 69 6C		    NOMATCH DB 13,10,'Failed.No Match','$'
+       65 64 2E 4E 6F 20
+       4D 61 74 63 68 24
+ 01D6 0D 0A 4B 65 79 77		    LOCATION_1 DB 13,10,'Keyword location (Hex) is:','$'
+       6F 72 64 20 6C 6F
+       63 61 74 69 6F 6E
+       20 28 48 65 78 29
+       20 69 73 3A 24
+ 01F3 0D 0A 4B 65 79 77		    LOCATION_2 DB 13,10,'Keyword location (Decimal) is:','$'
+       6F 72 64 20 6C 6F
+       63 61 74 69 6F 6E
+       20 28 44 65 63 69
+       6D 61 6C 29 20 69
+       73 3A 24
+ 0214 0D 0A 54 68 65 20		    RESULT DB 13,10,'The content of the new string is:','$'
+       63 6F 6E 74 65 6E
+       74 20 6F 66 20 74
+       68 65 20 6E 65 77
+       20 73 74 72 69 6E
+       67 20 69 73 3A 24
+ 0238 0D 0A 24			    CRLF DB 13,10,'$'
+ 023B 24			    CHAR DB '$'
+ 023C				DATAS ENDS
+
+ 0000				STACKS SEGMENT
+				    ;此处输入堆栈段代码
+ 0000				STACKS ENDS
+
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES,DS:DATAS,SS:STACKS,ES:DATAS
+ 0000				START:
+ 0000  B8 ---- R		    MOV AX,DATAS
+ 0003  8E D8			    MOV DS,AX
+ 0005  8E C0			    MOV ES,AX
+				    
+ 0007  8D 16 0128 R		    LEA DX,DIVIDING_LINE_1		;回车换行
+ 000B  B4 09			   	MOV AH,09H
+ 000D  CD 21			   	INT 21H
+				   	
+ 000F  8D 16 0174 R		    LEA DX,ASK_1
+ 0013  B4 09			   	MOV AH,09H
+ 0015  CD 21			   	INT 21H
+				    
+ 0017  8D 16 019A R		    LEA DX,ASK_2
+ 001B  B4 09			   	MOV AH,09H
+ 001D  CD 21			   	INT 21H
+				   	
+ 001F  B4 01			   	MOV AH,01H			;设置带回显的键盘输入
+ 0021  CD 21			   	INT 21H
+				   	   	
+ 0023  3C 59			   	CMP AL,'Y'
+ 0025  74 0C			   	JE BEGIN_1
+				   	
+ 0027  3C 4E			   	CMP AL,'N'
+ 0029  75 03 E9 013E		   	JE END_0
+ 002E  74 03 E9 00A0		   	JNE ERROR_1
+				   	
+ 0033				BEGIN_1:
+ 0033  8D 16 0000 R		   	LEA DX,SENTENCE	;提示输入
+ 0037  B4 09			   	MOV AH,09H
+ 0039  CD 21			   	INT 21H
+				   	
+ 003B  B4 08			   	MOV AH, 8
+ 003D  CD 21				INT 33
+					
+				   	
+ 003F  8D 16 0032 R		   	LEA DX,BUFFER	;输入字符串
+ 0043  B4 0A			   	MOV AH,0AH
+ 0045  CD 21			   	INT 21H
+				   	 
+ 0047  8D 16 0012 R		   	LEA DX,KEYWORD	;提示输入
+ 004B  B4 09			   	MOV AH,09H
+ 004D  CD 21			   	INT 21H
+				   	
+ 004F  8D 16 0084 R		   	LEA DX,KEY		;输入关键字
+ 0053  B4 0A			   	MOV AH,0AH
+ 0055  CD 21			   	INT 21H
+				   	
+ 0057  8D 16 014F R		   	LEA DX,DIVIDING_LINE_2		;回车换行
+ 005B  B4 09			   	MOV AH,09H
+ 005D  CD 21			   	INT 21H
+				   	
+ 005F  8A 0E 0085 R		   	MOV CL,ACT2		;CL存放关键字长度
+				   	
+ 0063  8A 26 0033 R		   	MOV AH,ACT1
+ 0067  2A E1			   	SUB AH,CL
+ 0069  72 68			   	JB ERROR_1		;字符串长度小于关键字长度，直接error
+				   	
+ 006B  8A F4			   	MOV DH,AH		;字符串长度减关键字长度作为循环次数
+ 006D  80 C6 01			   	ADD DH,1
+				   	
+ 0070  8D 3E 0034 R		   	LEA DI,STOKN1	;初始化DI,为字符串指针
+ 0074  8D 36 0086 R		   	LEA SI,STOKN2	;初始化SI,为关键字指针
+ 0078  BB 0000				MOV BX,0		;初始化字符串偏移量
+
+ 007B				CMP_SEG:
+ 007B  FC				CLD				;设置SI,DI移动方向为+1
+ 007C  F3/ A6			   	REPZ CMPSB		;比较字符串和关键字
+ 007E  74 1A			   	JZ MATCH_1		;匹配成功,跳转至MATCH_1
+ 0080  75 00			   	JNZ LOOP_1		;匹配失败，循环继续匹配
+				   	
+ 0082				LOOP_1:
+ 0082  43				INC BX			;字符串偏移量
+ 0083  8D 3E 0034 R			LEA DI,STOKN1	;重置DI
+ 0087  8D 36 0086 R		   	LEA SI,STOKN2	;重置SI
+ 008B  8A 0E 0085 R		   	MOV CL,ACT2		;CL存放关键字长度
+ 008F  03 FB			   	ADD DI,BX		;确定新的字符串起始位置
+ 0091  FE CE				DEC DH 			;循环次数减一
+ 0093  80 FE 00			   	CMP DH,0		;判断循环是否终止
+ 0096  74 30			   	JE NO_MATCH		;若循环终止还未匹配，则跳转至NO_MATCH
+ 0098  75 E1				JNE CMP_SEG 	;否则继续匹配
+				   	
+ 009A				MATCH_1:
+ 009A  8D 16 01AE R			LEA DX,MATCH	;匹配成功
+ 009E  B4 09				MOV AH,09H
+ 00A0  CD 21				INT 21H
+					
+ 00A2  8D 16 01D6 R			LEA DX,LOCATION_1
+ 00A6  B4 09				MOV AH,09H
+ 00A8  CD 21				INT 21H
+					
+ 00AA  8B C3				MOV AX,BX
+ 00AC  53				PUSH BX				;进栈保护数据
+ 00AD  40				INC AX				;使起始位置从一开始
+ 00AE  E8 0048				CALL PRINT_2		;将关键字所在位置以十六进制数形式打印
+					
+ 00B1  8D 16 01F3 R			LEA DX,LOCATION_2
+ 00B5  B4 09				MOV AH,09H
+ 00B7  CD 21				INT 21H
+					
+ 00B9  5B				POP BX				;出栈恢复数据
+ 00BA  8B C3				MOV AX,BX
+ 00BC  53				PUSH BX
+ 00BD  40				INC AX
+ 00BE  E8 001D				CALL PRINT_1		;将关键字所在位置以十进制数形式打印
+					
+ 00C1  5B				POP BX
+ 00C2  E8 0063				CALL DELETE_KEY
+					
+					
+ 00C5  E9 FF38				JMP START
+					
+ 00C8				NO_MATCH:
+ 00C8  8D 16 01C4 R			LEA DX,NOMATCH		;匹配失败
+ 00CC  B4 09				MOV AH,09H
+ 00CE  CD 21				INT 21H
+					
+					
+ 00D0  E9 FF2D				JMP START
+ 00D3				ERROR_1:
+ 00D3  8D 16 0023 R			LEA DX,ERROR		;输入错误
+ 00D7  B4 09				MOV AH,09H
+ 00D9  CD 21				INT 21H
+					
+					
+ 00DB  E9 FF22				JMP START
+
+ 00DE				PRINT_1:    	;两位十进制输出
+ 00DE  B4 00				MOV AH,0  	;对于超过9个数的字符，ASCII中并没有直接与之对应的字符，因此应分别输出两位数的各位和十位。
+ 00E0  B3 0A				MOV BL,10
+ 00E2  F6 F3				DIV BL    	;将AX中内容除以10，商放在AL,余数放在AH
+ 00E4  04 30				ADD AL,30H  ;将个位数+30H转化为数字字符
+ 00E6  8A FC				MOV BH,AH
+ 00E8  8A D0				MOV DL,AL
+ 00EA  B4 02				MOV AH,02H  ;打印个位数
+ 00EC  CD 21				INT 21H
+ 00EE  8A C7				MOV AL,BH 
+ 00F0  04 30				ADD AL,30H  ;将十位数转化为数字字符
+ 00F2  8A D0				MOV DL,AL 
+ 00F4  B4 02				MOV AH,02H  ;打印十位数
+ 00F6  CD 21				INT 21H
+ 00F8  C3				RET
+
+ 00F9				PRINT_2:
+ 00F9  B4 00				MOV AH,0  ;对于超过9个数的字符，ASCII中并没有直接与之对应的字符，因此应分别输出两位数的各位和十位。
+ 00FB  B3 10				MOV BL,16
+ 00FD  F6 F3				DIV BL    ;将AX中内容除以16，商放在AL,余数放在AH
+ 00FF  8A FC				MOV BH,AH
+ 0101  3C 0A				CMP AL,10
+ 0103  72 02				JB NUMBER_1
+ 0105  73 04				JAE LETTER_1
+ 0107				  NUMBER_1:
+ 0107  04 30				ADD AL,30H  ;将个位数+30H转化为数字字符
+ 0109  EB 02				JMP OUTPUT_1
+ 010B				  LETTER_1:
+ 010B  04 37			  	ADD AL,37H	;将个位数+37H转化为字母字符
+ 010D				  OUTPUT_1:
+ 010D  8A D0				MOV DL,AL
+ 010F  B4 02				MOV AH,02H  ;打印个位数
+ 0111  CD 21				INT 21H
+					
+ 0113  8A C7				MOV AL,BH 
+ 0115  3C 0A				CMP AL,10
+ 0117  72 02				JB NUMBER_2
+ 0119  73 04				JAE LETTER_2
+ 011B				  NUMBER_2:
+ 011B  04 30				ADD AL,30H  ;将个位数+37H转化为字母字符
+ 011D  EB 02				JMP OUTPUT_2
+ 011F				  LETTER_2:
+ 011F  04 37			  	ADD AL,37H
+ 0121				  OUTPUT_2:
+ 0121  8A D0				MOV DL,AL 
+ 0123  B4 02				MOV AH,02H  ;打印十位数
+ 0125  CD 21				INT 21H
+ 0127  C3				RET
+					
+					
+ 0128				DELETE_KEY:			;删除字符串中关键字
+ 0128  8D 36 0034 R			LEA SI,STOKN1	;复制原字符串到STOKN3
+ 012C  8D 3E 00D8 R			LEA DI,STOKN3
+ 0130  8A 0E 0033 R			MOV CL,ACT1
+ 0134  B5 00				MOV CH,0
+ 0136  FC				CLD
+ 0137  F3/ A4				REP MOVSB
+					
+ 0139  8D 3E 00D8 R			LEA DI,STOKN3	;删除字符串中关键字
+ 013D  03 FB				ADD DI,BX		;确定删除位置
+					
+ 013F  8D 36 0034 R			LEA SI,STOKN1	;确定删除位置字符
+ 0143  03 F3				ADD SI,BX
+ 0145  8A 16 0085 R			MOV DL,ACT2
+ 0149  B6 00				MOV DH,0
+ 014B  03 F2				ADD SI,DX
+					
+ 014D  8A 0E 0033 R			MOV CL,ACT1
+ 0151  2A CA				SUB CL,DL
+ 0153  2B CB				SUB CX,BX
+					
+ 0155  FC				CLD
+ 0156  F3/ A4				REP MOVSB
+					
+ 0158  C6 05 24				MOV BYTE PTR[DI],'$'	;在删除之后字符串尾加'$',表示字符串终止
+					
+ 015B  8D 16 0214 R			LEA DX,RESULT			;回车换行
+ 015F  B4 09				MOV AH,09H
+ 0161  CD 21				INT 21H
+					
+ 0163  8D 16 00D8 R			LEA DX,STOKN3			;输出删除关键字后字符串
+ 0167  B4 09				MOV AH,09H
+ 0169  CD 21				INT 21H
+					
+ 016B  C3				RET
+ 016C				END_0:
+ 016C  B4 4C				MOV AH,4CH
+ 016E  CD 21				INT 21H
+ 0170				CODES ENDS
+				    END START
+				    
+
+
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 11:43:30
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 0170	  Para	  Private 
+DATAS  . . . . . . . . . . . . .	16 Bit	 023C	  Para	  Private 
+STACKS . . . . . . . . . . . . .	16 Bit	 0000	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+ACT1 . . . . . . . . . . . . . .	Byte	 0033	  DATAS	
+ACT2 . . . . . . . . . . . . . .	Byte	 0085	  DATAS	
+ACT3 . . . . . . . . . . . . . .	Byte	 00D7	  DATAS	
+ASK_1  . . . . . . . . . . . . .	Byte	 0174	  DATAS	
+ASK_2  . . . . . . . . . . . . .	Byte	 019A	  DATAS	
+BEGIN_1  . . . . . . . . . . . .	L Near	 0033	  CODES	
+BUFFER . . . . . . . . . . . . .	Byte	 0032	  DATAS	
+CHAR . . . . . . . . . . . . . .	Byte	 023B	  DATAS	
+CMP_SEG  . . . . . . . . . . . .	L Near	 007B	  CODES	
+CRLF . . . . . . . . . . . . . .	Byte	 0238	  DATAS	
+DELETE_KEY . . . . . . . . . . .	L Near	 0128	  CODES	
+DIVIDING_LINE_1  . . . . . . . .	Byte	 0128	  DATAS	
+DIVIDING_LINE_2  . . . . . . . .	Byte	 014F	  DATAS	
+END_0  . . . . . . . . . . . . .	L Near	 016C	  CODES	
+ERROR_1  . . . . . . . . . . . .	L Near	 00D3	  CODES	
+ERROR  . . . . . . . . . . . . .	Byte	 0023	  DATAS	
+KEYWORD  . . . . . . . . . . . .	Byte	 0012	  DATAS	
+KEY  . . . . . . . . . . . . . .	Byte	 0084	  DATAS	
+LETTER_1 . . . . . . . . . . . .	L Near	 010B	  CODES	
+LETTER_2 . . . . . . . . . . . .	L Near	 011F	  CODES	
+LOCATION_1 . . . . . . . . . . .	Byte	 01D6	  DATAS	
+LOCATION_2 . . . . . . . . . . .	Byte	 01F3	  DATAS	
+LOOP_1 . . . . . . . . . . . . .	L Near	 0082	  CODES	
+MATCH_1  . . . . . . . . . . . .	L Near	 009A	  CODES	
+MATCH  . . . . . . . . . . . . .	Byte	 01AE	  DATAS	
+MAX1 . . . . . . . . . . . . . .	Byte	 0032	  DATAS	
+MAX2 . . . . . . . . . . . . . .	Byte	 0084	  DATAS	
+MAX3 . . . . . . . . . . . . . .	Byte	 00D6	  DATAS	
+NOMATCH  . . . . . . . . . . . .	Byte	 01C4	  DATAS	
+NO_MATCH . . . . . . . . . . . .	L Near	 00C8	  CODES	
+NUMBER_1 . . . . . . . . . . . .	L Near	 0107	  CODES	
+NUMBER_2 . . . . . . . . . . . .	L Near	 011B	  CODES	
+OUTPUT_1 . . . . . . . . . . . .	L Near	 010D	  CODES	
+OUTPUT_2 . . . . . . . . . . . .	L Near	 0121	  CODES	
+PRINT_1  . . . . . . . . . . . .	L Near	 00DE	  CODES	
+PRINT_2  . . . . . . . . . . . .	L Near	 00F9	  CODES	
+RESULT . . . . . . . . . . . . .	Byte	 0214	  DATAS	
+SENTENCE . . . . . . . . . . . .	Byte	 0000	  DATAS	
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+STOKN1 . . . . . . . . . . . . .	Byte	 0034	  DATAS	
+STOKN2 . . . . . . . . . . . . .	Byte	 0086	  DATAS	
+STOKN3 . . . . . . . . . . . . .	Byte	 00D8	  DATAS	
+TEMP . . . . . . . . . . . . . .	Byte	 00D6	  DATAS	
+
+	   0 Warnings
+	   0 Errors

@@ -1,0 +1,67 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 11:01:25
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATAS SEGMENT
+ 0000				    KEY	LABEL BYTE
+ 0000 50				MAX2 DB 80
+ 0001 00				ACT2 DB ?
+ 0002  0050 [				STOKN2 DB 80 DUP(?)	  
+        00
+       ]
+ 0052				DATAS ENDS
+
+ 0000				STACKS SEGMENT
+				    ;此处输入堆栈段代码
+ 0000				STACKS ENDS
+
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES,DS:DATAS,SS:STACKS
+ 0000				START:
+ 0000  B8 ---- R		    MOV AX,DATAS
+ 0003  8E D8			    MOV DS,AX
+				    
+ 0005  B4 01			    MOV AH,01
+ 0007  CD 21			    INT 21H
+				    
+ 0009  B4 0A			    MOV AH,0AH
+ 000B  CD 21			    INT 21H
+				    
+ 000D  8D 16 0001 R		    LEA DX,ACT2
+ 0011  B4 09			    MOV AH,09H
+ 0013  CD 21			    INT 21H
+				    
+ 0015  B4 4C			    MOV AH,4CH
+ 0017  CD 21			    INT 21H
+ 0019				CODES ENDS
+				    END START
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/20/21 11:01:25
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 0019	  Para	  Private 
+DATAS  . . . . . . . . . . . . .	16 Bit	 0052	  Para	  Private 
+STACKS . . . . . . . . . . . . .	16 Bit	 0000	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+ACT2 . . . . . . . . . . . . . .	Byte	 0001	  DATAS	
+KEY  . . . . . . . . . . . . . .	Byte	 0000	  DATAS	
+MAX2 . . . . . . . . . . . . . .	Byte	 0000	  DATAS	
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+STOKN2 . . . . . . . . . . . . .	Byte	 0002	  DATAS	
+
+	   0 Warnings
+	   0 Errors
