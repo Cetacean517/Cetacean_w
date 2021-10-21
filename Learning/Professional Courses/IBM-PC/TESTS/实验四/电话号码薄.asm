@@ -1,0 +1,218 @@
+data segment
+	count dw 0;记录有几行人名-号码
+	temp dw 0 ;输入暂存
+	telbook db 50 dup(32 dup(' '));设置一个50*32的号码簿
+	window1 db 13,10,13,10, '*******|Menu|*******' ,13,10;菜单提示
+	        db '1--Insert' , 13,10
+	        db '2--Search' , 13,10
+	        db '3--List' ,13,10
+	        db '4--Quit' ,13,10
+	        db '********************' ,13,10
+	        db 'Select:' ,'$'
+	window2 db 13,10,13,10, '******|Search|******' ,13,10;查找菜单提示
+	        db '1--Name' , 13,10
+	        db '2--Telephone' , 13,10
+	        db '3--Quit' ,13,10
+	        db '********************' ,13,10
+	        db 'Select:' ,'$'
+	str1 db 13,10,13,10, '1--Input name:' , '$'
+	str2 db 13,10, '2--Input telephone:' , '$'
+	str3 db 13,10,13,10, '--Name--------------Telephone--' ,13,10,13,10, '$'
+	str4 db 13,10,13,10, 'Not exist!!!' , 13,10, '$'
+	str5 db 13,10,13,10, '-----------------------------' ,13,10,13,10, '$'
+	str6 db 13,10,13,10, 'No record!!!' , 13,10, '$'
+	error db 13,10,13,10, 'Error!!!You should input 1-4 !' ,13,10, '$'
+	error1 db 13,10,13,10, 'Error!!!You should input 1-3 !' ,13,10, '$'
+	N_Temp db 21,? ;缓冲区最大容量21
+	N_T db 20 dup (' '), ' ';姓名，20个可输入空间，以及最后的分隔空间
+	T_Temp db 9,?  ;缓冲区最大容量9
+	T_T db 8 dup (' '), ' ' ,13,10, '$';电话号码，8个可输入空间，最后分隔
+data ends
+
+;宏操作--操作名 macro 操作数，调用时--操作名 操作数
+print macro x1;输出字符串
+	lea dx,x1
+	mov ah,9
+	int 21h
+endm
+
+input macro x1;键盘输入到缓冲区
+	lea dx,x1
+	mov ah,0ah
+	int 21h
+endm
+
+quhc macro Temp,T        ;去除回车符，即把Temp的内容复制一份到T的时候，不复制Temp的最后的回车符
+	sub dx,dx
+	mov dl,Temp+1		 ;Temp中的字符数
+	lea si,T             ;T的偏移地址
+	add si,dx            ;T转移到Temp结束位置
+	mov byte ptr[si], ' ';把本来Temp的回车位置的回车替换成空格
+endm
+
+renew macro nn,cnt;还原缓冲区内容，重新置为空白内容再输入
+	local next
+	mov cx,cnt    ;置为空格的位数，inc命令自动与cx作比较，到了自动结束loop
+	lea si,nn     ;还原nn的内容，将其置为空白内容
+	next:mov byte ptr[si], ' '
+	     inc si
+	     loop next
+endm
+
+code segment
+	assume cs:code,ds:data
+start:
+	mov ax,data
+	mov ds,ax
+	mov es,ax
+	lea di,telbook;di设为号码簿的偏移地址
+	
+	;主菜单功能选择
+	L1:print window1
+	   mov ah,1
+	   int 21h
+	   cmp al,'1';如果选择1号功能，则跳转到输入Insert子程序
+	   jne L2    ;否则进行下一个判断
+	   call Insert
+	   jmp L1
+	L2:cmp al,'2';如果选择2号功能，则跳转到查找Search子程序
+	   jne L3    ;否则进行下一个判断
+	   call Search
+	   jmp L1
+	L3:cmp al,'3';如果选择3号功能，则跳转到显示List子程序
+	   jne L4    ;否则进行下一个判断
+	   call List
+	   jmp L1
+	L4:cmp al,'4';如果选择4号功能，则跳出DOS，程序结束
+	   je L5
+	   print error;否则选择有误，输出提示语句再重新输入
+	   jmp L1
+	   
+Insert proc;输入子程序
+	renew N_T,20    ;还原缓冲区内容
+	renew T_T,8
+	print str1
+	input N_Temp    ;输入姓名存在暂存缓冲区，带回车符结束
+	quhc N_Temp,N_T ;去除回车符保存
+	print str2
+	input T_Temp    ;输入电话号码暂存缓冲区，带回车符结束
+	quhc T_Temp,T_T ;去除回车符保存
+	lea si,N_T      ;将姓名的偏移地址保存在si
+	mov cx,20
+	cld
+	rep movsb       ;将si中的20个字节的姓名内容按字节传送到di，即50*32的号码簿中
+	lea si,T_T
+	mov cx,12
+	cld
+	rep movsb       ;将si中的12个字节的号码内容按字节传送到di，即50*32的号码簿中
+	inc count       ;count记录有几条记录
+	ret             ;返回主程序
+Insert endp
+
+Search proc;查找子程序
+;------------------------按姓名查找-----------------------;
+	T0:print window2
+	   mov ah,1
+	   int 21h
+	   cmp al,'1'      ;按姓名查找
+	   jne T1          ;否则进入下一个判断
+	   print str1
+	   renew N_Temp,20 ;清空姓名缓冲区
+	   input N_Temp    ;输入姓名，保存在缓冲区
+	   quhc N_Temp,N_T ;将输入的姓名去除回车符，保存
+;************************按姓名查找************************;	   
+	   mov cx,count            ;将号码簿中存在的记录数保存到cx中
+	   mov Temp,offset telbook ;用Temp记录号码薄的偏移地址
+	F3:push cx      ;cx入栈保存，即所有的记录数量
+	   mov si,Temp  ;si记录号码薄的偏移地址
+	   lea bx,N_T   ;将刚刚输入的姓名的偏移地址保存在bx中
+	   mov cx,20    ;cx中保存姓名的最大值20
+	F2:mov dl,[si]  ;号码薄记录保存在dl
+	   cmp dl,[bx]  ;号码薄中的记录与刚刚输入的姓名作比较
+	   jne F1       ;不相等跳到F1，移动号码薄的开始位置
+	   inc si
+	   inc bx       ;否则都向后移一位继续比较下一个字节
+	   loop F2      ;cx初始值为20，每次loop操作减一，到0结束，表示该姓名结束比较
+;*************cx为0，该姓名20个字节全部比较完成，且没有跳到JNE，所以匹配，输出找到的记录**************;
+	   print str3   ;找到，输出记录
+	   mov dx,Temp  ;将此条记录输出
+	   mov ah,9
+	   int 21h
+	   print str5
+	   pop cx       ;cx出栈，变回号码薄的记录条数
+	   jmp F0       ;查找结束，找到，跳回主程序
+;*************该名字不匹配，跳到下一个名字开始的地方。直到号码薄中所有记录比完，输出没找到************;
+	F1:add Temp,32  ;跳32个字节到下一个姓名开始的位置
+	   pop cx
+	   loop F3      ;重复查找操作，直到cx为0时结束，注意此时的cx是出栈后的cx，即号码薄记录的条数
+	   print str4   ;两个loop操作都结束时，表示号码薄中的记录都比较完成，没有找到
+	   jmp F0       ;查找结束，没找到，跳到主程序
+
+;------------------------按号码查找-------------------------;
+	T1:cmp al,'2'
+	   jne T2          ;否则进入下一个判断
+	   print str2
+	   renew T_Temp,8  ;清空号码缓冲区
+	   input T_Temp
+	   quhc T_Temp,T_T ;将输入到缓冲区的号码去除回车符保存
+;--------------按号码查找（具体操作与按姓名相同）-----------;
+	   mov cx,count
+	   mov Temp,offset telbook
+	K3:push cx
+	   mov si,Temp
+	   add si,20    ;将si的位置移到号码开始的位置，因为名字占20个字节，所以加上20
+	   lea bx,T_T
+	   mov cx,8     ;号码占8个字节
+	K2:mov dl,[si]
+	   cmp dl,[bx]
+	   jne K1       ;不相等就跳到下一个号码开始的位置，重新开始比较
+	   inc si
+	   inc bx
+	   loop K2
+;----------------找到号码，匹配，输出该条记录---------------;	   
+	   print str3
+	   mov dx,Temp
+	   mov ah,9
+	   int 21h
+	   print str5
+	   pop cx
+	   jmp F0
+;------------跳到下一个号码，直到所有记录都被比过-----------;
+	K1:add Temp,32
+	   pop cx
+	   loop K3
+	   print str4   ;所有记录没有找到，输出不存在 
+	   jmp F0
+	T2:cmp al,'3'   ;返回主程序重新选择功能
+	   je F0
+	   print error1 ;以上都不符合，则输入的数字有问题，输出提示语句并重新跳回查找菜单
+	   jmp T0
+	F0:ret
+Search endp
+
+List proc;显示号码薄子程序
+	print str3
+	cmp count,0
+	je Z2          ;如果count为0，则表示号码薄里没有记录
+	mov cx,count   ;否则将要输入的记录的条数保存到cx，控制loop循环次数
+	lea si,telbook ;将号码薄偏移地址保存到si
+ Z1:mov dx,si
+	mov ah,9
+	int 21h
+	add si,32      ;加上32，跳到下一条记录重复输出操作
+	loop Z1
+	jmp Z3
+ Z2:print str6
+ Z3:print str5
+    ret
+List endp
+
+L5:mov ah,4ch      ;跳出DOS，程序结束
+   int 21h
+
+code ends
+end start
+
+
+
+

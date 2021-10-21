@@ -5,9 +5,9 @@ DATAS SEGMENT
     
     ; LABEL伪指令给变量设置别名，共享内存位置
     BUFFER LABEL BYTE
-    	   MAX1 DB 80
-    	   ACT1 DB ?
-    	   STOKN1 DB 80 DUP(?)
+    	   MAX1 DB 80	;最大长度
+    	   ACT1 DB ?	;实际输入长度
+    	   STOKN1 DB 80 DUP(?)	;空间的创建
     	   
     KEY	LABEL BYTE
     	MAX2 DB 80
@@ -28,8 +28,7 @@ DATAS SEGMENT
     
     MATCH  DB 13,10,'Match Successfully!','$'
     NOMATCH DB 13,10,'Failed.No Match','$'
-    LOCATION_1 DB 13,10,'Keyword location (Hex) is:','$'
-    LOCATION_2 DB 13,10,'Keyword location (Decimal) is:','$'
+    LOCATION_1 DB 13,10,'Match location at:','$'
     RESULT DB 13,10,'The content of the new string is:','$'
     CRLF DB 13,10,'$'
     CHAR DB '$'
@@ -137,18 +136,7 @@ MATCH_1:
 	INC AX				;使起始位置从一开始
 	CALL PRINT_2		;将关键字所在位置以十六进制数形式打印
 	
-	LEA DX,LOCATION_2
-	MOV AH,09H
-	INT 21H
-	
-	POP BX				;出栈恢复数据
-	MOV AX,BX
-	PUSH BX
-	INC AX
-	CALL PRINT_1		;将关键字所在位置以十进制数形式打印
-	
 	POP BX
-	CALL DELETE_KEY
 	
 	
 	JMP START
@@ -167,22 +155,6 @@ ERROR_1:
 	
 	
 	JMP START
-
-PRINT_1:    	;两位十进制输出
-	MOV AH,0  	;对于超过9个数的字符，ASCII中并没有直接与之对应的字符，因此应分别输出两位数的各位和十位。
-	MOV BL,10
-	DIV BL    	;将AX中内容除以10，商放在AL,余数放在AH
-	ADD AL,30H  ;将个位数+30H转化为数字字符
-	MOV BH,AH
-	MOV DL,AL
-	MOV AH,02H  ;打印个位数
-	INT 21H
-	MOV AL,BH 
-	ADD AL,30H  ;将十位数转化为数字字符
-	MOV DL,AL 
-	MOV AH,02H  ;打印十位数
-	INT 21H
-	RET
 
 PRINT_2:
 	MOV AH,0  ;对于超过9个数的字符，ASCII中并没有直接与之对应的字符，因此应分别输出两位数的各位和十位。
@@ -218,47 +190,13 @@ PRINT_2:
 	RET
 	
 	
-DELETE_KEY:			;删除字符串中关键字
-	LEA SI,STOKN1	;复制原字符串到STOKN3
-	LEA DI,STOKN3
-	MOV CL,ACT1
-	MOV CH,0
-	CLD
-	REP MOVSB
-	
-	LEA DI,STOKN3	;删除字符串中关键字
-	ADD DI,BX		;确定删除位置
-	
-	LEA SI,STOKN1	;确定删除位置字符
-	ADD SI,BX
-	MOV DL,ACT2
-	MOV DH,0
-	ADD SI,DX
-	
-	MOV CL,ACT1
-	SUB CL,DL
-	SUB CX,BX
-	
-	CLD
-	REP MOVSB
-	
-	MOV BYTE PTR[DI],'$'	;在删除之后字符串尾加'$',表示字符串终止
-	
-	LEA DX,RESULT			;回车换行
-	MOV AH,09H
-	INT 21H
-	
-	LEA DX,STOKN3			;输出删除关键字后字符串
-	MOV AH,09H
-	INT 21H
-	
-	RET
 END_0:
 	MOV AH,4CH
 	INT 21H
 CODES ENDS
     END START
     
+
 
 
 

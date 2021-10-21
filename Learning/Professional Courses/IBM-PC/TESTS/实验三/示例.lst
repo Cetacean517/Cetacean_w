@@ -1,0 +1,182 @@
+Microsoft (R) Macro Assembler Version 6.11		    09/29/21 14:07:58
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				datasg segment
+ 0000 45 6E 74 65 72 20		    mess1 db 'Enter keyword:','$'
+       6B 65 79 77 6F 72
+       64 3A 24
+ 000F 45 6E 74 65 72 20		    mess2 db 'Enter Sentence:','$'
+       53 65 6E 74 65 6E
+       63 65 3A 24
+ 001F 4D 61 74 63 68 20		    mess3 db 'Match at location:','$'
+       61 74 20 6C 6F 63
+       61 74 69 6F 6E 3A
+       24
+ 0032 4E 6F 20 6D 61 74		    mess4 db 'No match.',13,10,'$'
+       63 68 2E 0D 0A 24
+ 003E 48 20 6F 66 20 74		    mess5 db 'H of the sentence',13,10,'$'
+       68 65 20 73 65 6E
+       74 65 6E 63 65 0D
+       0A 24
+ 0052 0D 0A 24			    mess6 db 13,10,'$'
+ 0055				    keyword label byte
+ 0055 14			        max1 db 20
+ 0056 00			        act1 db ?
+ 0057  0014 [			        kw db 20 dup(?)
+        00
+       ]
+ 006B				    sentence label byte
+ 006B 78			        max2 db 120
+ 006C 00			        act2 db ?
+ 006D  0078 [			        sen db 120 dup(?)
+        00
+       ]
+ 00E5				datasg ends
+
+ 0000				codesg segment
+				    assume cs:codesg,ds:datasg,es:datasg
+ 0000				start:
+ 0000				main proc far
+ 0000  1E			    push ds
+ 0001  33 C0			    xor ax,ax
+ 0003  50			    push ax
+ 0004  B8 ---- R		    mov ax,datasg
+ 0007  8E D8			    mov ds,ax
+ 0009  8E C0			    mov es,ax
+				    ;;;;;;开始自定义代码
+ 000B  8D 16 0000 R		    lea dx,mess1
+ 000F  B4 09			    mov ah,09
+ 0011  CD 21			    int 21h         ;调用09号中断输出mess1
+ 0013  8D 16 0055 R		    lea dx,keyword
+ 0017  B4 0A			    mov ah,0ah
+ 0019  CD 21			    int 21h         ;调用0a号中断进行keyword的输入
+ 001B  8D 16 0052 R		    lea dx,mess6    ;换行/回车
+ 001F  B4 09			    mov ah,09
+ 0021  CD 21			    int 21h
+ 0023				recome:
+ 0023  8D 16 000F R		    lea dx,mess2    ;调用09号中断输出mess1
+ 0027  B4 09			    mov ah,09
+ 0029  CD 21			    int 21h
+ 002B  8D 16 006B R		    lea dx,sentence ;调用0a号中断进行sentence的输入
+ 002F  B4 0A			    mov ah,0ah
+ 0031  CD 21			    int 21h
+ 0033  8D 16 0052 R		    lea dx,mess6    ;换行/回车
+ 0037  B4 09			    mov ah,09h
+ 0039  CD 21			    int 21h
+
+ 003B  B8 0000			    mov ax,0
+ 003E				loop1:
+ 003E  2B C9			    sub cx,cx   ;;;;
+ 0040  8A 0E 0056 R		    mov cl,act1  ;关键字长度赋值cl
+ 0044  8D 36 0057 R		    lea si,kw    ;原串首地址kw
+ 0048  8D 1E 006D R		    lea bx,sen
+ 004C  02 D8			    add bl,al
+ 004E  8B FB			    mov di,bx    ;目的串首地址(不断变化，ax记录目的串偏移量)
+ 0050  FC			    cld          ;df=0 正向比较
+ 0051  F3/ A6			    repe cmpsb   ;
+ 0053  74 0A			    jz match     ;相等zf=1,match
+				    ;
+ 0055  FE C0			    inc al       ;ax记录串偏移量
+ 0057  3A 06 006C R		    cmp al,act2  ;判断是否越界,注意要对齐(调试了半天，写成ax就不行)
+ 005B  73 46			    jnb loop2     ;no match
+ 005D  EB DF			    jmp loop1    ;还没比较完成
+
+ 005F				match:
+ 005F  BB 0000			    mov bx,0
+ 0062  8A D8			    mov bl,al
+ 0064  83 C3 01			    add bx,1    ;需要从1开始计数
+ 0067  8D 16 001F R		    lea dx,mess3
+ 006B  B4 09			    mov ah,09
+ 006D  CD 21			    int 21h
+				    ;;;输出bx中的十六进制数
+ 006F  B1 04			    mov cl,4
+ 0071  D3 C3			    rol bx,cl
+ 0073  D3 C3			    rol bx,cl
+ 0075  B5 02			    mov ch,2     ;ch用于循环移位
+ 0077				rotate:          ;这里使用到了循环
+ 0077  B1 04			    mov cl,4     ;cl用于每次移4位,rol的操作数不能是立即数
+ 0079  D3 C3			    rol bx,cl    ;循环右移4位
+ 007B  8B C3			    mov ax,bx    
+ 007D  24 0F			    and al,0fh   ;取低四位
+ 007F  04 30			    add al,30H   ;’0’-’9’ ASCII 30H-39H 转化为
+ 0081  3C 3A			    cmp al,3aH   ;比3a小的是数字，则直接跳转输出
+ 0083  72 02			    jb printf    ;这里使用到了分支
+ 0085  04 07			    add al,07h   ;否则再加上07h  ’A’-’F’ ASCII 41H-46H
+ 0087				printf: 
+ 0087  8A D0			    mov dl,al        
+ 0089  B4 02			    mov ah,2     ;调用2号中断输出字符串
+ 008B  CD 21			    int 21h
+ 008D  FE CD			    dec ch       ;ch-1
+ 008F  75 E6			    jnz rotate   ;如果ch不等于0，继续循环
+				    ;;;;
+ 0091  8D 16 003E R		    lea dx,mess5
+ 0095  B4 09			    mov ah,09
+ 0097  CD 21			    int 21h
+ 0099  8D 16 0052 R		    lea dx,mess6
+ 009D  B4 09			    mov ah,09
+ 009F  CD 21			    int 21h
+ 00A1  EB 80			    jmp recome
+				    
+ 00A3				loop2:
+ 00A3  8D 16 0032 R		    lea dx,mess4  ;;输出NO match
+ 00A7  B4 09			    mov ah,09
+ 00A9  CD 21			    int 21h
+ 00AB  E9 FF75			    jmp recome
+ 00AE				exit:
+ 00AE  CB			    ret
+ 00AF				main endp
+ 00AF				codesg ends
+				end start
+
+
+Microsoft (R) Macro Assembler Version 6.11		    09/29/21 14:07:58
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+codesg . . . . . . . . . . . . .	16 Bit	 00AF	  Para	  Private 
+datasg . . . . . . . . . . . . .	16 Bit	 00E5	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+main . . . . . . . . . . . . . .	P Far	 0000	  codesg	Length= 00AF Public
+  recome . . . . . . . . . . . .	L Near	 0023	  codesg	
+  loop1  . . . . . . . . . . . .	L Near	 003E	  codesg	
+  match  . . . . . . . . . . . .	L Near	 005F	  codesg	
+  rotate . . . . . . . . . . . .	L Near	 0077	  codesg	
+  printf . . . . . . . . . . . .	L Near	 0087	  codesg	
+  loop2  . . . . . . . . . . . .	L Near	 00A3	  codesg	
+  exit . . . . . . . . . . . . .	L Near	 00AE	  codesg	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+act1 . . . . . . . . . . . . . .	Byte	 0056	  datasg	
+act2 . . . . . . . . . . . . . .	Byte	 006C	  datasg	
+keyword  . . . . . . . . . . . .	Byte	 0055	  datasg	
+kw . . . . . . . . . . . . . . .	Byte	 0057	  datasg	
+max1 . . . . . . . . . . . . . .	Byte	 0055	  datasg	
+max2 . . . . . . . . . . . . . .	Byte	 006B	  datasg	
+mess1  . . . . . . . . . . . . .	Byte	 0000	  datasg	
+mess2  . . . . . . . . . . . . .	Byte	 000F	  datasg	
+mess3  . . . . . . . . . . . . .	Byte	 001F	  datasg	
+mess4  . . . . . . . . . . . . .	Byte	 0032	  datasg	
+mess5  . . . . . . . . . . . . .	Byte	 003E	  datasg	
+mess6  . . . . . . . . . . . . .	Byte	 0052	  datasg	
+sentence . . . . . . . . . . . .	Byte	 006B	  datasg	
+sen  . . . . . . . . . . . . . .	Byte	 006D	  datasg	
+start  . . . . . . . . . . . . .	L Near	 0000	  codesg	
+
+	   0 Warnings
+	   0 Errors

@@ -1,0 +1,215 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/08/21 11:53:48
+tempfile.asm						     Page 1 - 1
+
+
+				;查找匹配字符串
+ 0000				data segment
+ 0000 45 6E 74 65 72 20			mess1 db 'Enter keyword:$'
+       6B 65 79 77 6F 72
+       64 3A 24
+ 000F 45 6E 74 65 72 20		    mess2 db 'Enter Sentence:$'
+       53 65 6E 74 65 6E
+       63 65 3A 24
+ 001F 4D 61 74 63 68 21		    mess3 db 'Match!$'
+       24
+ 0026 4D 61 74 63 68 20		    mess4 db 'Match at location:$'
+       61 74 20 6C 6F 63
+       61 74 69 6F 6E 3A
+       24
+ 0039 48 20 6F 66 20 74		    mess5 db 'H of the sentence.$'
+       68 65 20 73 65 6E
+       74 65 6E 63 65 2E
+       24
+ 004C 4E 6F 20 6D 61 74		    mess6 db 'No match!$'
+       63 68 21 24
+ 0056 0D 0A 24			    mess7 db 13,10,'$' ;取代四行的回车换行语句
+				    ;XLAT指令所需，建立表格
+ 0059 30 31 32 33 34 35		    tab db 030h,031h,032h,033h,034h,035h,036h,037h,038h,039h,041h,042h,043h,044h,045h,046h
+       36 37 38 39 41 42
+       43 44 45 46
+ 0069				    keyword label byte ;label伪指令，创建一个keyword，不分配空间
+ 0069 14			    	max1 db 20     ;keyword的最大空间，命名是max1
+ 006A 00			    	act1 db ?      ;keyword的实际距离，命名是act1
+ 006B  0014 [			    	kw db 20 dup(?);keyword的空间创建，20个db的空白空间
+        00
+       ]
+ 007F				    sentence label byte
+ 007F 78			    	max2 db 120
+ 0080 00			    	act2 db ?
+ 0081  0078 [			    	sen db 120 dup(?)
+        00
+       ]
+				    ;string1 db 120,120 dup(?)该行语句与sentence相同，第一个120表示缓冲区最大容量
+				    ;string2 db 20,20 dup(?)
+ 00F9				data ends
+
+ 0000				code segment
+				    assume cs:code,ds:data,es:data
+ 0000				start:
+ 0000				main proc far  
+ 0000  1E			    push ds
+ 0001  2B C0			    sub ax,ax
+ 0003  50			    push ax
+ 0004  B8 ---- R		    mov ax,data
+ 0007  8E D8			    mov ds,ax
+ 0009  8E C0			    mov es,ax;数据压栈保存
+				    
+ 000B  8D 16 0000 R		    lea dx,mess1
+ 000F  B4 09			    mov ah,9
+ 0011  CD 21			    int 21h;输出提示语句：请输入关键字
+ 0013  8D 16 0069 R		    lea dx,keyword
+ 0017  B4 0A			    mov ah,0ah
+ 0019  CD 21			    int 21h;从键盘读入关键字存在缓冲区，回车结束
+				    ;sub ch,ch
+				    ;mov cl,[string2+1];关键字长度
+				    ;lea si,string2+2;关键字起始字符
+ 001B  8D 16 0056 R		    lea dx,mess7
+ 001F  B4 09			    mov ah,9
+ 0021  CD 21			    int 21h;回车换行
+				    
+ 0023				resentence:
+ 0023  8D 16 000F R		    lea dx,mess2
+ 0027  B4 09			    mov ah,9
+ 0029  CD 21			    int 21h;输出提示语句：请输入句子。句子可以重复输入，所以该部分可以循环
+ 002B  8D 16 007F R		    lea dx,sentence
+ 002F  B4 0A			    mov ah,0ah
+ 0031  CD 21			    int 21h;从键盘读入句子存在缓冲区，回车结束
+				    ;sub ch,ch
+				    ;mov ch,[string1+1];句子长度
+				    ;lea di,string1+2;句子起始字符
+ 0033  8D 16 0056 R		    lea dx,mess7
+ 0037  B4 09			    mov ah,9
+ 0039  CD 21			    int 21h;回车换行
+				    
+ 003B  B8 0000			    mov ax,0;设置句子开始比较的位置，从头开始
+ 003E				docompare:
+ 003E  2B C9			    sub cx,cx
+ 0040  8A 0E 006A R		    mov cl,act1  ;关键字实际长度，存在cl
+ 0044  8D 36 006B R		    lea si,kw    ;取关键字有效地址，存在si
+ 0048  8D 1E 0081 R		    lea bx,sen   ;取句子有效地址，存在bx
+ 004C  02 D8			    add bl,al    ;开始比较的位置
+ 004E  8B FB			    mov di,bx    ;将句子开始比较的有效地址，存在di
+				    
+				    ;下面两行操作前，需要将比较的两个串分别放在si,di，将比较位数放在cl
+ 0050  FC			    cld          ;df=0 正向比较
+ 0051  F3/ A6			    repe cmpsb   ;重复串比较操作直到相等，跳到match
+ 0053  74 0A			    jz domatch   ;相等zf=1,跳到match
+				    
+ 0055  FE C0			    inc al       ;ax记录串偏移量，递增
+ 0057  3A 06 0080 R		    cmp al,act2  ;判断是否越界，al表示现在所在句子的地方，act2表示句子实际长度
+ 005B  73 5E			    jnb notmatch ;al不小于act2，越界，跳到没有匹配
+ 005D  EB DF			    jmp docompare;否则还没比较完成，继续比较
+
+ 005F				domatch:;字符串匹配，输出十六进制的位置
+ 005F  8D 16 001F R			lea dx,mess3
+ 0063  B4 09			    mov ah,9
+ 0065  CD 21			    int 21h;输出提示语句：匹配！
+ 0067  8D 16 0056 R		    lea dx,mess7
+ 006B  B4 09			    mov ah,9
+ 006D  CD 21			    int 21h;回车换行
+				    
+ 006F  8D 16 0026 R			lea dx,mess4
+ 0073  B4 09			    mov ah,9
+ 0075  CD 21			    int 21h;输出提示语句
+				    
+ 0077  04 01			    add al,1  ;找到匹配位置，因为计算机默认从0开始计数，所以实际匹配位置是al+1
+ 0079  2B C9			    sub cx,cx
+ 007B  8A E8			    mov ch,al ;备份一份匹配位置，该数据是十六进制，需要将其显示在屏幕上
+ 007D  8A D8				mov bl,al ;显示第一位十六进制
+ 007F  B1 04				mov cl,4
+ 0081  D2 EB				shr bl,cl ;右移4位，右移位数＞1，将右移量存在cl。右移后高位为0，低位即原来的十六进制高位
+ 0083  8A C3				mov al,bl ;将右移后的数据放入al，进行查表操作，得到的结果是十六进制高位对应的数字的ASCII码
+ 0085  8D 1E 0059 R			lea bx,tab;将表格偏移地址放入bx，查表操作前操作
+ 0089  D7				xlat      ;查表指令，将以bx为首地址，偏移地址为al的内容送到al
+ 008A  8A D0				mov dl,al ;此时存在al中的是十六进制高位的数字对应的ASCII码
+ 008C  B4 02				mov ah,2
+ 008E  CD 21				int 21h   ;此时调用输出语句，输出到屏幕上的是原来应该输出到屏幕上的十六进制的高位
+					
+ 0090  80 E5 0F				and ch,0fh;匹配位置与0fh，得到的结果是应该输出的十六进制的低位，高位为0
+ 0093  8A C5				mov al,ch
+ 0095  8D 1E 0059 R			lea bx,tab
+ 0099  D7				xlat
+ 009A  8A D0				mov dl,al ;进行和高位一样的查表操作并输出，此时屏幕上显示的是应该输出的十六进制的低位
+ 009C  B4 02				mov ah,2
+ 009E  CD 21				int 21h
+				    
+ 00A0  8D 16 0039 R		    lea dx,mess5
+ 00A4  B4 09			    mov ah,9
+ 00A6  CD 21			    int 21h;输出提示语句
+ 00A8  8D 16 0056 R		    lea dx,mess7
+ 00AC  B4 09			    mov ah,9
+ 00AE  CD 21			    int 21h;回车换行
+ 00B0  8D 16 0056 R			lea dx,mess7
+ 00B4  B4 09			    mov ah,9
+ 00B6  CD 21			    int 21h;回车换行
+ 00B8  E9 FF68			    jmp resentence;程序要求句子可重复输入，无条件跳转到输入句子部分
+
+ 00BB				notmatch:;字符串不匹配
+ 00BB  8D 16 004C R			lea dx,mess6
+ 00BF  B4 09			    mov ah,9
+ 00C1  CD 21			    int 21h;输出提示语句：字符串不匹配
+ 00C3  8D 16 0056 R		    lea dx,mess7
+ 00C7  B4 09			    mov ah,09
+ 00C9  CD 21			    int 21h;回车换行
+ 00CB  8D 16 0056 R		    lea dx,mess7
+ 00CF  B4 09			    mov ah,09
+ 00D1  CD 21			    int 21h;回车换行
+ 00D3  E9 FF4D			    jmp resentence;重复输入句子
+
+ 00D6  CB			exit:ret
+				    
+ 00D7				main endp
+ 00D7				code ends
+				end start
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/08/21 11:53:48
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+code . . . . . . . . . . . . . .	16 Bit	 00D7	  Para	  Private 
+data . . . . . . . . . . . . . .	16 Bit	 00F9	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+main . . . . . . . . . . . . . .	P Far	 0000	  code	Length= 00D7 Public
+  resentence . . . . . . . . . .	L Near	 0023	  code	
+  docompare  . . . . . . . . . .	L Near	 003E	  code	
+  domatch  . . . . . . . . . . .	L Near	 005F	  code	
+  notmatch . . . . . . . . . . .	L Near	 00BB	  code	
+  exit . . . . . . . . . . . . .	L Near	 00D6	  code	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+act1 . . . . . . . . . . . . . .	Byte	 006A	  data	
+act2 . . . . . . . . . . . . . .	Byte	 0080	  data	
+keyword  . . . . . . . . . . . .	Byte	 0069	  data	
+kw . . . . . . . . . . . . . . .	Byte	 006B	  data	
+max1 . . . . . . . . . . . . . .	Byte	 0069	  data	
+max2 . . . . . . . . . . . . . .	Byte	 007F	  data	
+mess1  . . . . . . . . . . . . .	Byte	 0000	  data	
+mess2  . . . . . . . . . . . . .	Byte	 000F	  data	
+mess3  . . . . . . . . . . . . .	Byte	 001F	  data	
+mess4  . . . . . . . . . . . . .	Byte	 0026	  data	
+mess5  . . . . . . . . . . . . .	Byte	 0039	  data	
+mess6  . . . . . . . . . . . . .	Byte	 004C	  data	
+mess7  . . . . . . . . . . . . .	Byte	 0056	  data	
+sentence . . . . . . . . . . . .	Byte	 007F	  data	
+sen  . . . . . . . . . . . . . .	Byte	 0081	  data	
+start  . . . . . . . . . . . . .	L Near	 0000	  code	
+tab  . . . . . . . . . . . . . .	Byte	 0059	  data	
+
+	   0 Warnings
+	   0 Errors
