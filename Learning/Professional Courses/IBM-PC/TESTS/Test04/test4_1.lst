@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 6.11		    10/20/21 15:57:40
+Microsoft (R) Macro Assembler Version 6.11		    10/21/21 12:22:34
 tempfile.asm						     Page 1 - 1
 
 
@@ -43,32 +43,32 @@ tempfile.asm						     Page 1 - 1
         00
        ]
  00C2				stokin2  label  word
- 00C2 0C					 max2      db     12
+ 00C2 09					 max2      db     9
  00C3 00					 act2      db     ?
- 00C4  000C [					 stokn2    db     12 dup(?)
+ 00C4  0009 [					 stokn2    db     9 dup(?)
         00
        ]
- 00D0  0032 [			numtable   db     50 dup(28 dup(?))
+ 00CD  0032 [			numtable   db     50 dup(28 dup(?))
         001C [
 	 00
 	]
        ]
- 0648 0000			name_count dw    0
- 064A 0000			endaddr   dw     ?
- 064C 0000			swapped   dw     ?
- 064E 0000			totalnum dw   ?
- 0650  001C [			savenp    db     28 dup(?),0dh,0ah,'$'
+ 0645 0000			name_count dw    0
+ 0647 0000			endaddr   dw     ?
+ 0649 0000			swapped   dw     ?
+ 064B 0000			totalnum dw   ?
+ 064D  001C [			savenp    db     28 dup(?),0dh,0ah,'$'
         00
        ] 0D 0A 24
- 066F 0000			searchaddr dw    ?
- 0671 00			flag      db     ?
- 0672 00			flagb      db     ?
- 0673 6E 61 6D 65 20 20		show      db     'name                phone',0dh,0ah,'$'
+ 066C 0000			searchaddr dw    ?
+ 066E 00			flag      db     ?
+ 066F 00			flagb      db     ?
+ 0670 6E 61 6D 65 20 20		show      db     'name                phone',0dh,0ah,'$'
        20 20 20 20 20 20
        20 20 20 20 20 20
        20 20 70 68 6F 6E
        65 0D 0A 24
- 068F				data  ends
+ 068C				data  ends
 				;********************************************************************
  0000				codesg  segment
 				   assume ds:data,cs:codesg,es:data
@@ -76,7 +76,7 @@ tempfile.asm						     Page 1 - 1
  0000  B8 ---- R		       mov ax,data
  0003  8E D8			       mov ds,ax
  0005  8E C0			       mov es,ax
- 0007  8D 3E 00D0 R		       lea di,numtable     ;di must be protected
+ 0007  8D 3E 00CD R		       lea di,numtable     ;di must be protected
  000B  8D 16 007D R		       lea dx,mess6        ;显示信息，请输入想存入的电话号码总数
  000F  B4 09			       mov ah,09   
  0011  CD 21			       int 21h
@@ -97,7 +97,7 @@ tempfile.asm						     Page 1 - 1
  002A  03 D8			       add bx,ax              ;add digit to number
  002C  EB E8			       jmp newchar                ;get next digit
  002E				   next:
- 002E  89 1E 064E R		       mov totalnum,bx
+ 002E  89 1E 064B R		       mov totalnum,bx
  0032  8D 16 00A8 R		       lea dx,crlf
  0036  B4 09			       mov ah,09
  0038  CD 21			       int 21h
@@ -106,7 +106,7 @@ tempfile.asm						     Page 1 - 1
  003E  B4 09			       mov ah,09
  0040  CD 21			       int 21h
  0042  E8 0054			       call input_name  
- 0045  FF 06 0648 R		       inc  name_count
+ 0045  FF 06 0645 R		       inc  name_count
  0049  E8 0071			       call stor_name 
 				       
  004C  8D 16 000B R		       lea dx,mess2                 ;显示请输入电话
@@ -115,11 +115,11 @@ tempfile.asm						     Page 1 - 1
  0054  E8 0070			       call inphone
  0057  E8 0091			       call stor_phone
 				       
- 005A  83 3E 0648 R 00		       cmp  name_count,0
+ 005A  83 3E 0645 R 00		       cmp  name_count,0
  005F  74 33			       je  exit
 				       
- 0061  8B 1E 064E R		       mov bx,totalnum
- 0065  39 1E 0648 R		       cmp  name_count,bx         ;输入与之前输入总数相等的姓名，电话
+ 0061  8B 1E 064B R		       mov bx,totalnum
+ 0065  39 1E 0645 R		       cmp  name_count,bx         ;输入与之前输入总数相等的姓名，电话
  0069  75 CF			       jnz  a10
  006B  E8 0087			       call name_sort
  006E				 a20:
@@ -188,7 +188,7 @@ tempfile.asm						     Page 1 - 1
 				     
  00D7  2A FF			     sub bh,bh
  00D9  8A 1E 00C3 R		     mov bl,act2
- 00DD  B9 000C			     mov cx,12
+ 00DD  B9 0009			     mov cx,9
  00E0  2B CB			     sub cx,bx
  00E2				c10:
  00E2  C6 87 00C4 R 20		     mov stokn2[bx],' '
@@ -199,17 +199,17 @@ tempfile.asm						     Page 1 - 1
 				;--------------------------------------------------------------------
  00EB				stor_phone  proc near
  00EB  8D 36 00C4 R		     lea  si,stokn2
- 00EF  B9 000B			     mov  cx,11
+ 00EF  B9 0008			     mov  cx,8
  00F2  F3/ A4			     rep  movsb   ;movs 串传送指令 cmps 串比较操作
  00F4  C3			     ret
  00F5				stor_phone endp
 				;--------------------------------------------------------------------
  00F5				name_sort  proc near     ;;;;;;;;
  00F5  83 EF 1C			     sub  di,28
- 00F8  89 3E 064A R		     mov  endaddr,di
+ 00F8  89 3E 0647 R		     mov  endaddr,di
  00FC				 c1:
- 00FC  C7 06 064C R 0000	     mov  swapped,0
- 0102  8D 36 00D0 R		     lea  si,numtable
+ 00FC  C7 06 0649 R 0000	     mov  swapped,0
+ 0102  8D 36 00CD R		     lea  si,numtable
  0106				 c2:
  0106  B9 0014			     mov  cx,20
  0109  8B FE			     mov  di,si
@@ -220,28 +220,28 @@ tempfile.asm						     Page 1 - 1
  0114  76 21			     jbe  c3     ;CF与ZF=1，小于等于则转移
 				 ;chang order 
  0116  8B F3			     mov si,bx
- 0118  8D 3E 0650 R		     lea di,savenp
+ 0118  8D 3E 064D R		     lea di,savenp
  011C  B9 001C			     mov cx,28
  011F  F3/ A4			     rep movsb
  0121  B9 001C			     mov cx,28
  0124  8B FB			     mov di,bx
  0126  F3/ A4			     rep movsb
  0128  B9 001C			     mov cx,28
- 012B  8D 36 0650 R		     lea si,savenp
+ 012B  8D 36 064D R		     lea si,savenp
  012F  F3/ A4			     rep movsb
- 0131  C7 06 064C R 0001	     mov swapped,1
+ 0131  C7 06 0649 R 0001	     mov swapped,1
  0137				 c3:
  0137  8B F0			     mov  si,ax
- 0139  3B 36 064A R		     cmp  si,endaddr
+ 0139  3B 36 0647 R		     cmp  si,endaddr
  013D  72 C7			     jb   c2        ;CF=1，则转移，小于等于则转移
- 013F  83 3E 064C R 00		     cmp  swapped,0
+ 013F  83 3E 0649 R 00		     cmp  swapped,0
  0144  75 B6			     jnz  c1    ;结果不为0则转移
  0146  C3			     ret
  0147				name_sort endp
 				;--------------------------------------------------------------------
  0147				name_search proc near
- 0147  8D 1E 00D0 R		      lea  bx,numtable
- 014B  C6 06 0671 R 00			  mov  flag,0      ;;;立个flag
+ 0147  8D 1E 00CD R		      lea  bx,numtable
+ 014B  C6 06 066E R 00			  mov  flag,0      ;;;立个flag
 					  ;mov  flagb,0  
  0150				   d: 
 				      ;mov  flag,0      ;;;立个flag
@@ -253,24 +253,24 @@ tempfile.asm						     Page 1 - 1
  015B  74 1A			      jz  d2
 				      ;jb  dexit
  015D  83 C3 1C			      add bx,28            ;下一条
- 0160  3B 1E 064A R		      cmp  bx,endaddr   
+ 0160  3B 1E 0647 R		      cmp  bx,endaddr   
  0164  76 EA			      jbe  d             ;未结束，继续找
 					  ;add flagb,flag
- 0166  80 2E 0671 R 00			  sub flag,0  ;要是没有找到的话
+ 0166  80 2E 066E R 00			  sub flag,0  ;要是没有找到的话
  016B  74 02			       jz  nof
  016D  EB 20			    jmp  dexit         ;结束，退出
  016F  8D 16 006A R		 nof:  lea dx,mess5
  0173  B4 09			       mov ah,09
  0175  CD 21			       int 21h 
  0177				  d2:
- 0177  89 1E 066F R		      mov searchaddr,bx
+ 0177  89 1E 066C R		      mov searchaddr,bx
 				      ;mov flag,1         ;标志找到了
- 017B  FE 06 0671 R			  inc flag
+ 017B  FE 06 066E R			  inc flag
  017F  E8 000E				  call printline
 					  ; dec flag
 					   ;sub flag,0  ;要是没结束的话
  0182  83 C3 1C				   add bx,28            ;下一条
- 0185  3B 1E 064A R		      cmp  bx,endaddr   
+ 0185  3B 1E 0647 R		      cmp  bx,endaddr   
  0189  76 C5			      jbe  d             ;未结束，继续找
  018B  EB 02			      jmp  dexit         ;结束，退出
  018D  75 C1			       jnz  d
@@ -279,17 +279,17 @@ tempfile.asm						     Page 1 - 1
  0190				name_search endp
 				;--------------------------------------------------------------------
  0190				printline proc  near
- 0190  80 2E 0671 R 00		       sub flag,0  ;要是没有找到的话
+ 0190  80 2E 066E R 00		       sub flag,0  ;要是没有找到的话
  0195  74 1F			       jz  no
  0197				 p10:
  0197  B4 09			       mov ah,09
- 0199  8D 16 0673 R		       lea dx,show
+ 0199  8D 16 0670 R		       lea dx,show
  019D  CD 21			       int 21h
  019F  B9 001C			       mov cx,28
- 01A2  8B 36 066F R		       mov si,searchaddr
- 01A6  8D 3E 0650 R		       lea di,savenp
+ 01A2  8B 36 066C R		       mov si,searchaddr
+ 01A6  8D 3E 064D R		       lea di,savenp
  01AA  F3/ A4			       rep movsb
- 01AC  8D 16 0650 R		       lea dx,savenp
+ 01AC  8D 16 064D R		       lea dx,savenp
  01B0  B4 09			       mov ah,09
  01B2  CD 21			       int 21h
  01B4  EB 08			       jmp fexit
@@ -303,7 +303,8 @@ tempfile.asm						     Page 1 - 1
  01BF				codesg ends
 				;--------------------------------------------------------------------
 				end main       
-Microsoft (R) Macro Assembler Version 6.11		    10/20/21 15:57:40
+
+Microsoft (R) Macro Assembler Version 6.11		    10/21/21 12:22:34
 tempfile.asm						     Symbols 2 - 1
 
 
@@ -314,7 +315,7 @@ Segments and Groups:
                 N a m e                 Size     Length   Align   Combine Class
 
 codesg . . . . . . . . . . . . .	16 Bit	 01BF	  Para	  Private 
-data . . . . . . . . . . . . . .	16 Bit	 068F	  Para	  Private 
+data . . . . . . . . . . . . . .	16 Bit	 068C	  Para	  Private 
 
 
 Procedures,  parameters and locals:
@@ -357,9 +358,9 @@ Symbols:
 act1 . . . . . . . . . . . . . .	Byte	 00AC	  data	
 act2 . . . . . . . . . . . . . .	Byte	 00C3	  data	
 crlf . . . . . . . . . . . . . .	Byte	 00A8	  data	
-endaddr  . . . . . . . . . . . .	Word	 064A	  data	
-flagb  . . . . . . . . . . . . .	Byte	 0672	  data	
-flag . . . . . . . . . . . . . .	Byte	 0671	  data	
+endaddr  . . . . . . . . . . . .	Word	 0647	  data	
+flagb  . . . . . . . . . . . . .	Byte	 066F	  data	
+flag . . . . . . . . . . . . . .	Byte	 066E	  data	
 max1 . . . . . . . . . . . . . .	Byte	 00AB	  data	
 max2 . . . . . . . . . . . . . .	Byte	 00C2	  data	
 mess1  . . . . . . . . . . . . .	Byte	 0000	  data	
@@ -368,17 +369,17 @@ mess3  . . . . . . . . . . . . .	Byte	 0022	  data
 mess4  . . . . . . . . . . . . .	Byte	 003E	  data	
 mess5  . . . . . . . . . . . . .	Byte	 006A	  data	
 mess6  . . . . . . . . . . . . .	Byte	 007D	  data	
-name_count . . . . . . . . . . .	Word	 0648	  data	
-numtable . . . . . . . . . . . .	Byte	 00D0	  data	
-savenp . . . . . . . . . . . . .	Byte	 0650	  data	
-searchaddr . . . . . . . . . . .	Word	 066F	  data	
-show . . . . . . . . . . . . . .	Byte	 0673	  data	
+name_count . . . . . . . . . . .	Word	 0645	  data	
+numtable . . . . . . . . . . . .	Byte	 00CD	  data	
+savenp . . . . . . . . . . . . .	Byte	 064D	  data	
+searchaddr . . . . . . . . . . .	Word	 066C	  data	
+show . . . . . . . . . . . . . .	Byte	 0670	  data	
 stokin1  . . . . . . . . . . . .	Byte	 00AB	  data	
 stokin2  . . . . . . . . . . . .	Word	 00C2	  data	
 stokn1 . . . . . . . . . . . . .	Byte	 00AD	  data	
 stokn2 . . . . . . . . . . . . .	Byte	 00C4	  data	
-swapped  . . . . . . . . . . . .	Word	 064C	  data	
-totalnum . . . . . . . . . . . .	Word	 064E	  data	
+swapped  . . . . . . . . . . . .	Word	 0649	  data	
+totalnum . . . . . . . . . . . .	Word	 064B	  data	
 
 	   0 Warnings
 	   0 Errors

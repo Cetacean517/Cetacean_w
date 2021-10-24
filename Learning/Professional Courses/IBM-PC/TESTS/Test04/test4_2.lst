@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 6.11		    10/20/21 16:31:03
+Microsoft (R) Macro Assembler Version 6.11		    10/21/21 12:18:42
 tempfile.asm						     Page 1 - 1
 
 
@@ -116,7 +116,7 @@ tempfile.asm						     Page 1 - 1
  0050  B4 09			       mov ah,09
  0052  CD 21			       int 21h
  0054  E8 0070			       call inphone
- 0057  E8 0091			       call stor_phone
+ 0057  E8 0092			       call stor_phone
 				       
  005A  83 3E 0648 R 00		       cmp  name_count,0
  005F  74 33			       je  exit
@@ -124,7 +124,7 @@ tempfile.asm						     Page 1 - 1
  0061  8B 1E 064E R		       mov bx,totalnum
  0065  39 1E 0648 R		       cmp  name_count,bx         ;输入与之前输入总数相等的姓名，电话
  0069  75 CF			       jnz  a10
- 006B  E8 0087			       call name_sort
+ 006B  E8 0088			       call name_sort
  006E				 a20:
  006E  8D 16 0022 R		       lea dx,mess3                 ;显示是否需要查找电话号码
  0072  B4 09			       mov ah,09
@@ -142,7 +142,7 @@ tempfile.asm						     Page 1 - 1
  008A  CD 21			       int 21h
  008C  E8 000A			       call input_name
  008F				 a40:
- 008F  E8 00B5			       call name_search
+ 008F  E8 00B6			       call name_search
 				       ;call printline
 					   ;dec flag
 					   ;sub flag,0  ;要是没结束的话
@@ -174,7 +174,7 @@ tempfile.asm						     Page 1 - 1
  00BD				input_name endp
 				;--------------------------------------------------------------------
  00BD				stor_name     proc   near
- 00BD  8D 36 00AD R		      lea  si,stokn1
+ 00BD  8D 36 00AB R		      lea  si,stokin1
  00C1  B9 0011			      mov  cx,17
  00C4  F3/ A4			      rep  movsb
  00C6  C3			      ret
@@ -194,119 +194,120 @@ tempfile.asm						     Page 1 - 1
  00DD  B9 000C			     mov cx,12
  00E0  2B CB			     sub cx,bx
  00E2				c10:
- 00E2  C6 87 00C4 R 20		     mov stokn2[bx],' '
- 00E7  43			     inc bx
- 00E8  E2 F8			     loop c10
- 00EA  C3			     ret 
- 00EB				inphone endp
+ 00E2  C7 87 00C2 R 0020	     mov stokin2[bx],' '
+ 00E8  43			     inc bx
+ 00E9  E2 F7			     loop c10
+ 00EB  C3			     ret 
+ 00EC				inphone endp
 				;--------------------------------------------------------------------
- 00EB				stor_phone  proc near
- 00EB  8D 36 00C4 R		     lea  si,stokn2
- 00EF  B9 000B			     mov  cx,11
- 00F2  F3/ A4			     rep  movsb   ;movs 串传送指令 cmps 串比较操作
- 00F4  C3			     ret
- 00F5				stor_phone endp
+ 00EC				stor_phone  proc near
+ 00EC  8D 36 00C2 R		     lea  si,stokin2
+ 00F0  B9 000B			     mov  cx,11
+ 00F3  F3/ A4			     rep  movsb   ;movs 串传送指令 cmps 串比较操作
+ 00F5  C3			     ret
+ 00F6				stor_phone endp
 				;--------------------------------------------------------------------
- 00F5				name_sort  proc near
- 00F5  83 EF 1C			     sub  di,28
- 00F8  89 3E 064A R		     mov  endaddr,di  ;endaddr中存放的是numtable中手机号结束的位置
- 00FC				 c1:
- 00FC  C7 06 064C R 0000	     mov  swapped,0
- 0102  8D 36 00D0 R		     lea  si,numtable
- 0106				 c2:
- 0106  B9 0011			     mov  cx,17
- 0109  8B FE			     mov  di,si
- 010B  83 C7 1C			     add  di,28
- 010E  8B C7			     mov  ax,di
- 0110  8B DE			     mov  bx,si   ;cmpsb si-di  movsb di<-si
- 0112  F3/ A6			     repz cmpsb   ;repz 当为0时重复串操作；repe 当相等时重复串操作；rep 重复串操作直至计数寄存器count reg 的内容为0为止
- 0114  76 21			     jbe  c3     ;CF与ZF=1，小于等于则转移
+ 00F6				name_sort  proc near
+ 00F6  83 EF 1C			     sub  di,28
+ 00F9  89 3E 064A R		     mov  endaddr,di  ;endaddr中存放的是numtable中手机号结束的位置
+ 00FD				 c1:
+ 00FD  C7 06 064C R 0000	     mov  swapped,0
+ 0103  8D 36 00D0 R		     lea  si,numtable
+ 0107				 c2:
+ 0107  B9 0011			     mov  cx,17
+ 010A  8B FE			     mov  di,si
+ 010C  83 C7 1C			     add  di,28
+ 010F  8B C7			     mov  ax,di
+ 0111  8B DE			     mov  bx,si   ;cmpsb si-di  movsb di<-si
+ 0113  F3/ A6			     repz cmpsb   ;repz 当为0时重复串操作；repe 当相等时重复串操作；rep 重复串操作直至计数寄存器count reg 的内容为0为止
+ 0115  76 21			     jbe  c3     ;CF与ZF=1，小于等于则转移
 				 ;chang order 
- 0116  8B F3			     mov si,bx
- 0118  8D 3E 0650 R		     lea di,savenp
- 011C  B9 001C			     mov cx,28
- 011F  F3/ A4			     rep movsb
- 0121  B9 001C			     mov cx,28
- 0124  8B FB			     mov di,bx
- 0126  F3/ A4			     rep movsb
- 0128  B9 001C			     mov cx,28
- 012B  8D 36 0650 R		     lea si,savenp
- 012F  F3/ A4			     rep movsb
- 0131  C7 06 064C R 0001	     mov swapped,1
- 0137				 c3:
- 0137  8B F0			     mov  si,ax
- 0139  3B 36 064A R		     cmp  si,endaddr
- 013D  72 C7			     jb   c2        ;CF=1，则转移，小于等于则转移
- 013F  83 3E 064C R 00		     cmp  swapped,0
- 0144  75 B6			     jnz  c1    ;结果不为0则转移
- 0146  C3			     ret
- 0147				name_sort endp
+ 0117  8B F3			     mov si,bx
+ 0119  8D 3E 0650 R		     lea di,savenp
+ 011D  B9 001C			     mov cx,28
+ 0120  F3/ A4			     rep movsb
+ 0122  B9 001C			     mov cx,28
+ 0125  8B FB			     mov di,bx
+ 0127  F3/ A4			     rep movsb
+ 0129  B9 001C			     mov cx,28
+ 012C  8D 36 0650 R		     lea si,savenp
+ 0130  F3/ A4			     rep movsb
+ 0132  C7 06 064C R 0001	     mov swapped,1
+ 0138				 c3:
+ 0138  8B F0			     mov  si,ax
+ 013A  3B 36 064A R		     cmp  si,endaddr
+ 013E  72 C7			     jb   c2        ;CF=1，则转移，小于等于则转移
+ 0140  83 3E 064C R 00		     cmp  swapped,0
+ 0145  75 B6			     jnz  c1    ;结果不为0则转移
+ 0147  C3			     ret
+ 0148				name_sort endp
 				;--------------------------------------------------------------------
- 0147				name_search proc near
- 0147  8D 1E 00D0 R		      lea  bx,numtable
- 014B  C6 06 0671 R 00			  mov  flag,0      ;;;立个flag
- 0150				   d: 
- 0150  B9 0011			      mov  cx,17
- 0153  8D 36 00AD R			  lea si,stokn1
- 0157  8B FB			      mov  di,bx
- 0159  F3/ A6			      repz cmpsb
- 015B  74 1A			      jz  d2
+ 0148				name_search proc near
+ 0148  8D 1E 00D0 R		      lea  bx,numtable
+ 014C  C6 06 0671 R 00			  mov  flag,0      ;;;立个flag
+ 0151				   d: 
+ 0151  B9 0011			      mov  cx,17
+ 0154  8D 36 00AB R			  lea si,stokin1
+ 0158  8B FB			      mov  di,bx
+ 015A  F3/ A6			      repz cmpsb
+ 015C  74 1A			      jz  d2
 				      
- 015D  83 C3 1C			      add bx,28            ;下一条
- 0160  3B 1E 064A R		      cmp  bx,endaddr   
- 0164  76 EA			      jbe  d             ;未结束，继续找
+ 015E  83 C3 1C			      add bx,28            ;下一条
+ 0161  3B 1E 064A R		      cmp  bx,endaddr   
+ 0165  76 EA			      jbe  d             ;未结束，继续找
 
- 0166  80 2E 0671 R 00			  sub flag,0  ;要是没有找到的话
- 016B  74 02			      jz  nof
- 016D  EB 20			      jmp  dexit         ;结束，退出
+ 0167  80 2E 0671 R 00			  sub flag,0  ;要是没有找到的话
+ 016C  74 02			      jz  nof
+ 016E  EB 20			      jmp  dexit         ;结束，退出
 				      
- 016F  8D 16 006A R		 nof:  lea dx,mess5
- 0173  B4 09			       mov ah,09
- 0175  CD 21			       int 21h 
- 0177				  d2:
- 0177  89 1E 066F R		      mov searchaddr,bx
- 017B  FE 06 0671 R			  inc flag
- 017F  E8 000E				  call printline
- 0182  83 C3 1C				  add bx,28            ;下一条
- 0185  3B 1E 064A R		      cmp  bx,endaddr   
- 0189  76 C5			      jbe  d             ;未结束，继续找
- 018B  EB 02			      jmp  dexit         ;结束，退出
- 018D  75 C1			      jnz  d
+ 0170  8D 16 006A R		 nof:  lea dx,mess5
+ 0174  B4 09			       mov ah,09
+ 0176  CD 21			       int 21h 
+ 0178				  d2:
+ 0178  89 1E 066F R		      mov searchaddr,bx
+ 017C  FE 06 0671 R			  inc flag
+ 0180  E8 000E				  call printline
+ 0183  83 C3 1C				  add bx,28            ;下一条
+ 0186  3B 1E 064A R		      cmp  bx,endaddr   
+ 018A  76 C5			      jbe  d             ;未结束，继续找
+ 018C  EB 02			      jmp  dexit         ;结束，退出
+ 018E  75 C1			      jnz  d
 				      
- 018F				 dexit:
- 018F  C3			        ret
- 0190				name_search endp
+ 0190				 dexit:
+ 0190  C3			        ret
+ 0191				name_search endp
 				;--------------------------------------------------------------------
- 0190				printline proc  near
- 0190  80 2E 0671 R 00		       sub flag,0  ;要是没有找到的话
- 0195  74 1F			       jz  no
- 0197				p10:
- 0197  B4 09			       mov ah,09
- 0199  8D 16 0673 R		       lea dx,show
- 019D  CD 21			       int 21h
+ 0191				printline proc  near
+ 0191  80 2E 0671 R 00		       sub flag,0  ;要是没有找到的话
+ 0196  74 1F			       jz  no
+ 0198				p10:
+ 0198  B4 09			       mov ah,09
+ 019A  8D 16 0673 R		       lea dx,show
+ 019E  CD 21			       int 21h
 				       
- 019F  B9 001C			       mov cx,28
- 01A2  8B 36 066F R		       mov si,searchaddr
- 01A6  8D 3E 0650 R		       lea di,savenp
- 01AA  F3/ A4			       rep movsb
+ 01A0  B9 001C			       mov cx,28
+ 01A3  8B 36 066F R		       mov si,searchaddr
+ 01A7  8D 3E 0650 R		       lea di,savenp
+ 01AB  F3/ A4			       rep movsb
 				       
- 01AC  8D 16 0650 R		       lea dx,savenp
- 01B0  B4 09			       mov ah,09
- 01B2  CD 21			       int 21h
- 01B4  EB 08			       jmp fexit
+ 01AD  8D 16 0650 R		       lea dx,savenp
+ 01B1  B4 09			       mov ah,09
+ 01B3  CD 21			       int 21h
+ 01B5  EB 08			       jmp fexit
 				       
- 01B6  8D 16 006A R		no:    lea dx,mess5
- 01BA  B4 09			       mov ah,09
- 01BC  CD 21			       int 21h 
- 01BE				fexit:  
- 01BE  C3			       ret
- 01BF				printline endp
+ 01B7  8D 16 006A R		no:    lea dx,mess5
+ 01BB  B4 09			       mov ah,09
+ 01BD  CD 21			       int 21h 
+ 01BF				fexit:  
+ 01BF  C3			       ret
+ 01C0				printline endp
 				;--------------------------------------------------------------------
- 01BF				code ends
+ 01C0				code ends
 				;--------------------------------------------------------------------
 				end main       
 
-Microsoft (R) Macro Assembler Version 6.11		    10/20/21 16:31:03
+
+Microsoft (R) Macro Assembler Version 6.11		    10/21/21 12:18:42
 tempfile.asm						     Symbols 2 - 1
 
 
@@ -316,7 +317,7 @@ Segments and Groups:
 
                 N a m e                 Size     Length   Align   Combine Class
 
-code . . . . . . . . . . . . . .	16 Bit	 01BF	  Para	  Private 
+code . . . . . . . . . . . . . .	16 Bit	 01C0	  Para	  Private 
 data . . . . . . . . . . . . . .	16 Bit	 068F	  Para	  Private 
 
 
@@ -324,7 +325,7 @@ Procedures,  parameters and locals:
 
                 N a m e                 Type     Value    Attr
 
-inphone  . . . . . . . . . . . .	P Near	 00C7	  code	Length= 0024 Public
+inphone  . . . . . . . . . . . .	P Near	 00C7	  code	Length= 0025 Public
   c10  . . . . . . . . . . . . .	L Near	 00E2	  code	
 input_name . . . . . . . . . . .	P Near	 0099	  code	Length= 0024 Public
   b10  . . . . . . . . . . . . .	L Near	 00B4	  code	
@@ -336,21 +337,21 @@ main . . . . . . . . . . . . . .	P Far	 0000	  code	Length= 0099 Public
   a30  . . . . . . . . . . . . .	L Near	 0084	  code	
   a40  . . . . . . . . . . . . .	L Near	 008F	  code	
   exit . . . . . . . . . . . . .	L Near	 0094	  code	
-name_search  . . . . . . . . . .	P Near	 0147	  code	Length= 0049 Public
-  d  . . . . . . . . . . . . . .	L Near	 0150	  code	
-  nof  . . . . . . . . . . . . .	L Near	 016F	  code	
-  d2 . . . . . . . . . . . . . .	L Near	 0177	  code	
-  dexit  . . . . . . . . . . . .	L Near	 018F	  code	
-name_sort  . . . . . . . . . . .	P Near	 00F5	  code	Length= 0052 Public
-  c1 . . . . . . . . . . . . . .	L Near	 00FC	  code	
-  c2 . . . . . . . . . . . . . .	L Near	 0106	  code	
-  c3 . . . . . . . . . . . . . .	L Near	 0137	  code	
-printline  . . . . . . . . . . .	P Near	 0190	  code	Length= 002F Public
-  p10  . . . . . . . . . . . . .	L Near	 0197	  code	
-  no . . . . . . . . . . . . . .	L Near	 01B6	  code	
-  fexit  . . . . . . . . . . . .	L Near	 01BE	  code	
+name_search  . . . . . . . . . .	P Near	 0148	  code	Length= 0049 Public
+  d  . . . . . . . . . . . . . .	L Near	 0151	  code	
+  nof  . . . . . . . . . . . . .	L Near	 0170	  code	
+  d2 . . . . . . . . . . . . . .	L Near	 0178	  code	
+  dexit  . . . . . . . . . . . .	L Near	 0190	  code	
+name_sort  . . . . . . . . . . .	P Near	 00F6	  code	Length= 0052 Public
+  c1 . . . . . . . . . . . . . .	L Near	 00FD	  code	
+  c2 . . . . . . . . . . . . . .	L Near	 0107	  code	
+  c3 . . . . . . . . . . . . . .	L Near	 0138	  code	
+printline  . . . . . . . . . . .	P Near	 0191	  code	Length= 002F Public
+  p10  . . . . . . . . . . . . .	L Near	 0198	  code	
+  no . . . . . . . . . . . . . .	L Near	 01B7	  code	
+  fexit  . . . . . . . . . . . .	L Near	 01BF	  code	
 stor_name  . . . . . . . . . . .	P Near	 00BD	  code	Length= 000A Public
-stor_phone . . . . . . . . . . .	P Near	 00EB	  code	Length= 000A Public
+stor_phone . . . . . . . . . . .	P Near	 00EC	  code	Length= 000A Public
 
 
 Symbols:

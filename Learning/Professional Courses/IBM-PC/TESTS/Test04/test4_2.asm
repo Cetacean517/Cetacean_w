@@ -131,7 +131,7 @@ b10:
 input_name endp
 ;--------------------------------------------------------------------
 stor_name     proc   near
-      lea  si,stokn1
+      lea  si,stokin1
       mov  cx,17
       rep  movsb
       ret
@@ -151,14 +151,14 @@ inphone   proc   near
      mov cx,12
      sub cx,bx
 c10:
-     mov stokn2[bx],' '
+     mov stokin2[bx],' '
      inc bx
      loop c10
      ret 
 inphone endp
 ;--------------------------------------------------------------------
 stor_phone  proc near
-     lea  si,stokn2
+     lea  si,stokin2
      mov  cx,11
      rep  movsb   ;movs 串传送指令 cmps 串比较操作
      ret
@@ -204,7 +204,7 @@ name_search proc near
 	  mov  flag,0      ;;;立个flag
    d: 
       mov  cx,17
-	  lea si,stokn1
+	  lea si,stokin1
       mov  di,bx
       repz cmpsb
       jz  d2
@@ -259,7 +259,8 @@ fexit:
        ret
 printline endp
 ;--------------------------------------------------------------------
-code1 ends
+code ends
 ;--------------------------------------------------------------------
 end main       
+
 
