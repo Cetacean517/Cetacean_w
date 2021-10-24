@@ -599,7 +599,12 @@ P2(){
 - **在"前操作”之后执行V(S)**
 - **在"后操作”之前执行P(S)**
 
-## 2.6 经典进程的同步问题
+### 2.4.5 管程机制
+### 条件变量 condition c
+- c.wait
+
+
+## 2.5 经典进程的同步问题
 ### 2.6.1 消费者-用户问题
 #### 记录型信号量
 - P操作不可以交换
@@ -621,3 +626,150 @@ P2(){
 > 读读共享；写写互斥；读写互斥
 
 #### 记录型信号量
+
+### 例题
+例1. B0,B1,B3分别可放3，2，2个消息。初始，B0有3个消息。
+每次Pi给Bi传消息（i=1,2,3)
+用wait,signal写出P0,P1,P2的同步互斥流程
+```
+semaphore mutex0 = mutex1 = mutex2 = 1
+semaphore full0 = 3 semaphore empty0 = 0
+semaphore full1 = 0 semaphore empty1 = 2
+semaphore full2 = 0 semaphore empty2 = 2
+
+P0(){
+  while(1){
+    P(full0);
+    P(mutex0);
+    取数据;
+    V(mutex0);
+    V(empty0);
+    加工模型;
+    P(empty1);
+    P(mutex1);
+    放入商品;
+    V(mutex1);
+    V(full1);
+  }
+}
+P1(){
+  while(1){
+    P(full1);
+    P(mutex1);
+    取数据;
+    V(mutex1);
+    V(empty1);
+    加工模型;
+    P(empty2);
+    P(mutex2);
+    放入商品;
+    V(mutex2);
+    V(full2);
+  }
+}
+
+P2(){
+  while(1){
+    P(full2);
+    P(mutex2);
+    取数据;
+    V(mutex2);
+    V(empty2);
+    加工数据;
+    P(empty0);
+    P(mutex0);
+    放数据;
+    V(mutex0);
+    V(full0);
+  }
+}
+```
+
+例2. 有桥如图,车流如箭头所示,桥上不允许两车交会,但允许同方向车辆通行(即桥上可以有多个同方向的车)用 wait , signal 操作实现交通管理,以防桥上堵塞。
+```C
+int countSN = countNS = 0       // 南向北，北向南的车计数
+semaphore mutexSN = mutexNS = 1 // 
+semaphore bridge = 1            // 桥上的互斥信号量
+StoN(){
+  while(1){
+    P(mutexSN);
+    if(countSN == 0) // 判断是否是第一辆车
+      P(bridge);
+    countSN++;
+    V(mutexSN);
+
+    过桥...;
+
+    P(mutexSN);      // 要先获取权限
+    countSN--;
+    if(countSN == 0)  //判断是否是最后一辆
+      V(bridge);
+    V(mutexSN)
+  }
+}
+
+NtoS(){
+  while(1){
+    P(mutexNS);
+    if(countNS == 0) // 判断是否是第一辆车
+      P(bridge);
+    countNS++;
+    V(mutexNS);
+
+    过桥...;
+
+    P(mutexNS);      // 要先获取权限
+    countNS--;
+    if(countNS == 0)  //判断是否是最后一辆
+      V(bridge);
+    V(mutexNS)
+  }
+}
+```
+
+## 2.6 进程通信
+- 低级通信
+- 高级通信
+
+### 共享存储器系统
+- 基于共享
+- 特点：低效，只能传输少量数据
+
+### 管道通信
+- 基于共享文件（pipe文件）
+- 只能实现单向的传输。（某段时间内）互斥访问
+- 管道写满时，写进程被阻塞。读完时，读进程被阻塞；没写完，就不允许写，没读空，就不允许写。
+- 读进程最多只有一个，读完就被抛弃。
+
+### 消息传递系统
+- 利用原语进行数据发送
+- 分类
+  - 直接通信方式
+  - 间接通信方式
+#### 直接通信方式
+- Send(Receiver,message)
+- Receive(Sender,message)
+
+## 2.7 线程
+### 2.7.1 线程引入
+- 资源分配、调度
+  - 传统：
+    - 资源分配、调度的基本单位：进程
+  - 引入线程：
+    - 资源分配的基本单位：进程
+    - 调度的基本单位：线程 
+#### 线程的属性
+
+## 2.8 线程的实现
+- 应用程序执行，利用线程库
+- 线程切换：用户态实现
+- 用户：多线程；操作系统：only进程， no线程
+- 优点：切换无需变态， 开销小
+- 缺点：一个用户级线程被阻塞，整个进程都被阻塞。
+
+### 2.8.1 内核级线程
+- 线程管理工作：CPU内核实现
+- 线程切换：核心态
+- 建立TCB
+- 优点：一个线程被阻塞，其他线程可运行
+- 缺点：需要进程切换
