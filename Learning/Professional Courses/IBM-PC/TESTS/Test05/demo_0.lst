@@ -1,0 +1,354 @@
+Microsoft (R) Macro Assembler Version 6.11		    10/27/21 20:16:42
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				datas   segment  
+ 0000 0F			        cury   db   15
+ 0001 32					curx   db   50  ;光标初始位置
+
+ 0002 0A					lx     db   10  
+ 0003 0F					ly     db   15  ;记录左窗口的当前光标位置，初始化为左窗口初始位置
+
+ 0004 32					rx     db   50  
+ 0005 0F					ry     db   15  ;记录右窗口的当前光标位置，初始化为右窗口的初始位置
+
+ 0006 0F					dwx    db   15
+ 0007 16					dwy    db   22  ;记录下窗口当前的光标位置，初始化为下窗口初始位置
+						
+ 0008 00					ulrow  db    0
+ 0009 00					ulcow  db    0
+ 000A 00					lrrow  db    0
+ 000B 00					lrcol  db     0
+ 000C 01					windowflag  db   1      ;=1，右边窗口，=2，左边窗口
+ 000D				datas   ends
+
+				;宏指令clear清屏
+				clear  macro a,b,c,d
+				         mov  al,0  ;上卷行数为0
+						 mov  bh,7  ;卷入行属性为07，是正常属性
+						 mov  ch,a  ;左上角行号
+						 mov  cl,b  ;左上角列号
+						 mov  dh,c  ;右下角行号
+						 mov  dl,d  ;右下角列号
+						 mov  ah,6  
+						 int 10h
+				endm
+				;-------------------------------------------------------------宏指令 scroll向上卷动一行 
+				scroll macro cont,ulrow,ulcol,lrrow,lrcol     
+				         mov al,cont                ;上卷行数 
+						 mov bh,70h                 ;卷入行属性  
+						 mov ch,ulrow               ;左上角行号 
+				         mov cl,ulcol               ;左上角列号 
+				         mov dh,lrrow               ;右下角行号  
+				         mov dl,lrcol               ;右下角列号  
+				         mov ah,6 
+				         int 10h                    ;BIOS调用，上卷		 
+				endm 
+
+				;--------------------------------------------------------------宏指令postc 光标定位
+				post_c macro y,x                     ;设置光标在 (y，x)位置，设置光标行列位置        
+				    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+					mov ah,2         
+					mov dh,y         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+					mov dl,x         
+					int 10h         
+					endm
+				;---------------------------------------------------------------在当前窗口和下窗口显示 
+				display macro 
+				    mov bh,0     
+					mov cx,1 
+				    mov ah,0ah              ;在当前的窗口的光标位置处打印字符     
+					int 10h   
+					
+				    post_c dwy,dwx         ;重新设置当前光标位置到下窗口的正确位置处
+					mov bh,0     
+					mov cx,1 
+				    mov ah,0ah              ;在下窗口输出     
+					int 10h 
+				endm 
+
+				;----------------------------------------------------------------接收字符并判断 
+				getchar macro 
+				   input:                   ;输入键盘上的字符  
+				       mov ah,0 
+				       int 16h                 ;BIOS调用，从键盘读字符    
+				   
+				       cmp ah,4bh              ;判断输入字符是否为左向键  扫描码
+				       jnz no_left  
+				       post_c ly,lx  
+				       mov windowflag,2     
+				       jmp input  
+				   no_left:   
+				       cmp ah,4dh  
+					   jnz no_right            ;判断输入字符是否为右向键 
+					   post_c ry,rx  
+					   mov windowflag,1     
+					   jmp input
+				   no_right: 
+				       cmp ah,01h               ;判断输入字符是否为ESC     
+					   ;jz exit  
+				jnz  continue1
+				        clear 0,0,24,79             ;屏幕总大小为25*80的
+
+				ret
+				continue1:
+				 
+				       display  ;不是左右键和ESC那么就嵌套调用 宏display （显示输入的可打印的字符）
+
+					   inc dwx   ;先显示字符，再将下窗口该行的光标的列号加1，再来比较是否要上卷
+				       cmp dwx,65              ;判断下窗口是否上卷     
+					   jle isright                ;isright表示下窗口中当前光标行可以向右走
+				       scroll 1,18,15,22,65        ;到了一行的最右端，要向上卷一行
+					   mov dwx,15              ;上卷一行后，当前列号变为当前窗口最左边的列的列号
+				   isright:                       
+				       cmp windowflag,1          ;判断是否在右窗口     
+					   jnz displeft   
+				   dispright:                   ;判断右窗口是否上卷     
+				       inc rx      
+					   cmp rx,70
+					   jle rightexit             ;rightexit表示右窗口中当前光标行可以向右走，不用上卷
+
+				       scroll 1,5,50,15,70    
+					   mov rx,50   
+				rightexit:                   ;右窗口输出     
+				      post_c ry,rx     
+					  jmp input 
+				displeft:                    ;判断左窗口是否上卷     
+				      inc lx     
+					  cmp lx,30     
+					  jle leftexit 
+				      scroll 1,5,10,15,30     
+					  mov lx,10    
+				leftexit:                    ;左窗口输出     
+				      post_c ly,lx     
+					  jmp input
+				 
+				      endm        ;getchar macro endm
+
+				;---------------------------------------------------------------------
+					
+ 0000				codes segment 
+				 assume cs:codes,ds:datas 
+ 0000				 start: 
+ 0000				main proc far   
+ 0000  1E			    push ds  
+ 0001  2B C0				sub ax,ax  
+ 0003  50				push ax   
+ 0004  B8 ---- R			mov ax,datas  
+ 0007  8E D8				mov ds,ax  
+					clear 0,0,24,79  
+ 0009  B0 00		     1	         mov  al,0  ;上卷行数为0
+ 000B  B7 07		     1			 mov  bh,7  ;卷入行属性为07，是正常属性
+ 000D  B5 00		     1			 mov  ch,0  ;左上角行号
+ 000F  B1 00		     1			 mov  cl,0  ;左上角列号
+ 0011  B6 18		     1			 mov  dh,24  ;右下角行号
+ 0013  B2 4F		     1			 mov  dl,79  ;右下角列号
+ 0015  B4 06		     1			 mov  ah,6  
+ 0017  CD 10		     1			 int 10h
+					scroll 10,5,10,15,30  ;scroll也可以设置窗口make three windows
+ 0019  B0 0A		     1	         mov al,10                ;上卷行数 
+ 001B  B7 70		     1			 mov bh,70h                 ;卷入行属性  
+ 001D  B5 05		     1			 mov ch,5               ;左上角行号 
+ 001F  B1 0A		     1	         mov cl,10               ;左上角列号 
+ 0021  B6 0F		     1	         mov dh,15               ;右下角行号  
+ 0023  B2 1E		     1	         mov dl,30               ;右下角列号  
+ 0025  B4 06		     1	         mov ah,6 
+ 0027  CD 10		     1	         int 10h                    ;BIOS调用，上卷		 
+					scroll 10,5,50,15,70  
+ 0029  B0 0A		     1	         mov al,10                ;上卷行数 
+ 002B  B7 70		     1			 mov bh,70h                 ;卷入行属性  
+ 002D  B5 05		     1			 mov ch,5               ;左上角行号 
+ 002F  B1 32		     1	         mov cl,50               ;左上角列号 
+ 0031  B6 0F		     1	         mov dh,15               ;右下角行号  
+ 0033  B2 46		     1	         mov dl,70               ;右下角列号  
+ 0035  B4 06		     1	         mov ah,6 
+ 0037  CD 10		     1	         int 10h                    ;BIOS调用，上卷		 
+					scroll 4,18,15,22,65 ;上卷4行，是因为下窗口一共能容纳4行，得到一个空内容的窗口
+ 0039  B0 04		     1	         mov al,4                ;上卷行数 
+ 003B  B7 70		     1			 mov bh,70h                 ;卷入行属性  
+ 003D  B5 12		     1			 mov ch,18               ;左上角行号 
+ 003F  B1 0F		     1	         mov cl,15               ;左上角列号 
+ 0041  B6 16		     1	         mov dh,22               ;右下角行号  
+ 0043  B2 41		     1	         mov dl,65               ;右下角列号  
+ 0045  B4 06		     1	         mov ah,6 
+ 0047  CD 10		     1	         int 10h                    ;BIOS调用，上卷		 
+					
+					post_c cury,curx  
+ 0049  B7 00		     1	    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+ 004B  B4 02		     1		mov ah,2         
+ 004D  8A 36 0000 R	     1		mov dh,cury         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+ 0051  8A 16 0001 R	     1		mov dl,curx         
+ 0055  CD 10		     1		int 10h         
+					getchar
+ 0057			     1	   input:                   ;输入键盘上的字符  
+ 0057  B4 00		     1	       mov ah,0 
+ 0059  CD 16		     1	       int 16h                 ;BIOS调用，从键盘读字符    
+ 005B  80 FC 4B		     1	       cmp ah,4bh              ;判断输入字符是否为左向键  扫描码
+ 005E  75 15		     1	       jnz no_left  
+ 0060  B7 00		     2	    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+ 0062  B4 02		     2		mov ah,2         
+ 0064  8A 36 0003 R	     2		mov dh,ly         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+ 0068  8A 16 0002 R	     2		mov dl,lx         
+ 006C  CD 10		     2		int 10h         
+ 006E  C6 06 000C R 02	     1	       mov windowflag,2     
+ 0073  EB E2		     1	       jmp input  
+ 0075			     1	   no_left:   
+ 0075  80 FC 4D		     1	       cmp ah,4dh  
+ 0078  75 15		     1		   jnz no_right            ;判断输入字符是否为右向键 
+ 007A  B7 00		     2	    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+ 007C  B4 02		     2		mov ah,2         
+ 007E  8A 36 0005 R	     2		mov dh,ry         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+ 0082  8A 16 0004 R	     2		mov dl,rx         
+ 0086  CD 10		     2		int 10h         
+ 0088  C6 06 000C R 01	     1		   mov windowflag,1     
+ 008D  EB C8		     1		   jmp input
+ 008F			     1	   no_right: 
+ 008F  80 FC 01		     1	       cmp ah,01h               ;判断输入字符是否为ESC     
+ 0092  75 11		     1	jnz  continue1
+ 0094  B0 00		     2	         mov  al,0  ;上卷行数为0
+ 0096  B7 07		     2			 mov  bh,7  ;卷入行属性为07，是正常属性
+ 0098  B5 00		     2			 mov  ch,0  ;左上角行号
+ 009A  B1 00		     2			 mov  cl,0  ;左上角列号
+ 009C  B6 18		     2			 mov  dh,24  ;右下角行号
+ 009E  B2 4F		     2			 mov  dl,79  ;右下角列号
+ 00A0  B4 06		     2			 mov  ah,6  
+ 00A2  CD 10		     2			 int 10h
+ 00A4  CB		     1	ret
+ 00A5			     1	continue1:
+ 00A5  B7 00		     2	    mov bh,0     
+ 00A7  B9 0001		     2		mov cx,1 
+ 00AA  B4 0A		     2	    mov ah,0ah              ;在当前的窗口的光标位置处打印字符     
+ 00AC  CD 10		     2		int 10h   
+ 00AE  B7 00		     3	    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+ 00B0  B4 02		     3		mov ah,2         
+ 00B2  8A 36 0007 R	     3		mov dh,dwy         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+ 00B6  8A 16 0006 R	     3		mov dl,dwx         
+ 00BA  CD 10		     3		int 10h         
+ 00BC  B7 00		     2		mov bh,0     
+ 00BE  B9 0001		     2		mov cx,1 
+ 00C1  B4 0A		     2	    mov ah,0ah              ;在下窗口输出     
+ 00C3  CD 10		     2		int 10h 
+ 00C5  FE 06 0006 R	     1		   inc dwx   ;先显示字符，再将下窗口该行的光标的列号加1，再来比较是否要上卷
+ 00C9  80 3E 0006 R 41	     1	       cmp dwx,65              ;判断下窗口是否上卷     
+ 00CE  7E 15		     1		   jle isright                ;isright表示下窗口中当前光标行可以向右走
+ 00D0  B0 01		     2	         mov al,1                ;上卷行数 
+ 00D2  B7 70		     2			 mov bh,70h                 ;卷入行属性  
+ 00D4  B5 12		     2			 mov ch,18               ;左上角行号 
+ 00D6  B1 0F		     2	         mov cl,15               ;左上角列号 
+ 00D8  B6 16		     2	         mov dh,22               ;右下角行号  
+ 00DA  B2 41		     2	         mov dl,65               ;右下角列号  
+ 00DC  B4 06		     2	         mov ah,6 
+ 00DE  CD 10		     2	         int 10h                    ;BIOS调用，上卷		 
+ 00E0  C6 06 0006 R 0F	     1		   mov dwx,15              ;上卷一行后，当前列号变为当前窗口最左边的列的列号
+ 00E5			     1	   isright:                       
+ 00E5  80 3E 000C R 01	     1	       cmp windowflag,1          ;判断是否在右窗口     
+ 00EA  75 31		     1		   jnz displeft   
+ 00EC			     1	   dispright:                   ;判断右窗口是否上卷     
+ 00EC  FE 06 0004 R	     1	       inc rx      
+ 00F0  80 3E 0004 R 46	     1		   cmp rx,70
+ 00F5  7E 15		     1		   jle rightexit             ;rightexit表示右窗口中当前光标行可以向右走，不用上卷
+ 00F7  B0 01		     2	         mov al,1                ;上卷行数 
+ 00F9  B7 70		     2			 mov bh,70h                 ;卷入行属性  
+ 00FB  B5 05		     2			 mov ch,5               ;左上角行号 
+ 00FD  B1 32		     2	         mov cl,50               ;左上角列号 
+ 00FF  B6 0F		     2	         mov dh,15               ;右下角行号  
+ 0101  B2 46		     2	         mov dl,70               ;右下角列号  
+ 0103  B4 06		     2	         mov ah,6 
+ 0105  CD 10		     2	         int 10h                    ;BIOS调用，上卷		 
+ 0107  C6 06 0004 R 32	     1		   mov rx,50   
+ 010C			     1	rightexit:                   ;右窗口输出     
+ 010C  B7 00		     2	    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+ 010E  B4 02		     2		mov ah,2         
+ 0110  8A 36 0005 R	     2		mov dh,ry         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+ 0114  8A 16 0004 R	     2		mov dl,rx         
+ 0118  CD 10		     2		int 10h         
+ 011A  E9 FF3A		     1		  jmp input 
+ 011D			     1	displeft:                    ;判断左窗口是否上卷     
+ 011D  FE 06 0002 R	     1	      inc lx     
+ 0121  80 3E 0002 R 1E	     1		  cmp lx,30     
+ 0126  7E 15		     1		  jle leftexit 
+ 0128  B0 01		     2	         mov al,1                ;上卷行数 
+ 012A  B7 70		     2			 mov bh,70h                 ;卷入行属性  
+ 012C  B5 05		     2			 mov ch,5               ;左上角行号 
+ 012E  B1 0A		     2	         mov cl,10               ;左上角列号 
+ 0130  B6 0F		     2	         mov dh,15               ;右下角行号  
+ 0132  B2 1E		     2	         mov dl,30               ;右下角列号  
+ 0134  B4 06		     2	         mov ah,6 
+ 0136  CD 10		     2	         int 10h                    ;BIOS调用，上卷		 
+ 0138  C6 06 0002 R 0A	     1		  mov lx,10    
+ 013D			     1	leftexit:                    ;左窗口输出     
+ 013D  B7 00		     2	    mov bh,0             ;注意这里坐标是（行号，列号）的形式，行号是y，列号是x）
+ 013F  B4 02		     2		mov ah,2         
+ 0141  8A 36 0003 R	     2		mov dh,ly         ;int10h中，ah=2时，设置光标位置，dh为行号，dl为列号
+ 0145  8A 16 0002 R	     2		mov dl,lx         
+ 0149  CD 10		     2		int 10h         
+ 014B  E9 FF09		     1		  jmp input
+ 014E  CB			    ret
+ 014F				main endp 
+ 014F				codes ends 
+				   end start 
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    10/27/21 20:16:42
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+clear  . . . . . . . . . . . . .	Proc
+display  . . . . . . . . . . . .	Proc
+getchar  . . . . . . . . . . . .	Proc
+post_c . . . . . . . . . . . . .	Proc
+scroll . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+codes  . . . . . . . . . . . . .	16 Bit	 014F	  Para	  Private 
+datas  . . . . . . . . . . . . .	16 Bit	 000D	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+main . . . . . . . . . . . . . .	P Far	 0000	  codes	Length= 014F Public
+  input  . . . . . . . . . . . .	L Near	 0057	  codes	
+  no_left  . . . . . . . . . . .	L Near	 0075	  codes	
+  no_right . . . . . . . . . . .	L Near	 008F	  codes	
+  continue1  . . . . . . . . . .	L Near	 00A5	  codes	
+  isright  . . . . . . . . . . .	L Near	 00E5	  codes	
+  dispright  . . . . . . . . . .	L Near	 00EC	  codes	
+  rightexit  . . . . . . . . . .	L Near	 010C	  codes	
+  displeft . . . . . . . . . . .	L Near	 011D	  codes	
+  leftexit . . . . . . . . . . .	L Near	 013D	  codes	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+curx . . . . . . . . . . . . . .	Byte	 0001	  datas	
+cury . . . . . . . . . . . . . .	Byte	 0000	  datas	
+dwx  . . . . . . . . . . . . . .	Byte	 0006	  datas	
+dwy  . . . . . . . . . . . . . .	Byte	 0007	  datas	
+lrcol  . . . . . . . . . . . . .	Byte	 000B	  datas	
+lrrow  . . . . . . . . . . . . .	Byte	 000A	  datas	
+lx . . . . . . . . . . . . . . .	Byte	 0002	  datas	
+ly . . . . . . . . . . . . . . .	Byte	 0003	  datas	
+rx . . . . . . . . . . . . . . .	Byte	 0004	  datas	
+ry . . . . . . . . . . . . . . .	Byte	 0005	  datas	
+start  . . . . . . . . . . . . .	L Near	 0000	  codes	
+ulcow  . . . . . . . . . . . . .	Byte	 0009	  datas	
+ulrow  . . . . . . . . . . . . .	Byte	 0008	  datas	
+windowflag . . . . . . . . . . .	Byte	 000C	  datas	
+
+	   0 Warnings
+	   0 Errors

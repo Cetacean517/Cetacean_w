@@ -772,4 +772,112 @@ NtoS(){
 - 线程切换：核心态
 - 建立TCB
 - 优点：一个线程被阻塞，其他线程可运行
-- 缺点：需要进程切换
+- 缺点：需要线程切换
+
+### 多线程模型
+#### 一对一模型
+- 1个用户级 <-> 1个内核级线程
+- 缺点：需要频繁切换
+#### 多对一模型
+- n个用户级 <-> 1个内核级线程
+- 优点：不需要频繁切换
+- 缺点：一个线程阻塞，整个进程阻塞
+
+* 内核级线程才是处理机分配的单位。
+
+#### 多对多模型
+- n个用户级 <-> m个内核级线程 (n>=m)
+- 合成两个
+
+**注意**
+- 用户级线程是“代码逻辑”的载体
+- 内核级线程是“运行机会”的载体
+
+一个代码逻辑需要有运行机会才能运行。
+
+## 第二章作业
+``` C++
+get:
+while(1):
+{
+P(f_out)；
+P(s_in);
+将数从f取出放入s;
+V(f_in);
+V(s_out);
+}
+copy:
+while(1):
+{
+P(s_out)；
+P(t_in);
+将数从s取出放入t;
+V(s_in);
+V(t_out);
+}
+put:
+while(1):
+{
+P(t_out)；
+P(g_in);
+将数从s取出放入t;
+V(t_in);
+V(g_out);
+}
+
+```
+
+```
+/**
+ * P、Q、R共享一个缓冲区，P、Q构成一对生产者-消费者，R即为生产者又为消费者，
+ * 使用P、V操作实现其同步。
+ */
+
+typedef int semaphore;
+semaphore mutex=1,empty=n,full=0; 
+//设置信号量mutex控制仓库进出，empty表示空仓库的个数，full表示满仓库的个数
+
+void P()
+{
+    while(true)
+    {
+        wait(empty);//如果缓冲区已满，则阻塞
+        wait(mutex);
+        生产一个产品；
+        signal(mutex);
+        signal(full);//如果消费者被阻塞，则唤醒消费者
+    }
+}
+
+void Q()
+{
+    while(true)
+    {
+        wait(full);//如果缓冲区为空，则阻塞
+        wait(mutex);
+        消费者取出一个产品
+        signal(mutex);
+        signal(empty);//如果生产者已经阻塞，则唤醒生产者
+    }
+}
+
+void R()
+{
+    if(empty==n)//执行生产者的功能
+    {
+        wait(empty);
+        wait(mutex);
+        生产一个产品；
+        signal(mutex);
+        signal(full);
+    }
+    if(full==n)//执行消费者的功能
+    {
+        wait(full);
+        wait(mutex);
+        消费者取出一个产品
+        signal(mutex);
+        signal(empty);
+    }
+}
+```
