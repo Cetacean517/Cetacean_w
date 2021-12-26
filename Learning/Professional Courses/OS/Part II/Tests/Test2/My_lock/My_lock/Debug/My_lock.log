@@ -1,0 +1,5 @@
+﻿  源.cpp
+D:\Cetacean517\Cetacean_w\Learning\Professional Courses\OS\Part II\Tests\Test2\My_lock\My_lock\源.cpp(85,21): warning C4018: “<”: 有符号/无符号不匹配
+D:\Cetacean517\Cetacean_w\Learning\Professional Courses\OS\Part II\Tests\Test2\My_lock\My_lock\源.cpp(114,21): warning C4018: “<”: 有符号/无符号不匹配
+D:\Cetacean517\Cetacean_w\Learning\Professional Courses\OS\Part II\Tests\Test2\My_lock\My_lock\源.cpp(142,22): warning C4018: “<”: 有符号/无符号不匹配
+  My_lock.vcxproj -> D:\Cetacean517\Cetacean_w\Learning\Professional Courses\OS\Part II\Tests\Test2\My_lock\Debug\My_lock.exe
