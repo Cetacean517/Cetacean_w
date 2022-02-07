@@ -1,0 +1,60 @@
+Microsoft (R) Macro Assembler Version 6.11		    01/25/22 18:44:16
+tempfile.asm						     Page 1 - 1
+
+
+				   ;assume cs:code
+				   ;code segment
+				;;要求：向内存0:200~0:23F传送数据0~63(3FH)
+					;mov ax,0
+					;mov es,ax
+					;mov bx,0
+					;mov cx,64
+				;s:	mov es:[bx],bl
+					;inc bl
+					;loop s
+				;
+					;mov ax,4c00H
+					;int 21H
+				;code ends
+				;end
+
+
+				   assume cs:code
+ 0000				   code segment
+				;要求：向内存0:200~0:23F传送数据0~63(3FH)
+ 0000  B8 0000				mov ax,0
+ 0003  8E D8				mov ds,ax		; ds的初始地址，存入内存放在ds里面
+ 0005  BB 0200				mov bx,0200h    ; ds的偏移地址
+ 0008  BA 0000				mov dx,0h		; 存入的数据从0开始
+					
+ 000B  B9 0040				mov cx,64
+ 000E  88 17			s:	mov ds:[bx],dl
+ 0010  43				inc bx
+ 0011  42				inc dx
+ 0012  E2 FA				loop s
+
+ 0014  B8 4C00				mov ax,4c00H
+ 0017  CD 21				int 21H
+ 0019				code ends
+				end
+Microsoft (R) Macro Assembler Version 6.11		    01/25/22 18:44:16
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+code . . . . . . . . . . . . . .	16 Bit	 0019	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+s  . . . . . . . . . . . . . . .	L Near	 000E	  code	
+
+	   0 Warnings
+	   0 Errors
