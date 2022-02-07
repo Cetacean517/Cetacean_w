@@ -3,9 +3,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StudentApplication {
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws Exception {
         SimpleDateFormat strFormat = new SimpleDateFormat("yyyy-dd-MM");
-        Student student;
         // 本科生信息
         String name="王小二";
         char gender='男';
@@ -26,6 +25,7 @@ public class StudentApplication {
         undergraduate.setScore(score);
         undergraduate.setStatus(status);
 
+        // 研究生信息
         String name1="李燕";
         char gender1='女';
         String birthday1="1999-6-12";
@@ -48,17 +48,19 @@ public class StudentApplication {
         master.setThesisLevel(thesisLevel1);
         master.setStatus(status1);
 
-        //
-        student = undergraduate;
-        StudentDegree studentDegree = new StudentDegree();
-        studentDegree.issueDegree(student);
-        studentDegree.printStudentInfo(student);
 
-        // master
-        student = master;
-        StudentDegree studentDegree1 = new StudentDegree();
-        studentDegree1.issueDegree(student);
-        studentDegree1.printStudentInfo(student);
+        StudentDegree studentDegree = new StudentDegree();
+        try{
+            studentDegree.issueDegree(undergraduate);
+            studentDegree.issueDegree(master);
+        }catch (UndergraduateException e){
+            System.out.println("评分环节出现以下问题：");
+            System.out.println(e.warnMess());
+        }catch (MasterException e){
+            System.out.println("评分环节出现以下问题：");
+            System.out.println(e.warnMess());
+        }
+
     }
 
 

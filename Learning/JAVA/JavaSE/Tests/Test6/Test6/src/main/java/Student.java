@@ -9,11 +9,8 @@ public abstract class Student {
     String stuId;
     String category;
     double[] score;
-
-    // 3个抽象方法：判定是否满足学位颁发条件、计算学生课程平均值、以及判定是否颁发学位。
-    public abstract boolean getPass();
-    public abstract double computeAverage();
-    public abstract String getDegree();
+    boolean status;
+    public abstract String getDegree() throws Exception;
 
     // getter and setter 方法
     public Date getBirthday() {
@@ -44,9 +41,7 @@ public abstract class Student {
         this.category = category;
     }
 
-    public double[] getScore() {
-        return score;
-    }
+    public double[] getScore() { return score;}
 
     public void setScore(double[] score) {
         this.score = score;
@@ -59,8 +54,6 @@ public abstract class Student {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
-    boolean status;
 
     public void setName(String name) {
         this.name = name;
