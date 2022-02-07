@@ -1,0 +1,9 @@
+﻿  源.cpp
+D:\Desktop\Bonus\Bonus\源.cpp(8,40): warning C4305: “-=”: 从“double”到“float”截断
+D:\Desktop\Bonus\Bonus\源.cpp(10,42): warning C4305: “+=”: 从“double”到“float”截断
+D:\Desktop\Bonus\Bonus\源.cpp(7,20): warning C4101: “z”: 未引用的局部变量
+  正在生成代码
+  Previous IPDB not found, fall back to full compilation.
+  All 4 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  Bonus.vcxproj -> D:\Desktop\Bonus\Release\Bonus.exe

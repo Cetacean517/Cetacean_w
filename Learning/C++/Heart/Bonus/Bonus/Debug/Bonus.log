@@ -1,0 +1,5 @@
+﻿  源.cpp
+D:\Desktop\Bonus\Bonus\源.cpp(8,40): warning C4305: “-=”: 从“double”到“float”截断
+D:\Desktop\Bonus\Bonus\源.cpp(10,42): warning C4305: “+=”: 从“double”到“float”截断
+D:\Desktop\Bonus\Bonus\源.cpp(7,20): warning C4101: “z”: 未引用的局部变量
+  Bonus.vcxproj -> D:\Desktop\Bonus\Debug\Bonus.exe
