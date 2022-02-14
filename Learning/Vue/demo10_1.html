@@ -1,0 +1,15 @@
+﻿<html>
+  <body>
+    <div>
+      <!-- js在连接上的嵌入 -->
+      <a href="javascript:console.log('触发')">点击1</a>
+      <!-- 如果 JavaScript 代码返回一个字符串，浏览器就会新建一个文档，展示这个字符串的内容，原有文档的内容都会消失。 -->
+      <a href="javascript: new Date().toLocaleTimeString();">点击2</a>
+      <!-- 放置书签替换掉当前的内容 添加void void 0;  -->
+      <a href="javascript: void new Date().toLocaleTimeString();">点击</a>
+      <a href="javascript: new Date().toLocaleTimeString();void 0;">点击</a>
+    </div>
+  </body>
+</html>
+
+<script></script>
