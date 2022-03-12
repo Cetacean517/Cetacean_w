@@ -4,7 +4,7 @@
 # add_axes( [left, bottom, width, height]):生成一个axes轴域对象
 # 它表示添加到画布中的矩形区域的左下角坐标(x, y)，以及宽度和高度。如下所示：
 
-# legend()
+# legend():图例
 # ax.legend(handles, labels, loc)
 # labels 是一个字符串序列，用来指定标签的名称；
 # loc 是指定图例位置的参数，其参数值可以用字符串或整数来表示；
