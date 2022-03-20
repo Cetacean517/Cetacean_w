@@ -1,6 +1,0 @@
-var flag3;
-const yiban=0, dengyao = 1, dengyaozhijiao = 2, zhijiao=3, dengbian=4, fei=5;
-if flag3 # 1 then
-        begin
-            write(fei)
-        end;

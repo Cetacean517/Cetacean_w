@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-show指令</title>
+</head>
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value="打开异世界的大门" @click = "changeShow">
+        <input type="button" value="累加年龄" @click="addAge">
+        <img src="https://uploadfile.bizhizu.cn/up/80/0e/72/800e7220ca8f0f2f6b89029ae8f86580.jpg" v-show="false">
+        <img src="https://uploadfile.bizhizu.cn/up/80/0e/72/800e7220ca8f0f2f6b89029ae8f86580.jpg" v-show="isShow">
+        <img src="https://uploadfile.bizhizu.cn/up/80/0e/72/800e7220ca8f0f2f6b89029ae8f86580.jpg" v-show="age>=18">
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            isShow:false,
+            age:16
+        },
+        methods:{
+            changeShow:function(){
+                this.isShow = !this.isShow;
+            },
+            addAge:function(){
+                this.age++;
+            }
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,52 @@
+var a, b, c, flag, x, y, z, flag2, flag3;
+const yiban=0, dengyao = 1, dengyaozhijiao = 2, zhijiao=3, dengbian=4, fei=5;
+begin
+    if a+b>c then
+        begin
+            if a+c>b then
+                begin
+                    if b+c>a then
+                        begin
+                            flag3 := 1;
+                            if  a = b then
+                                begin
+                                    if b = c then
+                                        begin
+                                            write(dengbian);
+                                            flag := 1;
+                                        end;
+                                end;
+                            if flag # 1 then
+                                begin
+                                    if a = b then
+                                        begin
+                                            x := a;y := c;
+                                            call dyzhijiao;
+                                        end;
+                                    if c = b then
+                                        begin
+                                            x := b;y := a;
+                                            call dyzhijiao;
+                                        end;
+                                    if a = c then
+                                        begin
+                                            x := a;y := b;
+                                            call dyzhijiao;
+                                        end;
+                                    if flag # 1 then
+                                        begin
+                                            x:=a;y:=b;z:=c;
+                                            call zhijiao;
+                                            x:=a;y:=c;z:=b;
+                                            call zhijiao;
+                                            x:=c;y:=b;z:=a;
+                                            call zhijiao;
+                                        end;
+                                        if flag # 1 then
+                                            begin
+                                                wirte(yiban)
+                                            end;
+                                end;
+                        end;
+                end;
+        end;

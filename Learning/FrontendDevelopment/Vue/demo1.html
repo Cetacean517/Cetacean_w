@@ -1,0 +1,39 @@
+<!-- 事件的触发过程 -->
+<html>
+  <body>
+    <div>
+      <p> 点击 </p>
+    </div>
+  </body>
+</html>
+
+<script>
+  var phases = {
+  1: 'capture',
+  2: 'target',
+  3: 'bubble'
+};
+
+// 获取结点
+var div = document.querySelector('div');
+var p = document.querySelector('p');
+
+// true，捕获阶段触发
+// false, 仅在冒泡阶段触发
+div.addEventListener('click', callback, true);
+p.addEventListener('click', callback, true);
+div.addEventListener('click', callback, false);
+p.addEventListener('click', callback, false);
+
+function callback(event) {
+  var tag = event.currentTarget.tagName;
+  var phase = phases[event.eventPhase];
+  console.log("Tag: '" + tag + "'. EventPhase: '" + phase + "'");
+}
+
+// 点击以后的结果
+// Tag: 'DIV'. EventPhase: 'capture'
+// Tag: 'P'. EventPhase: 'target'
+// Tag: 'P'. EventPhase: 'target'
+// Tag: 'DIV'. EventPhase: 'bubble'
+</script>

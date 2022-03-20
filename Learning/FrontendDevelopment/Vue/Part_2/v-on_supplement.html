@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-on 补充指令</title>
+</head>
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value= "click" @click="doIt('Today is ',5.9)"/>
+        <!-- 用keyup.修饰键 的语法来实行事件修饰符功能 -->
+        <input type="text" v-model="name" @keyup.enter="sayHi">
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            name:'',
+        },
+        methods:{
+            doIt:function(t,today){
+                console.log("hello world")
+                console.log(t+today)
+            },
+            sayHi:function(){
+                console.log(this.name)
+                alert("吃了吗？")
+            }
+        }
+    })
+</script>
+</html>

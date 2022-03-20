@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>changePic</title>
+</head>
+<body>
+    <style type="text/css">
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        div img{
+            width: 600px; 
+            height: 450px;
+            }
+    </style>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <a href="javascript:void(0)" @click="prev" v-show="index">上一张</a>
+        <img :src="imgArr[index]" alt="">
+        <a href="#" @click="next" v-show="index<imgArr.length-1">下一张</a>
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            imgArr:[
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/c3c68328856d4f388674f21da1a5da4a.gif",
+                "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2825715229,868722476&fm=26&gp=0.jpg",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/9d279e89987645d1acc4ec7ecfd427bf.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/2e41ce9dd3ae41e490108d6113a933b4.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/8be92c3a6a0c47a4be1518729a8869b6.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/bd432fc0327a410a80a63c6b06821684.gif",
+                "https://5b0988e595225.cdn.sohucs.com/images/20181016/e10ce132c4a54be486612f9847ee3cb6.gif"
+            ],
+            // 存储当前指示照片是哪一张
+            index:0
+        },
+        methods:{
+            prev:function(){
+                this.index--;
+            },
+            next:function(){
+                this.index++;
+            },
+        }
+    })
+</script>
+</html>

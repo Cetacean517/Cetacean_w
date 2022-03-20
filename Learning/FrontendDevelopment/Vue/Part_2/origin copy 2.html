@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>notebook</title>
+</head>
+<body>
+    <!-- 主体区域 -->
+    <section id="todoapp">
+        <!-- 输入框 -->
+        <header class="header">
+            <h1>Cetacean's notebook</h1>
+            <input autofocus="autofocus" autocomplete="off" placeholder="请输入任务" class="new-todo" v-model="inputValue" @keyup.enter="add">
+        </header>
+        <!-- 列表区域 -->
+        <section class="main">
+            <ul class="todo-list">
+                <li class="todo" v-for="(item,index) in list">
+                    <div class="view">
+                        <span class="index">{{index + 1}}.</span>
+                        <label @mouseenter="changeIndex(index)" >{{item}}</label>
+                        <button class="destroy" @click="remove(index)" v-show="index == id" @mouseleave="mouseOut">delete</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+        <!-- 统计和清空 -->
+        <footer class="footer" style="font-size: 12px" v-show="list.length!=0">
+            <span class="todo-count" v-if="list.length!=0" >
+                <strong >{{list.length}}</strong>
+                "items left"
+            </span>
+        <button class="clear-completed" style="font-size: 12px" @click="clearall" v-show="list.length!=0">
+            Clear
+        </button>
+        </footer>
+    </section>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#todoapp",
+        data:{
+            list:["写代码","吃饭饭","睡觉觉"],
+            inputValue:"好好学习，天天向上",
+            id:0
+        },
+        methods:{
+            add:function(){
+                this.list.push(this.inputValue)
+            },
+            remove:function(index){
+                console.log("delete");
+                console.log(index);
+                this.list.splice(index,1);
+            },
+            // 控制delete button的显示
+            // 移入
+            changeIndex:function(index){
+                this.id = index
+            },
+            // 移出
+            mouseOut:function(){
+                this.id = -1
+            },
+            clearall:function(){
+                this.list = [];
+            }
+        }
+    })
+</script>
+</html>

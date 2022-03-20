@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-for指令</title>
+</head>
+<body>
+    <!-- 2. html结构 -->
+    <div id="app">
+        <input type="button" value="add" @click="add">
+        <input type="button" value="remove" @click="remove">
+        <ul>
+            <!-- 绑定的Item对应绑定的每一项 -->
+            <li v-for = "(item,index) in arr">
+                {{index + 1}} Hello, good morning. I'm in {{item}}
+            </li>
+        </ul>
+        <h2 v-for="(item) in fruits" :title="item.name">
+            {{item.name}}
+        </h2>
+    </div>
+    <!-- 1. 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</body>
+<script>
+    // 3. 创建Vue实例
+    var app = new Vue({
+        el:"#app",
+        data:{
+            arr:["BJ","SH","GZ","SZ"],
+            fruits:[
+                {name:"watermelon"},
+                {name:"apple"}
+            ]
+        },
+        methods:{
+            // 追加属性
+            add:function(){
+                this.fruits.push({name:"grapes"})
+            },
+            // 移除属性,移除最左边的元素
+            remove:function(){
+                this.fruits.shift();
+            }
+        }
+    })
+</script>
+</html>

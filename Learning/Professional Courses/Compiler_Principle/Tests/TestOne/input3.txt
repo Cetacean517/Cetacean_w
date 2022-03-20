@@ -1,0 +1,9 @@
+var a, b, c, flag, x, y, z, flag2, flag3;
+const yiban=0, dengyao = 1, dengyaozhijiao = 2, zhijiao=3, dengbian=4, fei=5;
+    begin
+        if x*x + y*y = z*z then
+            begin
+                write(zhijiao);
+                flag := 1;
+            end;
+    end;
