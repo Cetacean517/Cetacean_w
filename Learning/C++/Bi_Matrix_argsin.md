@@ -1,4 +1,4 @@
-```python
+```C
 主要有三种方式
 void fun(int *a[],int m,int n)//**a
 void fun2(int a[][2],int m)//a[2][2]
