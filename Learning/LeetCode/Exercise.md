@@ -69,5 +69,87 @@ public class FourFiveTwo {
 }
 ```
 
+## 二分法
 
-### 763. 
+### 69. 求开方
+
+#### 方法一：exp + ln() 。 用数学方法，求根号的近似值。
+
+**时间复杂度：O(1)**
+
+**空间复杂度：O(1)**
+
+> 注意: log() 默认自然对数。
+
+``` python
+from math import e, log, exp
+
+# log():默认自然对数， int(): 向下取整
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x == 0:
+            return 0
+        ans = int(exp(1/2 * log(x)))
+        if (ans+1) ** 2 <= x:
+            return ans+1
+        return ans
+```
+
+#### 方法二： 二分法
+
+**时间复杂度：O(log(x))**
+
+**空间复杂度：O(1)**
+
+**取中间值：mid = ( low + high ) /2 , 此时mid是中间偏左的位置。**
+
+例：查找10的平方根
+
+创造数列：0,1,2,3,4,5,6,7,8,9,10
+
+| round        | low   | high  | mid   | value | action                        |
+| ------------ | :---- | ----- | ----- | ----- | ----------------------------- |
+| 1（0-10）    | 0     | 10    | 5     | 5     | 25> 10, ans = -1, high左移    |
+| 2（0-4）     | 0     | 4     | 2     | 2     | 4 < 10, ans = 2, low右移      |
+| **3（3-4）** | **3** | **4** | **3** | **3** | **9 < 10, ans = 3, low右移**  |
+| **4（4-4）** | **4** | **4** | **4** | **4** | **16 > 10, ans = 3, low右移** |
+
+```python
+class Solution:
+    def mySqrt(self, x):
+        low = 0
+        high = x
+        while low <= high:
+            mid = (low + high) // 2
+            if mid**2 <= x:
+                ans = mid # 只有当mid**2 < x的时候，才能够更新ans的值
+                low = mid + 1
+            else:
+                high = mid - 1
+        return ans
+```
+
+#### 方法三：牛顿迭代
+
+**时间复杂度：O(log(x))**
+
+**空间复杂度：O(1)**
+
+<img src="C:\Users\Fish\AppData\Roaming\Typora\typora-user-images\image-20220315172838263.png" alt="image-20220315172838263" style="zoom: 50%;" />
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x == 0:
+            return 0
+        
+        C, x0 = float(x), float(x)
+        while True:
+            xi = 0.5 * (x0 + C / x0)
+            if abs(x0 - xi) < 1e-7:
+                break
+            x0 = xi
+        
+        return int(x0)
+```
+
