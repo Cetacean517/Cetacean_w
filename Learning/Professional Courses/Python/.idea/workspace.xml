@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="383580b5-5ac0-4cda-93d3-ed4f4bff51cf" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/allclasses-frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/allclasses-noframe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/anno.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/anno.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/constant-values.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/deprecated-list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/help-doc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/index-all.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/overview-tree.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/package-frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/package-list" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/package-summary.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/package-tree.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Annotation/stylesheet.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Code/src/main/java/junit/junit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../JAVA/Code/src/main/java/test/junitTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/Array operation.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/Array operation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/Camel-Case.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/CommonUtilityClasses.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/JAVA.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/JAVAbasic.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/MybatisUser.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/OOP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../JAVA/OOP.pdf" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectId" id="26lhdaSozGuT4leVvxEAy6JdMvi" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../LeetCode/Python_leetcode" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="383580b5-5ac0-4cda-93d3-ed4f4bff51cf" name="Default Changelist" comment="" />
+      <created>1648004172369</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648004172369</updated>
+      <workItem from="1648004174799" duration="49000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
