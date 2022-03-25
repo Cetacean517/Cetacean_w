@@ -12,4 +12,5 @@ class Solution:
             elif List[mid] > target:
                 mid = low + 1
             else:
+                pass
 
