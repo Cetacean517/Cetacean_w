@@ -1,8 +1,0 @@
-(proceduresym,	procedure)
-(ident,	apple)
-(ident,	a)
-(becomes,	:=)
-(eql,	=)
-(number,	12)
-(ident,	b)
-illegal,	:?(number,	1212)
