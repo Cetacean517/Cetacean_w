@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4aee4a75-8cff-43b1-b3fa-4c207f5b3ca6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Annotation/allclasses-frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/allclasses-noframe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/anno.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/anno.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/constant-values.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/deprecated-list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/help-doc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/index-all.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/overview-tree.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/package-frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/package-list" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/package-summary.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/package-tree.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Annotation/stylesheet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Array operation.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Array operation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Camel-Case.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CommonUtilityClasses.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JAVA.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JAVAbasic.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MybatisUser.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OOP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OOP.pdf" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="26jkqXHlefhB2hMaKa7VIGPq4Am" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Cetacean517\Cetacean_w\Learning\JAVA" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4aee4a75-8cff-43b1-b3fa-4c207f5b3ca6" name="Default Changelist" comment="" />
+      <created>1647944576156</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1647944576156</updated>
+      <workItem from="1647944577578" duration="111000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
