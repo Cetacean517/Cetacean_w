@@ -24,6 +24,8 @@ public class getMethods {
      *      Method[] getMethods(String name,类<?>... parameterTypes)
      *      Method[] getDeclaredMethods()
      *      Method[] getDeclaredMethods(String name,类<?>... parameterTypes)
+     *
+     *      用invoke() 调用函数
      * 4. 获取类名
      *      String getName()
      */
