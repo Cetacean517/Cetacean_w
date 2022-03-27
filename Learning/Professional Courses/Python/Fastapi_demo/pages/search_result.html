@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Result</title>
+</head>
+<body>
+  <h2>Search Result</h2>
+<!--  python 中的 for 循环      -->
+    {% for s in search_results%}
+    <p>{{s.content}}</p>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FastAPI</title>
+</head>
+<body>
+    <div>
+        <h1>Curriculum to Learn</h1>
+        <div>
+<!--            action: 设置传递的api; method: 设置传递的方法-->
+            <form action="/class" method="POST">
+<!--                设置name属性：后端根据name属性接受数据-->
+                <input name="data" placeholder="Please enter a course:">
+                <input type="submit" value="添加">
+            </form>
+        </div>
+<!--  python 中的 for 循环      -->
+        {% for c in courses%}
+        <p>{{c}}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FastAPI</title>
+</head>
+<body>
+<!--TO DO LIST ADD-->
+    <h1>Todo List</h1>
+    <div>
+<!--            action: 设置传递的api; method: 设置传递的方法-->
+        <form action="/todo" method="POST">
+<!--                设置name属性：后端根据name属性接受数据-->
+            <input name="content" placeholder="Please enter a item:">
+            <input type="submit" value="添加">
+        </form>
+    </div>
+<!--  python 中的 for 循环      -->
+    {% for c in todos%}
+    <p>{{c.content}}</p>
+    {% endfor %}
+
+    <hr>
+<!--TODO LIST SEARCH-->
+    <div>
+        <form action="/search" method="post">
+            <input name="keyword" placeholder="Please enter keywords.">
+            <input type="submit" value="搜索">
+        </form>
+    </div>
+
+</body>
+</html>
