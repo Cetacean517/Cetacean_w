@@ -159,3 +159,57 @@ while(rs.next()){
 
 #### 5. PreparedStatement  执行sql对象
 
+1. SQL注入问题：在拼接SQL时，有一些SQL的特殊关键字参与字符串的拼接，会造成安全性问题。
+   1. 输入用户名：任意；输入密码：a' or 'a' = 'a
+   2. sql: `select * from user where username = 'wienew' and password = 'a' or 'a' = 'a'`
+2. 解决SQL注入问题：使用PreparedStatement对象
+3. 预编译的SQL：参数使用？作为占位符
+4. 步骤
+   1. 导入驱动jar包     mysql-connector-java-5.1.37-bin.jar
+   2. 注册驱动
+   3. 获取数据库连接对象 Connection
+   4. 定义sql
+      1. 注意：SQL参数使用？作为占位符。e.g. `select * from user where username = ? and password = ?`
+   5. 获取执行sql语句对象 PreparedStatement()    Connection.prepareStatement(String sql)
+   6. 给？赋值
+      1. 方法：setXxx(参数1，参数2)
+         1. 参数1：？的位置从1开始
+         2. 参数2：？的值
+   7. 执行sql, 接收返回结果，不需要传递SQL语句
+   8. 处理结果
+   9. 释放资源
+
+## 抽取JDBC工具类：JDBCUtils
+
+分析：需要抽取的内容
+
+1. 注册驱动
+2. 获取连接对象
+3. 释放资源
+
+练习：
+
+​		需求
+
+1. 通过键盘录入用户名和密码
+2. 判断用户是否登录成功
+
+​		步骤
+
+1. 创建数据库表 user
+2. 创建登录方法
+
+## JDBC控制事务：
+
+1. 事务：一个包含多个步骤的业务操作。如果这个业务操作被事务管理，则这多个步骤要么同时成功，要么同时失败。
+2. 操作：
+   1. 开启事务
+   2. 提交事务
+   3. 回滚事务
+3. 使用Connection对象来管理事务
+   1. 开启事务  void setAutoComit(boolean autoCommit) : 调用方法设置参数为false,即开启事务
+   2. 提交事务 void commit()
+   3. 回滚事务 void rollback()
+
+
+
