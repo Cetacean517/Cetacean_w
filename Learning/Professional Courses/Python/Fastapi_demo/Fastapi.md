@@ -400,7 +400,105 @@ async def search(req: Request, keyword=Form(None)):
                                                "search_results": search_results})
 ```
 
+# 安全性
 
+## Security - First Steps
+
+前后端登录逻辑
+
+1. 用户在网页（前端）输入**密码**和**用户名**。
+2. 前端发送，{密码，用户名} 给后端的接口 （指定`tokenUrl = "token"`)
+3. 后端API检查 {密码，用户名}，返回token
+4. 前端存储token。
+5. 用户从一个网页跳转到，前端的另一个网页
+6. 前端需要从API获取其他的数据
+   1. 获取API的授权
+   2. 发送 `Authorization : Bearer + token`
+   3. 当token 包含`foobar`, `Ahthorization`头会是：`Bearer foobar`
+
+## FastAPI's OAuth2PasswordBearer
+
+(使用OAuth2，密码流，以及Bearer token 实现登录场景)
+
+#### 快速Demo：获取token的接口
+
+1. 传入参数：tokenUrl = "token" 
+   1. token是一个相对URL，= './token'
+   2. 没有创建一个路径函数，只是声明用户从/token获取token
+
+```python
+from fastapi import Depends, FastAPI
+from fastapi.security import OAuth2PasswordBearer
+
+app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# 使用了依赖
+@app.get("/items/")
+async def read_items(token: str = Depends(oauth2_scheme)):
+    return {"token": token}
+
+```
+
+#### 获取当前用户
+
+- 创建用户模型
+- 通过依赖获取token，并获取对象实例
+- 注入当前用户
+
+```python
+from typing import Optional
+
+from fastapi import Depends, FastAPI
+from fastapi.security import OAuth2PasswordBearer
+from pydantic import BaseModel
+
+app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# 1. 创建用户模型
+class User(BaseModel):
+    username: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = None
+
+# 
+def fake_decode_token(token):
+    return User(
+        username=token + "fakedecoded", email="john@example.com", full_name="John Doe"
+    )
+
+# 2. 创建 get_current_user 的依赖项
+# 2.1 从 oauth2_sheme 获取token
+# 2.2 利用fake_decode_token 创建一个用户实例
+# 2.3 返回user实例
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    user = fake_decode_token(token)
+    return user
+
+# 3. 注入当前用户
+@app.get("/users/me")
+async def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+```
+
+## 使用密码和Bearer的简单登录
+
+#### 获取 username 和 password
+
+规范还写明了 `username` 和 `password` 必须作为表单数据发送（因此，此处不能使用 JSON）。
+
+scope
+
+- 这个表单字段的名称为 `scope`（单数形式），但实际上它是一个由空格分隔的「作用域」组成的长字符串。
+
+- 每个「作用域」只是一个字符串（中间没有空格）。
+- 它们通常用于声明特定的安全权限，例如：
+  - `users:read` 或者 `users:write` 是常见的例子。
 
 
 
