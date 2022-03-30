@@ -1,11 +1,10 @@
-package Utils;
+package DataSource.Utils;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,7 +44,7 @@ public class JDBCUtils {
     public static DataSource getDs(){
         return ds;
     }
-    
+
     public static void close(ResultSet rs, Statement stmt, Connection conn){
         if (rs != null){
             try {
