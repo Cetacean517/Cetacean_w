@@ -1,4 +1,4 @@
-﻿# Leetcode 习题记录
+# Leetcode 习题记录
 ## 语法组
 ### Python类的新增语法
 ```python
@@ -153,3 +153,8 @@ class Solution:
         return int(x0)
 ```
 
+## 排序算法
+
+### 5.1  常用的排序算法
+
+快速排序算法
