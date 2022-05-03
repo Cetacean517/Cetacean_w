@@ -13,11 +13,12 @@ def Hanoti(n, src, hlp, dst):
         print(src + '->' + dst)
     else:
         # 递归调用 hanoti(),将n - 1个圆盘从起始柱移动到辅助柱上
-        hanoti(n - 1, src, dst, hlp)
+        Hanoti(n - 1, src, dst, hlp)
         # 将起始柱上剩余的最后一个大圆盘移动到辅助柱上
         print(src + '->' + dst)
         # 递归调用 hanoti(), 将辅助柱上的n-1个圆盘移动到目标柱上
-        hanoti(n - 1, hlp, src, dst)
+        Hanoti(n - 1, hlp, src, dst)
+
 
 # Leetcode上面的汉诺塔
 class Solution:
