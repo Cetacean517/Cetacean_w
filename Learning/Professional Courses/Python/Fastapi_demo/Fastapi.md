@@ -1,3 +1,13 @@
+# Starlette, Pydantic 与 FastAPI的关系
+
+Starlette : 一种轻量级的ASGI框架/工具包，是构建高性能Asyncio服务的理想选择。小型异步Web框架
+
+Pyantic: 一个基于python类型提示来定义数据验证，序列化和文档(使用JSON模式)库
+
+​	类似于吧类型提示放到前后端接口中的应用。
+
+<img src="D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506093525903.png" alt="image-20220506093525903" style="zoom:30%;" />
+
 # FASTAPI 学习笔记
 
 ## Lesson1 FastAPI 安装
@@ -399,6 +409,44 @@ async def search(req: Request, keyword=Form(None)):
                                       context={"request": req,
                                                "search_results": search_results})
 ```
+
+# Pydantic基础
+
+### 1. 基础样例
+
+![image-20220506093919357](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506093919357.png)
+
+### 2. 校验失败处理
+
+![image-20220506094149513](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506094149513.png)
+
+输出
+
+<img src="D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506094253807.png" alt="image-20220506094253807" style="zoom:33%;" />
+
+pycharm 可以直接下载Pydantic插件
+
+### 3. 模型类的属性和方法
+
+![image-20220506094748891](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506094748891.png)
+
+![image-20220506094831627](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506094831627.png)
+
+### 4. 递归模型
+
+![image-20220506095305198](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506095305198.png)
+
+### 5. ORM模型：从类实例创建符合ORM对象的模型
+
+![image-20220506095601512](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506095601512.png)
+
+orm_mode= True是为了调用后面的from_orm接口
+
+![image-20220506095754489](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220506095754489.png)
+
+### 6. Pydantic 支持的字段类型
+
+​	官方文档：https://pydantic-docs.helpmanual.io/usage/types/
 
 # 安全性
 
