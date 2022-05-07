@@ -1,0 +1,3 @@
+D:/Desktop/Lexical1/cmake-build-debug/CMakeFiles/Lexical1.dir
+D:/Desktop/Lexical1/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Desktop/Lexical1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

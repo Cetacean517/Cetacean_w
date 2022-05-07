@@ -1,0 +1,4 @@
+IF a>b THEN
+	x=a+b;
+ELSE
+	x=b+a;
