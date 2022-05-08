@@ -448,6 +448,94 @@ orm_mode= True是为了调用后面的from_orm接口
 
 ​	官方文档：https://pydantic-docs.helpmanual.io/usage/types/
 
+# 请求参数和验证
+
+## 1. 路径参数和数字校验
+
+1）路径参数： get('/city/{city}') 中的city
+
+查询参数：访问url 时，路径末尾跟 ? q = xx；设置时，在函数中直接加
+
+![image-20220508115532365](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508115532365.png)
+
+2）枚举类型参数
+
+![image-20220508121227985](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508121227985.png)
+
+3） 通过path parameters传递文件路径
+
+![image-20220508121421768](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508121421768.png)
+
+4）路径参数校验
+
+导入类：from fastapi import Path
+
+![image-20220508121619527](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508121619527.png)
+
+<img src="D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508121633956.png" alt="image-20220508121633956" style="zoom:33%;" />
+
+5） 查询条数限制
+
+![image-20220508121904425](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508121904425.png)
+
+6）bool类型转换
+
+![image-20220508121916739](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508121916739.png)
+
+7）字符串验证
+
+导入类：from fastapi import Query
+
+![image-20220508122040900](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508122040900.png)
+
+## 2. Cookie 和 Header 参数
+
+1. Cookie参数![image-20220508122757445](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508122757445.png)
+
+2. Header 参数
+
+   ![image-20220508123010686](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508123010686.png)
+
+# 路径操作配置
+
+![image-20220508123336476](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508123336476.png)
+
+# 依赖注入系统
+
+“依赖注入”是指在编程中，为保证代码成功运行，先导入所需要的依赖，如子函数，数据库连接等。
+
+## 1. 创建，导入和声明依赖
+
+​	依赖的使用不区分同步和异步的情况。
+
+![image-20220508123948719](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508123948719.png)
+
+## 2. 类作为依赖项（3种写法）
+
+![image-20220508195900862](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508195900862.png)
+
+![image-20220508200007891](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508200007891.png)
+
+## 3. 子依赖
+
+![image-20220508201346785](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508201346785.png)
+
+## 4. 路径操作装饰器中导入依赖
+
+![image-20220508195745241](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508195745241.png)
+
+# OAuth2.0的授权模式
+
+## OAuth2 密码模式和FastAPI的OAuth2PasswordBearer
+
+OAuth2PasswordBearer：
+
+- 是接受URL作为参数的一个类：客户端会向该URL发送username和password参数，然后得到一个Token值
+- 它不会创建相应的URL路径操作，只是指明客户端用来请求Token的URL地址。
+- 当请求来的时候，FastAPI会检查请求的Authorization头信息，如果没有找到Authorization头信息，或者头信息的内容不是Bear token, 它会返回401状态码（UNAUTHORIZED）
+
+基于Password 和 Bearer token 的OAuth2认证：
+
 # 安全性
 
 ## Security - First Steps
@@ -548,5 +636,17 @@ scope
 - 它们通常用于声明特定的安全权限，例如：
   - `users:read` 或者 `users:write` 是常见的例子。
 
+# 中间件
 
+## 1. 中间件
+
+![image-20220508204019479](D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508204019479.png)
+
+## 2. 跨域资源共享
+
+域 = 协议（https//）+ 域名 （ xxx.com）+ 端口（:8080）
+
+若设置同源请求，则跨域间不能进行随意的ajax请求。跨域通过CORS中间件处理。
+
+<img src="D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Python\Fastapi_demo\Notepic\image-20220508204522913.png" alt="image-20220508204522913" style="zoom: 50%;" />
 
