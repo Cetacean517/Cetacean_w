@@ -124,10 +124,6 @@ class Solution:
         return -ans if rev else ans
 ```
 
-
-
-
-
 # Leetcode题目
 
 ### 50. Pow(x,n)
