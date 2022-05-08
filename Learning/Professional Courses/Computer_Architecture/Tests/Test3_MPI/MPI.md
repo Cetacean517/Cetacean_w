@@ -8,7 +8,7 @@
 
 ## 使用指南
 
-url = https://zhuanlan.zhihu.com/p/355652501
+​	
 
 ## 安装步骤：Ubuntu 18.04
 
