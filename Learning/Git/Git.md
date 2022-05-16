@@ -125,7 +125,7 @@ $ git commit -m "remove test.txt"
 [master d46f35e] remove test.txt
  1 file changed, 1 deletion(-)
  delete mode 100644 test.txt
- ```
+```
 现在，文件就从版本库中被删除了。
 
 **另一种情况是删错了，因为版本库里还有呢，所以可以很轻松地把误删的文件恢复到最新版本**：
@@ -275,7 +275,7 @@ $ git add readme.txt
 $ git commit -m "fix bug 101"
 [issue-101 4c805e2] fix bug 101
  1 file changed, 1 insertion(+), 1 deletion(-)
- ```
+```
 修复完成后，切换到master分支，并完成合并，最后删除issue-101分支：
 ``` cmd
 $ git switch master
@@ -287,7 +287,7 @@ $ git merge --no-ff -m "merged bug fix 101" issue-101
 Merge made by the 'recursive' strategy.
  readme.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
- ```
+```
 太棒了，原计划两个小时的bug修复只花了5分钟！现在，是时候接着回到dev分支干活了！
 
 ```cmd
@@ -505,23 +505,7 @@ diff --git a/readme.txt b/readme.txt
 命令`git push origin :refs/tags/<tagname>`可以删除一个远程标签。
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 指令小结
+# 指令小结
 ```java
 //命令行指令总结
 //create a repository
@@ -608,3 +592,9 @@ $ git push origin --tags
 $ git tag -d <tagname>
 $ git push origin :refs/tags/<tagname>
 ```
+
+#  实战常用
+
+## 1. github仓库clone 到本地
+
+​		任意文件夹下，打开git Bash: git clone + 仓库地址（https那个即可）
