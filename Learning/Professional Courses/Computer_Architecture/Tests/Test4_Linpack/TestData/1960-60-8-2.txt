@@ -1,0 +1,105 @@
+================================================================================
+HPLinpack 2.3  --  High-Performance Linpack benchmark  --   December 2, 2018
+Written by A. Petitet and R. Clint Whaley,  Innovative Computing Laboratory, UTK
+Modified by Piotr Luszczek, Innovative Computing Laboratory, UTK
+Modified by Julien Langou, University of Colorado Denver
+================================================================================
+
+An explanation of the input/output parameters follows:
+T/V    : Wall time / encoded variant.
+N      : The order of the coefficient matrix A.
+NB     : The partitioning blocking factor.
+P      : The number of process rows.
+Q      : The number of process columns.
+Time   : Time in seconds to solve the linear system.
+Gflops : Rate of execution for solving the linear system.
+
+The following parameter values will be used:
+
+N      :    1960 
+NB     :      60 
+PMAP   : Row-major process mapping
+P      :       8 
+Q      :       2 
+PFACT  :    Left    Crout    Right 
+NBMIN  :       2        4 
+NDIV   :       2 
+RFACT  :    Left    Crout    Right 
+BCAST  :   1ring 
+DEPTH  :       0 
+SWAP   : Mix (threshold = 64)
+L1     : transposed form
+U      : transposed form
+EQUIL  : yes
+ALIGN  : 8 double precision words
+
+--------------------------------------------------------------------------------
+
+- The matrix A is randomly generated for each test.
+- The following scaled residual check will be computed:
+      ||Ax-b||_oo / ( eps * ( || x ||_oo * || A ||_oo + || b ||_oo ) * N )
+- The relative machine precision (eps) is taken to be               1.110223e-16
+- Computational tests pass if scaled residuals are less than                16.0
+
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR00L2L2        1960    60     8     2             121.83             4.1249e-02
+HPL_pdgesv() start time Fri May 13 08:19:59 2022
+
+HPL_pdgesv() end time   Fri May 13 08:22:01 2022
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   3.13254665e-03 ...... PASSED
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR00L2L4        1960    60     8     2             123.76             4.0605e-02
+HPL_pdgesv() start time Fri May 13 08:22:02 2022
+
+HPL_pdgesv() end time   Fri May 13 08:24:06 2022
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   2.73556493e-03 ...... PASSED
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR00L2C2        1960    60     8     2             121.24             4.1450e-02
+HPL_pdgesv() start time Fri May 13 08:24:07 2022
+
+HPL_pdgesv() end time   Fri May 13 08:26:08 2022
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   3.13254665e-03 ...... PASSED
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR00L2C4        1960    60     8     2             123.53             4.0681e-02
+HPL_pdgesv() start time Fri May 13 08:26:09 2022
+
+HPL_pdgesv() end time   Fri May 13 08:28:13 2022
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   2.73556493e-03 ...... PASSED
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR00L2R2        1960    60     8     2             124.67             4.0309e-02
+HPL_pdgesv() start time Fri May 13 08:28:14 2022
+
+HPL_pdgesv() end time   Fri May 13 08:30:18 2022
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   2.76443633e-03 ...... PASSED
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR00L2R4        1960    60     8     2             134.63             3.7328e-02
+HPL_pdgesv() start time Fri May 13 08:30:19 2022
+
+HPL_pdgesv() end time   Fri May 13 08:32:34 2022
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   3.60892471e-03 ...... PASSED
+[mpiexec@master] Sending Ctrl-C to processes as requested
+[mpiexec@master] Press Ctrl-C again to force abort
