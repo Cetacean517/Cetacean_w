@@ -34,4 +34,19 @@ iv. 参数：
 
 v. 特殊参数：
 
-- f: 使用档案名字。**这是最后一个参数，后面只能接档案名。**	
+- f: 使用档案名字。**这是最后一个参数，后面只能接档案名。**
+
+# 安装镜像源
+
+url = https://blog.csdn.net/weixin_44144793/article/details/110174572	
+
+参考：https://blog.csdn.net/Li060703/article/details/106075597
+
+# 常用指令
+
+#### 1. 查看系统版本 
+
+uname -a
+
+
+
