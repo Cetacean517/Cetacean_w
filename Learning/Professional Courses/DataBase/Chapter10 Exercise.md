@@ -43,8 +43,8 @@ CREATE TABLE Department of TYPE department;
    SELECT D.dire.fname
    FROM Department as D
    WHERE D.university = 'Fudan University' AND
-   	  'Switzerland' in D.countries AND
-         'Japanese' in D.languages;
+   	  'Switzerland' in D.dire.countries AND
+         'Japanese' in D.dire.languages;
    ```
 
 ## 10.7 题目
