@@ -335,7 +335,12 @@ Notice：修改主机名和 master slave一致（不然会出现识别异常）
 
 <img src="D:\Cetacean517\Cetacean_w\Learning\Professional Courses\Computer_Architecture\Tests\Test4_Linpack\Notepic\image-20220512215119280.png" alt="image-20220512215119280" style="zoom: 33%;" />
 
-   			4. 子节点操作：sudo gedit /etc/rc.local 加入下面语句，或者手动挂载（每次）sudo mount -t nfs master:/home/cetacean/mpi_share home/cetacean/mpi_share
+​		4. 子节点操作：sudo gedit /etc/rc.local 加入下面语句，或者手动挂载（每次）
+
+```shell
+ sudo mount -t nfs master:/home/cetacean/mpi_share /home/cetacean/mpi_share
+
+```
 
 ### E. 运行指令
 
