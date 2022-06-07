@@ -1,0 +1,18 @@
+var n,i,apple;
+procedure fordiy;
+	const a=7;
+	var b,c;
+	begin
+		while i>0 do
+	    	begin
+	    		apple:=(apple+1)*2;
+	    		i:=i-1;
+	    	end;
+	end;
+begin
+    read(n);
+    i:=n;
+    apple:=1;
+    call fordiy;
+    write(apple);
+end.

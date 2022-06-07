@@ -1,3 +1,0 @@
-D:/Desktop/词法分析_czw/out/build/x64-Debug/CMakeFiles/my_compiler.dir
-D:/Desktop/词法分析_czw/out/build/x64-Debug/CMakeFiles/edit_cache.dir
-D:/Desktop/词法分析_czw/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

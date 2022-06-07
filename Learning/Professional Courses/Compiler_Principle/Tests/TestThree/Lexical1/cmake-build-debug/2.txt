@@ -1,8 +1,0 @@
-IF a<b   THEN
-        x=(b+a)*c;
-        y=y - x;
-       
-ELSE
-        x=(a+b)/c;
-        y=y* #$ x;
-      

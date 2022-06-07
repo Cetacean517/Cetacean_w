@@ -1,3 +1,0 @@
-procedure apple
-a = 12
-b =< 1212

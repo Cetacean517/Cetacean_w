@@ -1,0 +1,3 @@
+var n,i,apple;
+procedure fordiy;
+	const aX7 <= 10

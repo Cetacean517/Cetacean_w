@@ -1,0 +1,24 @@
+++++++ intermediate code and results ++++
+==== Line1 ====
+1
+==== Line2 ====
+2
+==== Line3 ====
+11
+==== Line4 ====
+4
+==== Line5 ====
+5
+==== Line6 ====
+5
+==== Line7 ====
+30
+==== Line8 ====
+6
+==== Line9 ====
+-14
+==== Line10 ====
+13:Unexpected stop
+ occur at line: 10
+
+
