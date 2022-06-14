@@ -1,5 +1,11 @@
+# Tips
+
+标准输出 ： sout
+
+for 循环： 6.fori
 
 # 控制流程
+
 ## 输出
 ``` Java
 //格式化输出
@@ -168,7 +174,7 @@ while循环可能一次都不执行；
 do {
     执行循环语句
    } while (条件表达式);
-   ```
+```
 可见，do while循环会至少循环一次。
 
 ## For循环
@@ -255,7 +261,7 @@ continue语句通常配合if，在满足条件时提前结束本次循环。
 			System.out.print(ar+" ");
 		}
 	}
-```
+ ```
 ## 打印数组
 1. 用for-each进行时数组打印，可以输出想要的数组格式
 ```java
@@ -278,7 +284,10 @@ continue语句通常配合if，在满足条件时提前结束本次循环。
 
 *直接打印数组会获取到数组所在的地址内容。*
 
+
+
 ## 数组排序
+
 1. 冒泡排序（简单优化）
  ```java
  //优化后的冒泡排序
@@ -326,3 +335,33 @@ continue语句通常配合if，在满足条件时提前结束本次循环。
 可以直接使用Java标准库提供的Arrays.sort()进行排序；
 
 对数组排序会直接修改数组本身。
+
+## ArrayList<E> 可变长数组
+
+支持泛型。
+
+$>$ JDK 1.5自动装箱：基本类型 ---> 包装类型  ; 自动拆箱: 包装类型 --> 基本类型
+
+| 基本类型 | 包装类（引用类型，位于java.lang) |
+| -------- | -------------------------------- |
+| byte     | Byte                             |
+| short    | Short                            |
+| int      | **Integer**                      |
+| long     | Long                             |
+| float    | Float                            |
+| double   | Double                           |
+| char     | **Character**                    |
+| boolean  | Boolean                          |
+
+直接打印：输出内容
+
+常用方法：add(),	get(),	remove() [ 返回删除内容 ],	size() [ 返回元素个数 ]
+
+遍历集合
+
+```java
+for (int i = 0; i < list.size(); i++) {
+    System.out,println(list.get(i))
+}
+```
+
