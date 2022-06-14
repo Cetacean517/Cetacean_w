@@ -1,5 +1,0 @@
-D:/Desktop/LearnCMake/out/build/x64-Debug/CMakeFiles/edit_cache.dir
-D:/Desktop/LearnCMake/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
-D:/Desktop/LearnCMake/out/build/x64-Debug/LearnCMake/CMakeFiles/edit_cache.dir
-D:/Desktop/LearnCMake/out/build/x64-Debug/LearnCMake/CMakeFiles/LearnCMake.dir
-D:/Desktop/LearnCMake/out/build/x64-Debug/LearnCMake/CMakeFiles/rebuild_cache.dir
