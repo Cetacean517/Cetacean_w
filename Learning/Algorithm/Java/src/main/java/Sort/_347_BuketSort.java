@@ -11,49 +11,50 @@
 package Sort;
 
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class _347_BuketSort {
     public int[] topKFrequent(int[] nums, int k) {
-        int[] numTimes = new int[100000];
         int max = 0;
-//        1. 第1次桶排序，桶：数值；值：次数
-        for (int n : nums) {
-            numTimes[n - 1] += 1;
-            max = numTimes[n - 1] > max ? numTimes[n - 1] : max;
+
+//        1. 第1次桶排序: 桶=数值；值=次数
+        HashMap<Integer, Integer> numTimes = new HashMap<>();
+        for (int num:nums){                                     // 读入数值，统计出现次数
+            Integer oldtimes = numTimes.get(num);
+            Integer newtimes = numTimes.put(num,oldtimes == null? 1:oldtimes+1);   // 第一次存入，值为1；否则，增1.
         }
 
-//        2. 第2次桶排序，桶：次数；值：数值
-        ArrayList<ArrayList> numSorts = new ArrayList<>();
-        for (int i = 0; i < max; i++) {
-            ArrayList<Integer> numItem = new ArrayList<>();
-            numSorts.add(numItem);
-        }
-
-        for (int i = 0; i < numTimes.length; i++) {
-            int pos = numTimes[i] - 1;
-            if (pos > -1) {
-                numSorts.get(pos).add(i + 1);
+//        2. 第2次桶排序: 桶=次数；值=数值
+        HashMap<Integer, ArrayList<Integer>> numSort = new HashMap<>();
+        for(Map.Entry set: numTimes.entrySet()){                // 将出现次数相同的数，放入同一个桶中。
+            Integer key = (Integer) set.getKey();
+            Integer value = (Integer) set.getValue();
+            max = max < value ? value:max;                      // max = 某数字最大出现次数
+            if(numSort.containsKey(value)){                     // 若非第一次添加，则直接添加；否则替换数组。
+                numSort.get(value).add( key);
+            } else {
+                ArrayList<Integer> numlist = new ArrayList<>();
+                numlist.add(key);
+                numSort.put(value,numlist);
             }
         }
 
-        ArrayList<Integer> KNums = new ArrayList<>();
-        while (k > 0) {
-            for (int i = numSorts.size() - 1; i >= 0; i--) {
-                for (int j = 0; j < numSorts.get(i).size(); j++) {
-                    KNums.add((Integer) numSorts.get(i).get(j));
-                    k -= 1;
-                    if(k == 0) break;
-                }
-                if(k == 0) break;
+        ArrayList<Integer> outlist = new ArrayList<>();         // 从高到底，输出需要前k个数
+        while (outlist.size() < k){
+            ArrayList<Integer> out = numSort.get(max);
+            if (out != null) {
+                outlist.addAll(out);
             }
+            max -= 1;
+
         }
 
-        System.out.println(KNums);
-        int[] output = new int[KNums.size()];
-        for (int i = 0; i < KNums.size(); i++) {
-            output[i] = KNums.get(i);
+        int[] output = new int[outlist.size()];                 // Arraylist 填充到int[]中
+        for(int j = 0; j < outlist.size(); ++j) {
+            output[j] = outlist.get(j);
         }
+
         return output;
     }
+
 }
