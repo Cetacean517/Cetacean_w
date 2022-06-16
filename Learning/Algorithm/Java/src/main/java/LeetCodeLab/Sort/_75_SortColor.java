@@ -17,7 +17,7 @@
  *
  */
 
-package Sort;
+package LeetCodeLab.Sort;
 
 import java.util.Arrays;
 

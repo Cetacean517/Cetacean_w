@@ -8,7 +8,7 @@
  *           你可以按 任意顺序 返回答案。
  */
 
-package Sort;
+package LeetCodeLab.Sort;
 
 
 import java.util.*;

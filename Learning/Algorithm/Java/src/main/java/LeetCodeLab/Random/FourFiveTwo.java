@@ -1,4 +1,4 @@
-package LeetCodeLab;
+package LeetCodeLab.Random;
 
 /*
 * 思路：

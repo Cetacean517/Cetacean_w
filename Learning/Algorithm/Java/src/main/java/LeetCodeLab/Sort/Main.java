@@ -4,11 +4,9 @@
  * @time 2022/6/13 16:16
  */
 
-package Sort;
+package LeetCodeLab.Sort;
 
-import org.junit.Test;
-
-public class Sorts {
+public class Main {
     public static void main(String[] args) {
 //        基础桶排序：347
 //        int[] nums = {1,1,1,1, -1,-1,2,2,2,3,4,4,};

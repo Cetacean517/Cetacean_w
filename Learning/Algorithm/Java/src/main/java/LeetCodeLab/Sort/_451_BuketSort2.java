@@ -5,7 +5,7 @@
  * @title 451. 根据字符出现频率排序
  * @type  桶排序
  */
-package Sort;
+package LeetCodeLab.Sort;
 
 import java.util.HashMap;
 import java.util.Map;
