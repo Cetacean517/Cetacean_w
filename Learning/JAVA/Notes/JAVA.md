@@ -230,3 +230,15 @@ entrySet()：遍历
 Map集合必须保证key是唯一的：
 
 - 作为KEY的元素，必须重写hashCode方法和equals方法（保证key唯一）
+
+# 数据结构
+
+## 栈 Stack类
+
+| 序号 | 方法描述                                                     |
+| :--- | :----------------------------------------------------------- |
+| 1    | boolean empty()  <br />测试堆栈是否为空。                    |
+| 2    | Object peek( ) <br />查看堆栈顶部的对象，但不从堆栈中移除它。 |
+| 3    | Object pop( ) <br />移除堆栈顶部的对象，并作为此函数的值返回该对象。 |
+| 4    | Object push(Object element) <br />把项压入堆栈顶部。         |
+| 5    | int search(Object element) <br />返回对象在堆栈中的位置，以 1 为基数。 |
