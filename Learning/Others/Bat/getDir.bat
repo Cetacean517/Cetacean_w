@@ -1,1 +1,0 @@
-DIR /s/b *.* > LIST.TXT exit
